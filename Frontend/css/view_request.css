@@ -1,0 +1,71 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f5f5f0;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #0b1a2f;
+}
+
+.request-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+    background: #fafafa;
+}
+
+.request-card h3 {
+    margin-top: 0;
+}
+
+.actions {
+    margin-top: 15px;
+}
+
+.accept-btn,
+.decline-btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: white;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.accept-btn {
+    background: #28a745;
+}
+
+.decline-btn {
+    background: #dc3545;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #d4a63f;
+}
+
+.empty-box {
+    padding: 16px;
+    border-radius: 8px;
+    background: #f1f1f1;
+}
