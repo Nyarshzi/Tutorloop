@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tutee Dashboard - TutorLoop</title>
+
+<!-- ✅ CORRECT CSS FILE -->
+<link rel="stylesheet" href="css/tutee_dashboard.css">
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>TutorLoop</h2>
+
+    <ul>
+        <li onclick="showSection('home')">Dashboard</li>
+        <li onclick="showSection('find')">Find Tutor</li>
+        <li onclick="showSection('book')">Book Session</li>
+        <li onclick="showSection('sessions')">My Sessions</li>
+        <li onclick="showSection('profile')">Profile</li>
+        <li onclick="logout()">Logout</li>
+    </ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="home" class="section active">
+        <h1>Welcome, Tutee 👋</h1>
+
+        <div class="cards">
+            <div class="card">📚 Subjects: 5</div>
+            <div class="card">👨‍🏫 Tutors Available: 12</div>
+            <div class="card">📅 Upcoming Sessions: 2</div>
+        </div>
+    </div>
+
+    <!-- FIND TUTOR -->
+    <div id="find" class="section">
+        <h1>Find Tutor</h1>
+
+        <input type="text" placeholder="Search subject...">
+
+        <div class="tutor-list">
+            <div class="tutor">
+                <h3>John Doe</h3>
+                <p>Math Tutor</p>
+                <button>View</button>
+            </div>
+
+            <div class="tutor">
+                <h3>Jane Smith</h3>
+                <p>English Tutor</p>
+                <button>View</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOK SESSION -->
+    <div id="book" class="section">
+        <h1>Book Session</h1>
+
+        <form onsubmit="bookSession(event)">
+            <input type="text" placeholder="Subject" required>
+            <input type="date" required>
+            <input type="time" required>
+
+            <select required>
+                <option>Select Tutor</option>
+                <option>John Doe</option>
+                <option>Jane Smith</option>
+            </select>
+
+            <button type="submit">Book Now</button>
+        </form>
+    </div>
+
+    <!-- SESSIONS -->
+    <div id="sessions" class="section">
+        <h1>My Sessions</h1>
+
+        <ul class="session-list">
+            <li>Math with John Doe - March 28</li>
+            <li>English with Jane Smith - April 2</li>
+        </ul>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profile" class="section">
+        <h1>Profile</h1>
+
+        <input type="text" placeholder="Full Name">
+        <input type="email" placeholder="Email">
+
+        <button>Update Profile</button>
+    </div>
+
+</div>
+
+<script src="js/tutee.js"></script>
+
+</body>
+</html>

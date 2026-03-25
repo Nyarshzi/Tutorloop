@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tutor Dashboard - TutorLoop</title>
+
+<!-- ✅ YOUR CSS -->
+<link rel="stylesheet" href="css/tutor_dashboard.css">
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>TutorLoop</h2>
+
+    <ul>
+        <li onclick="showSection('home')">Dashboard</li>
+        <li onclick="showSection('requests')">Session Requests</li>
+        <li onclick="showSection('schedule')">My Schedule</li>
+        <li onclick="showSection('students')">My Students</li>
+        <li onclick="showSection('profile')">Profile</li>
+        <li onclick="logout()">Logout</li>
+    </ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="home" class="section active">
+        <h1>Welcome, Tutor 👨‍🏫</h1>
+
+        <div class="cards">
+            <div class="card">📚 Subjects Teaching: 3</div>
+            <div class="card">👨‍🎓 Students: 10</div>
+            <div class="card">📅 Sessions Today: 2</div>
+        </div>
+    </div>
+
+    <!-- SESSION REQUESTS -->
+    <div id="requests" class="section">
+        <h1>Session Requests</h1>
+
+        <div class="request">
+            <p><strong>Student:</strong> John Doe</p>
+            <p><strong>Subject:</strong> Math</p>
+            <button onclick="accept()">Accept</button>
+            <button onclick="decline()">Decline</button>
+        </div>
+
+        <div class="request">
+            <p><strong>Student:</strong> Jane Smith</p>
+            <p><strong>Subject:</strong> English</p>
+            <button onclick="accept()">Accept</button>
+            <button onclick="decline()">Decline</button>
+        </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div id="schedule" class="section">
+        <h1>My Schedule</h1>
+
+        <ul class="session-list">
+            <li>Math - John Doe (March 28, 10:00 AM)</li>
+            <li>English - Jane Smith (April 2, 2:00 PM)</li>
+        </ul>
+    </div>
+
+    <!-- STUDENTS -->
+    <div id="students" class="section">
+        <h1>My Students</h1>
+
+        <div class="student">John Doe</div>
+        <div class="student">Jane Smith</div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profile" class="section">
+        <h1>Profile</h1>
+
+        <input type="text" placeholder="Full Name">
+        <input type="email" placeholder="Email">
+        <input type="text" placeholder="Subjects You Teach">
+
+        <button>Update Profile</button>
+    </div>
+
+</div>
+
+<script src="js/tutor.js"></script>
+
+</body>
+</html>

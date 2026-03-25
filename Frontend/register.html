@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TutorLoop</title>
+
+    <link rel="stylesheet" href="css/register.css">
+</head>
+
+<body>
+
+<main class="main-container">
+
+    <section class="register-card" id="registerCard">
+
+        <div class="card-shine"></div>
+
+        <!-- LOGO (PERFECT SIZE) -->
+        <img src="images/tutorloop_logo.jpg" class="logo">
+
+        <h2>Create Account</h2>
+        <p class="subtitle">Join TutorLoop and start learning</p>
+
+        <form id="registerForm">
+
+            <!-- NAME -->
+            <div class="input-group">
+                <input type="text" id="name" required>
+                <label>Full Name</label>
+                <span class="input-line"></span>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="input-group">
+                <input type="email" id="email" required>
+                <label>Email</label>
+                <span class="input-line"></span>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="input-group password-group">
+                <input type="password" id="password" required>
+                <label>Password</label>
+                <span class="input-line"></span>
+
+                <!-- FAST SHOW PASSWORD -->
+                <button type="button" class="toggle" id="togglePassword">Show</button>
+            </div>
+
+            <!-- ROLE -->
+            <div class="input-group custom-select-group" id="roleGroup">
+
+                <input type="hidden" id="role">
+
+                <button type="button" class="custom-select-trigger" id="roleTrigger">
+                    <span id="roleText">Select Role</span>
+                </button>
+
+                <label>Role</label>
+                <span class="input-line"></span>
+
+                <div class="custom-options">
+                    <div class="custom-option" data-value="tutor">Tutor</div>
+                    <div class="custom-option" data-value="tutee">Tutee</div>
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+            <button type="submit" class="register-btn" id="registerBtn">
+                <span class="btn-text">Create Account</span>
+                <span class="loader"></span>
+            </button>
+
+            <p class="login-link">
+                Already have an account? <a href="login.html">Sign In</a>
+            </p>
+
+        </form>
+
+    </section>
+
+</main>
+
+<script src="js/register.js"></script>
+
+</body>
+</html>

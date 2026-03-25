@@ -1,0 +1,214 @@
+/* BACKGROUND */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CARD */
+.register-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    position: relative;
+}
+
+/* LOGO */
+.logo {
+    width: 100px;
+    margin-bottom: 15px;
+}
+
+/* TEXT */
+h2 {
+    margin: 10px 0;
+    color: white;
+}
+
+.subtitle {
+    color: #ccc;
+    font-size: 14px;
+}
+
+/* INPUT */
+.input-group {
+    position: relative;
+    margin: 20px 0;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    border-bottom: 1px solid #888;
+}
+
+.input-group label {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    color: #aaa;
+    transition: 0.3s;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+    top: -10px;
+    font-size: 12px;
+    color: #d4a017;
+}
+
+/* LINE */
+.input-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #d4a017;
+    transition: 0.3s;
+}
+
+.input-group input:focus ~ .input-line {
+    width: 100%;
+}
+
+/* PASSWORD BUTTON */
+.toggle {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    background: none;
+    border: none;
+    color: #d4a017;
+    cursor: pointer;
+}
+
+/* ROLE */
+.custom-select-trigger {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.custom-options {
+    display: none;
+    background: #1e293b;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+.custom-option {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.custom-option:hover {
+    background: #d4a017;
+    color: black;
+}
+
+/* ROLE SELECT FIX */
+.custom-select-group {
+    position: relative;
+    margin: 20px 0;
+}
+
+/* BUTTON (acts like input) */
+.custom-select-trigger {
+    width: 100%;
+    padding: 12px 10px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #888;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* LABEL FIX */
+.custom-select-group label {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    color: #aaa;
+    transition: 0.3s;
+}
+
+/* MOVE LABEL WHEN ACTIVE */
+.custom-select-group.filled label,
+.custom-select-group.open label {
+    top: -10px;
+    font-size: 12px;
+    color: #d4a017;
+}
+
+/* DROPDOWN */
+.custom-options {
+    display: none;
+    background: #1e293b;
+    border-radius: 10px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.custom-option {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.custom-option:hover {
+    background: #d4a017;
+    color: black;
+}
+
+.custom-select-group.open .custom-options {
+    display: block;
+}
+
+/* BUTTON */
+.register-btn {
+    width: 100%;
+    padding: 12px;
+    background: #d4a017;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* LOADER */
+.loader {
+    display: none;
+}
+
+/* LINK */
+.login-link {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.login-link a {
+    color: #d4a017;
+}
+
+/* MOBILE */
+@media (max-width: 500px) {
+    .register-card {
+        width: 90%;
+    }
+}

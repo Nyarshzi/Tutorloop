@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - TutorLoop</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div class="main">
+
+    <!-- LAMP -->
+    <div class="lamp-wrapper center" id="lampWrapper">
+
+        <!-- GLOW -->
+        <div class="lamp-glow"></div>
+
+        <div class="lamp">
+            <div class="shade"></div>
+
+            <!-- SHORT STRING -->
+            <div class="string" onclick="toggleLight()">
+                <span class="knob"></span>
+            </div>
+
+            <div class="stand"></div>
+        </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="login-box" id="loginBox">
+
+        <!-- LOGO -->
+<img src="images/tutorloop_logo.png" 
+     alt="TutorLoop Logo" 
+     class="logo"
+     onerror="this.src='https://via.placeholder.com/60?text=TL'">
+
+        <h2>Welcome</h2>
+
+        <input type="email" placeholder="Email">
+
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Password">
+            <span class="show-text" onclick="togglePassword()">Show</span>
+        </div>
+
+        <button onclick="login()">Sign In</button>
+
+    </div>
+
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
