@@ -1,18 +1,17 @@
-function showSection(id){
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
 
-    document.querySelectorAll('.section').forEach(sec=>{
-        sec.classList.remove('active');
-    });
+// toggle sidebar
+menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+});
 
-    document.getElementById(id).classList.add('active');
-}
-
-function bookSession(e){
-    e.preventDefault();
-    alert("Session Booked!");
-}
-
-function logout(){
-    alert("Logged out!");
-    window.location.href = "login.html";
-}
+// OPTIONAL: click outside to close (recommended)
+document.addEventListener("click", (e) => {
+    if (
+        !sidebar.contains(e.target) &&
+        !menuBtn.contains(e.target)
+    ) {
+        sidebar.classList.remove("active");
+    }
+});

@@ -7,6 +7,7 @@ function toggleLight(){
 
     const body = document.body;
     const box = document.getElementById("loginBox");
+    
 
     if(isOn){
         body.classList.add("light-on");
@@ -23,6 +24,8 @@ function toggleLight(){
         lamp.classList.add("center");
     }
 }
+
+
 
 /* SHOW PASSWORD */
 function togglePassword(){
