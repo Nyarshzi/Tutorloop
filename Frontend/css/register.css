@@ -1,214 +1,161 @@
-/* BACKGROUND */
+
 body {
     margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #0f172a;
+    font-family: Arial, sans-serif;
+    background: #0b1d2a;
+    color: #f5f5f5;
+}
+
+.bg-glow {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: #d4a017;
+    filter: blur(150px);
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+}
+
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-/* CARD */
-.register-card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
+.card {
+    background: rgba(11, 29, 42, 0.9);
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 16px;
     width: 320px;
-    text-align: center;
-    position: relative;
+    box-shadow: 0 0 30px rgba(212, 160, 23, 0.3);
 }
 
-/* LOGO */
-.logo {
-    width: 100px;
-    margin-bottom: 15px;
-}
-
-/* TEXT */
 h2 {
-    margin: 10px 0;
-    color: white;
+    margin-bottom: 5px;
 }
 
 .subtitle {
+    
+  font-size: 14px;
+    margin-bottom: 20px;
     color: #ccc;
-    font-size: 14px;
-}
 
-/* INPUT */
-.input-group {
-    position: relative;
-    margin: 20px 0;
-}
 
-.input-group input {
+  }
+
+input {
     width: 100%;
     padding: 10px;
+    margin-bottom: 15px;
     border: none;
-    outline: none;
-    background: transparent;
+    border-radius: 8px;
+    background: #132f45;
     color: white;
-    border-bottom: 1px solid #888;
 }
 
-.input-group label {
-    position: absolute;
-    left: 0;
-    top: 10px;
-    color: #aaa;
-    transition: 0.3s;
+.password-box {
+    display: flex;
 }
 
-.input-group input:focus + label,
-.input-group input:valid + label {
-    top: -10px;
-    font-size: 12px;
-    color: #d4a017;
+.password-box input {
+    flex: 1;
 }
 
-/* LINE */
-.input-line {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
+.password-box button {
     background: #d4a017;
-    transition: 0.3s;
-}
-
-.input-group input:focus ~ .input-line {
-    width: 100%;
-}
-
-/* PASSWORD BUTTON */
-.toggle {
-    position: absolute;
-    right: 0;
-    top: 10px;
-    background: none;
+    
     border: none;
-    color: #d4a017;
+    
+    padding: 5px;
+    margin-left: 5px;
+    margin-bottom: 22px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
-/* ROLE */
-.custom-select-trigger {
-    width: 100%;
-    padding: 10px;
-    background: transparent;
-    border: none;
-    color: white;
-    text-align: left;
-    cursor: pointer;
-}
-
-.custom-options {
-    display: none;
-    background: #1e293b;
-    border-radius: 10px;
-    margin-top: 5px;
-}
-
-.custom-option {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.custom-option:hover {
-    background: #d4a017;
-    color: black;
-}
-
-/* ROLE SELECT FIX */
-.custom-select-group {
+.dropdown {
     position: relative;
-    margin: 20px 0;
+    margin-bottom: 15px;
+     z-index: 10; 
 }
 
-/* BUTTON (acts like input) */
-.custom-select-trigger {
+.dropdown button {
     width: 100%;
-    padding: 12px 10px;
-    background: transparent;
+    padding: 10px;
+    background: #132f45;
     border: none;
-    border-bottom: 1px solid #888;
-    color: white;
-    text-align: left;
+    border-radius: 8px;
+    
+  color: white;
     cursor: pointer;
 }
 
-/* LABEL FIX */
-.custom-select-group label {
+.dropdown-content {
+  
+  display: none;
     position: absolute;
-    left: 0;
-    top: 12px;
-    color: #aaa;
-    transition: 0.3s;
-}
-
-/* MOVE LABEL WHEN ACTIVE */
-.custom-select-group.filled label,
-.custom-select-group.open label {
-    top: -10px;
-    font-size: 12px;
-    color: #d4a017;
-}
-
-/* DROPDOWN */
-.custom-options {
-    display: none;
-    background: #1e293b;
-    border-radius: 10px;
-    margin-top: 5px;
+    width: 100%;
+    background: #132f45;
+    border-radius: 8px;
     overflow: hidden;
+     z-index: 999;
+     margin-top: 5px;
 }
 
-.custom-option {
+.dropdown-content div {
     padding: 10px;
     cursor: pointer;
 }
 
-.custom-option:hover {
+.dropdown-content div:hover {
     background: #d4a017;
     color: black;
 }
 
-.custom-select-group.open .custom-options {
+.dropdown.active .dropdown-content {
     display: block;
 }
 
-/* BUTTON */
-.register-btn {
+#submitBtn {
     width: 100%;
     padding: 12px;
     background: #d4a017;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
+    position: relative;
 }
 
-/* LOADER */
+
 .loader {
     display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid white;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-/* LINK */
-.login-link {
-    margin-top: 15px;
-    font-size: 13px;
+.card {
+    overflow: visible;
 }
 
-.login-link a {
-    color: #d4a017;
+#submitBtn.loading span {
+    visibility: hidden;
 }
 
-/* MOBILE */
-@media (max-width: 500px) {
-    .register-card {
-        width: 90%;
-    }
+#submitBtn.loading .loader {
+    display: block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg) translate(-50%, -50%); }
 }
