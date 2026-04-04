@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Students | TutorLoop</title>
+
+    <link rel="stylesheet" href="css/tutor_dashboard.css">
+    <link rel="stylesheet" href="css/tutor_mystudents.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="images/Tutorloop_logo.png" alt="logo">
+            <span>TUTORLOOP</span>
+        </div>
+
+        <nav>
+            <a href="tutor_dashboard.html">Dashboard</a>
+            <a href="tutor_sessionrequests.html">Session Requests</a>
+            <a href="tutor_myschedule.html">My Schedule</a>
+            <a class="active">My Students</a>
+            <a>Profile</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="menu-btn" id="menuBtn">☰</button>
+
+            <h1>My Students</h1>
+
+            <button class="logout">Logout</button>
+        </header>
+
+        <!-- STUDENTS LIST -->
+        <section class="students">
+
+            <!-- SAMPLE STUDENT -->
+            <div class="student-card">
+                <div class="student-info">
+                    <h3>John Doe</h3>
+                    <p>Subject: Mathematics</p>
+                    <p>Email: johndoe@email.com</p>
+                </div>
+
+                <div class="student-actions">
+                    <button class="view">View</button>
+                </div>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div class="student-card empty">
+                <p>No students yet</p>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/tutor_dashboard.js"></script>
+
+</body>
+</html>

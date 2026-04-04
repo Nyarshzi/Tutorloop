@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Requests | TutorLoop</title>
+
+    <link rel="stylesheet" href="css/tutor_dashboard.css">
+    <link rel="stylesheet" href="css/tutor_sessionrequests.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="images/Tutorloop_logo.png" alt="logo">
+            <span>TUTORLOOP</span>
+        </div>
+
+        <nav>
+            <a href="tutor_dashboard.html">Dashboard</a>
+            <a class="active">Session Requests</a>
+            <a>My Schedule</a>
+            <a>My Students</a>
+            <a>Profile</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="menu-btn" id="menuBtn">☰</button>
+
+            <h1 id="greeting">Session Requests</h1>
+
+            <button class="logout">Logout</button>
+        </header>
+
+        <!-- REQUEST LIST -->
+        <section class="requests">
+
+            <!-- SAMPLE CARD -->
+            <div class="request-card">
+                <div class="info">
+                    <h3>John Doe</h3>
+                    <p>Subject: Mathematics</p>
+                    <p>Date: April 10, 2026</p>
+                    <p>Time: 3:00 PM</p>
+                </div>
+
+                <div class="actions">
+                    <button class="accept">Accept</button>
+                    <button class="decline">Decline</button>
+                </div>
+            </div>
+
+            <div class="request-card empty">
+                <p>No session requests yet</p>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/tutor_dashboard.js"></script>
+
+</body>
+</html>

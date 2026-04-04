@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | TutorLoop</title>
+
+    <link rel="stylesheet" href="css/tutor_dashboard.css">
+    <link rel="stylesheet" href="css/tutor_profile.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="images/Tutorloop_logo.png" alt="logo">
+            <span>TUTORLOOP</span>
+        </div>
+
+        <nav>
+            <a href="tutor_dashboard.html">Dashboard</a>
+            <a href="tutor_sessionrequests.htmml">Session Requests</a>
+            <a href="tutor_myschedule.html">My Schedule</a>
+            <a href="tutor_mystudents.html">My Students</a>
+            <a class="active">Profile</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="menu-btn" id="menuBtn">☰</button>
+
+            <h1>My Profile</h1>
+
+            <button class="logout">Logout</button>
+        </header>
+
+        <!-- PROFILE CONTENT -->
+        <section class="profile">
+
+            <!-- LEFT SIDE -->
+            <div class="profile-card">
+                <div class="avatar">
+                    <img src="images/default-avatar.png" alt="avatar">
+                </div>
+
+                <h2>John Tutor</h2>
+                <p>Mathematics Tutor</p>
+
+                <button class="edit-btn">Edit Profile</button>
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div class="profile-details">
+
+                <div class="detail-box">
+                    <h3>Personal Information</h3>
+
+                    <p><strong>Full Name:</strong> John Tutor</p>
+                    <p><strong>Email:</strong> johntutor@email.com</p>
+                    <p><strong>Phone:</strong> 09123456789</p>
+                </div>
+
+                <div class="detail-box">
+                    <h3>Teaching Details</h3>
+
+                    <p><strong>Subjects:</strong> Mathematics, Algebra</p>
+                    <p><strong>Experience:</strong> 3 Years</p>
+                    <p><strong>Rate:</strong> ₱200/hour</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/tutor_dashboard.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Schedule | TutorLoop</title>
+
+    <link rel="stylesheet" href="css/tutor_dashboard.css">
+    <link rel="stylesheet" href="css/tutor_myschedule.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="images/Tutorloop_logo.png" alt="logo">
+            <span>TUTORLOOP</span>
+        </div>
+
+        <nav>
+            <a href="tutor_dashboard.html">Dashboard</a>
+            <a href="tutor_sessionrequests.html">Session Requests</a>
+            <a class="active">My Schedule</a>
+            <a>My Students</a>
+            <a>Profile</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="menu-btn" id="menuBtn">☰</button>
+
+            <h1>My Schedule</h1>
+
+            <button class="logout">Logout</button>
+        </header>
+
+        <!-- SCHEDULE LIST -->
+        <section class="schedule">
+
+            <!-- SAMPLE SESSION -->
+            <div class="schedule-card">
+                <div class="info">
+                    <h3>Jane Smith</h3>
+                    <p>Subject: English</p>
+                    <p>Date: April 12, 2026</p>
+                    <p>Time: 10:00 AM</p>
+                </div>
+
+                <div class="status upcoming">
+                    Upcoming
+                </div>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div class="schedule-card empty">
+                <p>No scheduled sessions</p>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/tutor_dashboard.js"></script>
+
+</body>
+</html>

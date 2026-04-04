@@ -23,7 +23,6 @@ body {
     padding: 20px;
 }
 
-/* LOGO */
 .logo {
     display: flex;
     align-items: center;
@@ -34,11 +33,9 @@ body {
 }
 
 .logo img {
-    width: 35px; /* PERFECT SIZE */
+    width: 35px;
     height: 35px;
-    object-fit: contain;
 }
-
 
 /* NAV */
 .sidebar nav a {
@@ -47,6 +44,7 @@ body {
     margin-bottom: 10px;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 15px;
 }
 
 .sidebar nav a.active,
@@ -67,7 +65,7 @@ body {
     background: #0d2a4a;
     color: white;
     padding: 22px 30px;
-    border-radius: 14px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -96,41 +94,51 @@ body {
     background: none;
     border: none;
     color: white;
-    cursor: pointer;
 }
 
-/* CARDS */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 22px;
+/* SCHEDULE */
+.schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.card {
-    background: #f0f0f0;
-    border-radius: 14px;
-    padding: 28px;
-    text-align: center;
-}
-
-.card h2 {
-    color: #d4a017;
-    font-size: 30px;
-    margin-bottom: 8px;
-}
-
-/* BOTTOM */
-.bottom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 22px;
-    margin-top: 20px;
-}
-
-.box {
+/* CARD */
+.schedule-card {
     background: #efefef;
-    padding: 22px;
     border-radius: 14px;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-card h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.schedule-card p {
+    font-size: 14px;
+}
+
+/* STATUS BADGE */
+.status {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status.upcoming {
+    background: #d4a017;
+    color: black;
+}
+
+/* EMPTY */
+.schedule-card.empty {
+    justify-content: center;
+    color: #555;
 }
 
 /* MOBILE */
@@ -150,13 +158,5 @@ body {
 
     .sidebar.active {
         left: 0;
-    }
-
-    .cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .bottom {
-        grid-template-columns: 1fr;
     }
 }

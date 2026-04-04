@@ -1,22 +1,37 @@
-function showSection(id){
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
 
-    document.querySelectorAll('.section').forEach(sec=>{
-        sec.classList.remove('active');
-    });
+function setGreeting() {
+    const greetingText = document.getElementById("greeting");
+    const hour = new Date().getHours();
 
-    document.getElementById(id).classList.add('active');
+    let greeting = "";
+    let emoji = "";
+
+    if (hour < 12) {
+        greeting = "Good Morning";
+        emoji = "☀️";
+    } else if (hour < 18) {
+        greeting = "Good Afternoon";
+        emoji = "🌤️";
+    } else {
+        greeting = "Good Evening";
+        emoji = "🌙";
+    }
+
+    greetingText.innerText = `${greeting} ${emoji}, Tutor 👩‍🏫`;
 }
 
-/* ACTION BUTTONS */
-function accept(){
-    alert("Session Accepted!");
-}
+setGreeting();
 
-function decline(){
-    alert("Session Declined!");
-}
+/* SIDEBAR TOGGLE */
+menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+});
 
-function logout(){
-    alert("Logged out!");
-    window.location.href = "login.html";
-}
+/* CLICK OUTSIDE TO CLOSE */
+document.addEventListener("click", (e) => {
+    if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+        sidebar.classList.remove("active");
+    }
+});
