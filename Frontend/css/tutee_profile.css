@@ -1,0 +1,56 @@
+.profile {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* CARD */
+.profile-card {
+    background: #eee;
+    padding: 30px;
+    border-radius: 12px;
+    width: 350px;
+    text-align: center;
+}
+
+/* HEADER */
+.profile-header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile-header h2 {
+    margin-bottom: 5px;
+}
+
+/* INFO */
+.profile-info {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.profile-info p {
+    margin: 8px 0;
+}
+
+/* BUTTON */
+.edit-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: #d4a017;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+
+    .profile-card {
+        width: 100%;
+    }
+
+}

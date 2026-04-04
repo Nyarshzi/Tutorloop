@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages | TutorLoop</title>
+
+    <link rel="stylesheet" href="css/tutee_dashboard.css">
+    <link rel="stylesheet" href="css/tutee_messages.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <span>TUTORLOOP</span>
+            <img src="images/Tutorloop_logo.png" alt="logo">
+        </div>
+
+        <nav>
+            <a href="tutee_dashboard.html">Dashboard</a>
+            <a href="tutee_sessions.html">Sessions</a>
+            <a class="active">Messages</a>
+            <a>Profile</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <h1>Messages</h1>
+            <button class="logout">Logout</button>
+        </header>
+
+        <!-- MESSAGE LAYOUT -->
+        <section class="messages">
+
+            <!-- CONTACT LIST -->
+            <div class="contacts">
+                 <h3 class="contacts-title">Tutors</h3>
+                <div class="contact active">
+                    <p>John Doe</p>
+                </div>
+                <div class="contact">
+                    <p>Jane Smith</p>
+                </div>
+            </div>
+
+            <!-- CHAT AREA -->
+            <div class="chat">
+
+                <div class="chat-header">
+                    <h3>John Doe</h3>
+                </div>
+
+                <div class="chat-body">
+                    <div class="message received">Hello! Are you available?</div>
+                    <div class="message sent">Yes, I am available.</div>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" placeholder="Type a message...">
+                    <button>Send</button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/tutee_dashboard.js"></script>
+
+</body>
+</html>

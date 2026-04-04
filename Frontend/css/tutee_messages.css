@@ -1,0 +1,120 @@
+.messages {
+    margin-top: 20px;
+    display: flex;
+    height: 70vh;
+    gap: 20px;
+}
+
+/* CONTACT LIST */
+.contacts {
+    width: 250px;
+    background: #eee;
+    border-radius: 12px;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.contact {
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.contact.active {
+    background: #d4a017;
+}
+
+.contact:hover {
+    background: #d4a017;
+}
+
+/* CHAT */
+.chat {
+    flex: 1;
+    background: #eee;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+.chat-header {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+}
+
+/* BODY */
+.chat-body {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* MESSAGES */
+.message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    max-width: 60%;
+}
+
+.sent {
+    background: #d4a017;
+    margin-left: auto;
+}
+
+.received {
+    background: #ccc;
+}
+
+/* INPUT */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    background: #d4a017;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+
+    .messages {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .contacts {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+    }
+
+    .contact {
+        min-width: 120px;
+        text-align: center;
+    }
+}
+.contacts-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 5px;
+}

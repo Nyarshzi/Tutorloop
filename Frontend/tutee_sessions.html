@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sessions | TutorLoop</title>
+
+    <link rel="stylesheet" href="css/tutee_dashboard.css">
+    <link rel="stylesheet" href="css/tutee_sessions.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <span>TUTORLOOP</span>
+            <img src="images/Tutorloop_logo.png" alt="logo">
+        </div>
+
+        <nav>
+            <a href="tutee_dashboard.html">Dashboard</a>
+            <a class="active">Sessions</a>
+            <a>Messages</a>
+            <a>Profile</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <h1>My Sessions</h1>
+            <button class="logout">Logout</button>
+        </header>
+
+        <!-- SESSIONS CONTENT -->
+        <section class="sessions">
+
+            <!-- SESSION CARD -->
+            <div class="session-card">
+                <div class="session-info">
+                    <h3>Mathematics</h3>
+                    <p>Tutor: John Doe</p>
+                    <p>Date: April 10, 2026</p>
+                    <p>Time: 3:00 PM</p>
+                </div>
+
+                <div class="session-actions">
+                    <button class="join">Join</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+            </div>
+
+            <div class="session-card">
+                <div class="session-info">
+                    <h3>Science</h3>
+                    <p>Tutor: Jane Smith</p>
+                    <p>Date: April 12, 2026</p>
+                    <p>Time: 5:00 PM</p>
+                </div>
+
+                <div class="session-actions">
+                    <button class="join">Join</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/tutee_dashboard.js"></script>
+
+</body>
+</html>
