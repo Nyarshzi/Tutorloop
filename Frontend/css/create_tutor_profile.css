@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* BODY */
+body {
+    background: #d9d2c3;
+}
+
+/* LAYOUT */
+.container {
+    max-width: 500px;   /* same width as your form */
+    margin: 50px auto;  /* center it */
+}
+
+.header {
+    background-color: #123456; /* your blue */
+    color: white;
+    padding: 15px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.form-card {
+    background: #fff;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* FORM CONTAINER */
+.form-container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 27px;
+    border-radius: 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+/* FORM GROUP */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* INPUTS */
+.form-group input,
+.form-group textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+}
+
+/* FOCUS EFFECT */
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #d4a017;
+    box-shadow: 0 0 5px rgba(212,160,23,0.5);
+}
+
+/* TEXTAREA SIZE */
+textarea {
+    resize: none;
+    height: 100px;
+}
+
+/* BUTTON */
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #d4a017;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.submit-btn:hover {
+    background: #b88a12;
+}

@@ -1,28 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Create Tutor Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Tutor Profile</title>
+
+    
+    <link rel="stylesheet" href="css/create_tutor_profile.css">
 </head>
 <body>
 
-<h2>Create Tutor Profile</h2>
+<div class="container">
+    
+    <div class="header">
+        <h2>Create Tutor Profile</h2>
+    </div>
 
+    <div class="form-card">
 
-<form method="POST">
-    <label>Bio / Description:</label><br>
-    <textarea name="bio" required></textarea><br><br>
+        
+        <div class="form-container">
 
-    <label>Tutoring Rate:</label><br>
-    <input type="number" name="rate" required><br><br>
+            <form method="POST">
 
-    <label>Subjects:</label><br>
-    <input type="text" name="subjects" placeholder="Example: Math, Programming"><br><br>
+                
+                <div class="form-group">
+                    <label>Bio / Description</label>
+                    <textarea name="bio" required></textarea>
+                </div>
 
-    <label>Availability Schedule:</label><br>
-    <input type="text" name="availability" placeholder="Example: Mon-Fri 6PM-9PM"><br><br>
+                
+                <div class="form-group">
+                    <label>Tutoring Rate (₱/hour)</label>
+                    <input type="number" name="rate" required>
+                </div>
 
-    <button type="submit">Create Profile</button>
-</form>
+               
+                <div class="form-group">
+                    <label>Subjects</label>
+                    <input type="text" name="subjects" placeholder="Example: Math, Programming">
+                </div>
+
+                
+                <div class="form-group">
+                    <label>Availability Schedule</label>
+                    <input type="text" name="availability" placeholder="Example: Mon-Fri 6PM-9PM">
+                </div>
+
+               
+                <button type="submit" class="submit-btn">Create Profile</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
