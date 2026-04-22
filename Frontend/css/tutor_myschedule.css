@@ -1,0 +1,162 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #d9d2c3;
+}
+
+/* LAYOUT */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: #0d2a4a;
+    color: white;
+    padding: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 40px;
+}
+
+.logo img {
+    width: 35px;
+    height: 35px;
+}
+
+/* NAV */
+.sidebar nav a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+    background: #d4a017;
+    color: black;
+    font-weight: 500;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 20px 25px;
+}
+
+/* TOPBAR */
+.topbar {
+    background: #0d2a4a;
+    color: white;
+    padding: 22px 30px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.topbar h1 {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+/* LOGOUT */
+.logout {
+    background: #d4a017;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* MENU BUTTON */
+.menu-btn {
+    display: none;
+    font-size: 22px;
+    background: none;
+    border: none;
+    color: white;
+}
+
+/* SCHEDULE */
+.schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* CARD */
+.schedule-card {
+    background: #efefef;
+    border-radius: 14px;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-card h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.schedule-card p {
+    font-size: 14px;
+}
+
+/* STATUS BADGE */
+.status {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status.upcoming {
+    background: #d4a017;
+    color: black;
+}
+
+/* EMPTY */
+.schedule-card.empty {
+    justify-content: center;
+    color: #555;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+    .menu-btn {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        height: 100%;
+        transition: 0.3s;
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+}

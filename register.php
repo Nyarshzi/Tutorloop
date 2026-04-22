@@ -1,160 +1,105 @@
 <?php
+// 1. Error Reporting & Sessions
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
+
+// 2. Database Connection
 include("config/db.php");
 
 $message = "";
 $name = "";
 $email = "";
-$role = "";
+$student_id = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// 3. Handle Registration POST
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $student_id = trim($_POST['student_id'] ?? ''); // student_id included from previous logic
     $password = $_POST['password'] ?? '';
-    $role = trim($_POST['role'] ?? '');
+    $role = $_POST['role'] ?? ''; // hidden input from JS
+    $allowed_domain = "@students.isatu.edu.ph";
 
-    if ($name === "" || $email === "" || $password === "" || $role === "") {
-        $message = "Please fill in all fields.";
-    } else {
-        $check = $conn->prepare("SELECT * FROM users WHERE email = ?");
-        $check->bind_param("s", $email);
-        $check->execute();
-        $existing = $check->get_result();
-
-        if ($existing && $existing->num_rows > 0) {
-            $message = "Email is already registered.";
+    if ($name !== '' && $email !== '' && $password !== '' && $role !== '') {
+        // --- DOMAIN GATEKEEPER ---
+        if (substr($email, -strlen($allowed_domain)) !== $allowed_domain) {
+            $message = "Only ISAT U student emails are allowed.";
         } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            $stmt = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $name, $email, $hashedPassword, $role);
-
-            if ($stmt->execute()) {
-                header("Location: login.php");
-                exit();
+            // Check if email already exists
+            $check = $conn->prepare("SELECT email FROM users WHERE email = ?");
+            $check->bind_param("s", $email);
+            $check->execute();
+            if ($check->get_result()->num_rows > 0) {
+                $message = "This email is already registered.";
             } else {
-                $message = "Registration failed.";
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                
+                // --- AUTO-VERIFICATION ---
+                // Inserting with student_id, default profile pic and is_verified = 1
+                $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, student_id, profile_pic, is_verified) VALUES (?, ?, ?, ?, ?, 'default.png', 1)");
+                $stmt->bind_param("sssss", $name, $email, $hashed_password, $role, $student_id);
+
+                if ($stmt->execute()) {
+                    header("Location: login.php?registered=success");
+                    exit();
+                } else { $message = "Error: " . $conn->error; }
             }
-
-            $stmt->close();
         }
-
-        $check->close();
-    }
+    } else { $message = "Please fill in all fields."; }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - TutorLoop</title>
-    <link rel="stylesheet" href="/tutorloop/TutorLoop/Frontend/css/register.css">
+    <link rel="stylesheet" href="Frontend/css/register.css">
 </head>
-<body>
-    <main class="main-container">
-        <section class="register-card" id="registerCard">
-            <div class="card-shine"></div>
-
-            <img
-                src="/tutorloop/TutorLoop/Frontend/images/tutorloop_logo.jpg"
-                class="logo"
-                alt="TutorLoop Logo"
-            >
-
-            <h2>Create Account</h2>
+<body class="light-on"> <div class="overlay"></div>
+    <div class="container">
+        <div class="card">
+            <h2 style="text-align: left; margin-top: 0;">Create Account</h2>
             <p class="subtitle">Join TutorLoop and start learning</p>
 
-            <?php if (!empty($message)) : ?>
-                <p class="message"><?php echo htmlspecialchars($message); ?></p>
-            <?php endif; ?>
+            <form method="POST" action="register.php" id="registerForm">
+                <input type="text" name="name" placeholder="Full Name" required value="<?php echo htmlspecialchars($name); ?>">
+                
+                <input type="text" name="student_id" placeholder="Student ID (e.g. 2024-1234-A)" value="<?php echo htmlspecialchars($student_id); ?>">
+                
+                <input type="email" name="email" placeholder="Email (@students.isatu.edu.ph)" required 
+                       pattern=".+@students\.isatu\.edu\.ph" title="Use your school email address."
+                       value="<?php echo htmlspecialchars($email); ?>">
 
-            <form method="POST" id="registerForm" novalidate>
-                <div class="field-group input-group <?php echo $name !== '' ? 'filled' : ''; ?>">
-                    <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        required
-                        autocomplete="name"
-                        value="<?php echo htmlspecialchars($name); ?>"
-                    >
-                    <label for="name">Full Name</label>
-                    <span class="input-line"></span>
+                <div class="password-box">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <button type="button" id="togglePassword">Show</button>
                 </div>
 
-                <div class="field-group input-group <?php echo $email !== '' ? 'filled' : ''; ?>">
-                    <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        required
-                        autocomplete="email"
-                        value="<?php echo htmlspecialchars($email); ?>"
-                    >
-                    <label for="email">Email</label>
-                    <span class="input-line"></span>
-                </div>
-
-                <div class="field-group input-group password-group">
-                    <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        required
-                        autocomplete="new-password"
-                    >
-                    <label for="password">Password</label>
-                    <span class="input-line"></span>
-
-                    <button
-                        type="button"
-                        class="toggle"
-                        id="togglePassword"
-                        aria-label="Show password"
-                    >
-                        Show
-                    </button>
-                </div>
-
-                <div class="field-group input-group custom-select-group <?php echo $role !== '' ? 'filled' : ''; ?>" id="roleGroup">
-                    <input type="hidden" name="role" id="role" value="<?php echo htmlspecialchars($role); ?>" required>
-
-                    <button
-                        type="button"
-                        class="custom-select-trigger"
-                        id="roleTrigger"
-                        aria-haspopup="listbox"
-                        aria-expanded="false"
-                    >
-                        <span id="roleText"><?php echo $role === 'tutor' ? 'Tutor' : ($role === 'tutee' ? 'Tutee' : ''); ?></span>
-                    </button>
-
-                    <label for="role">Role</label>
-                    <span class="input-line"></span>
-
-                    <div class="custom-options" id="roleOptions" role="listbox">
-                        <div class="custom-option <?php echo $role === 'tutor' ? 'selected' : ''; ?>" data-value="tutor" role="option">
-                            Tutor
-                        </div>
-                        <div class="custom-option <?php echo $role === 'tutee' ? 'selected' : ''; ?>" data-value="tutee" role="option">
-                            Tutee
-                        </div>
+                <div class="dropdown" id="roleGroup">
+                    <button type="button" id="roleBtn">Select Role</button>
+                    <input type="hidden" name="role" id="role" required>
+                    <div class="dropdown-content">
+                        <div data-value="tutee">Student (Tutee)</div>
+                        <div data-value="tutor">Tutor</div>
                     </div>
                 </div>
 
-                <button type="submit" class="register-btn" id="registerBtn">
-                    <span class="btn-text">Create Account</span>
-                    <span class="loader" aria-hidden="true"></span>
+                <button type="submit" id="submitBtn">
+                    <span>Create Account</span>
+                    <div class="loader"></div>
                 </button>
-
-                <p class="login-link">
-                    Already have an account? <a href="login.php">Sign In</a>
-                </p>
             </form>
-        </section>
-    </main>
 
-    <script src="/tutorloop/TutorLoop/Frontend/js/register.js"></script>
+            <div class="login-link">Already have an account? <a href="login.php">Sign In</a></div>
+            
+            <?php if ($message): ?>
+                <p class="warning-message"><?php echo $message; ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
+    <script src="Frontend/js/register.js"></script>
 </body>
 </html>

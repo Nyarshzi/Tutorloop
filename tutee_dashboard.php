@@ -1,227 +1,154 @@
 <?php
 session_start();
 include("config/db.php");
+date_default_timezone_set('Asia/Manila'); // Matches your tutor side logic
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || strtolower(trim($_SESSION['role'])) !== 'tutee') {
+// Access Control
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutee') {
     header("Location: login.php");
     exit();
 }
 
 $tutee_id = $_SESSION['user_id'];
+$tutee_name = $_SESSION['user_name'] ?? 'Tutee';
 
-// Get tutee's requested sessions
-$requested_sessions_sql = "SELECT 
-                            s.session_id,
-                            s.requested_schedule,
-                            s.session_status,
-                            s.request_note,
-                            u.name AS tutor_name,
-                            sub.subject_name
-                        FROM sessions s
-                        INNER JOIN users u ON s.tutor_id = u.user_id
-                        INNER JOIN subjects sub ON s.subject_id = sub.subject_id
-                        WHERE s.tutee_id = ?
-                        ORDER BY s.requested_schedule DESC
-                        LIMIT 5";
+// --- DYNAMIC STATISTICS ---
 
-$stmt_sessions = $conn->prepare($requested_sessions_sql);
-$stmt_sessions->bind_param("i", $tutee_id);
-$stmt_sessions->execute();
-$requested_sessions = $stmt_sessions->get_result();
-$stmt_sessions->close();
+// 1. Completed
+$completed_count = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutee_id = $tutee_id AND session_status = 'Completed'")->fetch_assoc()['c'];
 
-// Count pending requests
-$pending_count_sql = "SELECT COUNT(*) as count FROM sessions WHERE tutee_id = ? AND session_status = 'Pending'";
-$stmt_pending = $conn->prepare($pending_count_sql);
-$stmt_pending->bind_param("i", $tutee_id);
-$stmt_pending->execute();
-$pending_result = $stmt_pending->get_result();
-$pending_row = $pending_result->fetch_assoc();
-$pending_count = $pending_row['count'];
-$stmt_pending->close();
+// 2. Requests (Pending sessions that are still in the future)
+$requests_count = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutee_id = $tutee_id AND session_status = 'Pending' AND requested_schedule > NOW()")->fetch_assoc()['c'];
 
-// Get accepted/upcoming sessions for tutee
-$upcoming_sessions_sql = "SELECT 
-                            s.session_id,
-                            s.requested_schedule,
-                            s.session_status,
-                            u.name AS tutor_name,
-                            sub.subject_name
-                        FROM sessions s
-                        INNER JOIN users u ON s.tutor_id = u.user_id
-                        INNER JOIN subjects sub ON s.subject_id = sub.subject_id
-                        WHERE s.tutee_id = ? AND s.session_status = 'Accepted'
-                        ORDER BY s.requested_schedule ASC";
+// 3. Subjects
+$subjects_count = $conn->query("SELECT COUNT(DISTINCT subject_id) as c FROM sessions WHERE tutee_id = $tutee_id")->fetch_assoc()['c'];
 
-$stmt_upcoming = $conn->prepare($upcoming_sessions_sql);
-$stmt_upcoming->bind_param("i", $tutee_id);
-$stmt_upcoming->execute();
-$upcoming_sessions = $stmt_upcoming->get_result();
-$stmt_upcoming->close();
+// 4. Upcoming (Accepted or Ongoing sessions that haven't passed yet)
+$upcoming_count = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutee_id = $tutee_id AND session_status IN ('Accepted', 'Ongoing') AND requested_schedule > NOW()")->fetch_assoc()['c'];
 
-// Handle tutor search
-$search_query = "";
-$search_results = [];
-$search_performed = false;
-
-if (isset($_GET['search'])) {
-    $search_query = trim($_GET['search']);
-    $search_performed = true;
-
-    if (!empty($search_query)) {
-        $sql = "SELECT 
-                    tp.tutor_id,
-                    u.user_id,
-                    u.name,
-                    tp.description,
-                    tp.tutoring_rate,
-                    tp.availability_schedule,
-                    tp.average_rating,
-                    s.subject_name
-                FROM tutor_profiles tp
-                INNER JOIN users u ON tp.tutor_id = u.user_id
-                INNER JOIN subjects s ON tp.subject_id = s.subject_id
-                WHERE LOWER(TRIM(u.role)) = 'tutor'
-                AND (
-                    s.subject_name LIKE ?
-                    OR tp.description LIKE ?
-                    OR u.name LIKE ?
-                )";
-
-        $stmt = $conn->prepare($sql);
-
-        if ($stmt) {
-            $search_param = "%" . $search_query . "%";
-            $stmt->bind_param("sss", $search_param, $search_param, $search_param);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            while ($row = $result->fetch_assoc()) {
-                $search_results[] = $row;
-            }
-
-            $stmt->close();
-        }
-    }
-}
+// Fetch Recent Activity for "My Requests"
+$my_requests = $conn->query("SELECT s.session_status, s.requested_schedule, 
+                                    u.name as tutor_name, 
+                                    sub.subject_name 
+                             FROM sessions s 
+                             JOIN users u ON s.tutor_id = u.user_id 
+                             JOIN subjects sub ON s.subject_id = sub.subject_id 
+                             WHERE s.tutee_id = $tutee_id 
+                             ORDER BY s.session_id DESC LIMIT 3");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutee Dashboard | TutorLoop</title>
-  <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutee Dashboard | TutorLoop</title>
+    <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .status-tag { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .pending { background: #FFF3CD; color: #856404; }
+        .accepted { background: #D1E7FF; color: #004085; }
+        .ongoing { background: #E0F7FA; color: #006064; }
+        .declined { background: #F8D7DA; color: #721C24; }
+        .completed { background: #D4EDDA; color: #155724; }
+        .expired { background: #E2E3E5; color: #383D41; }
+    </style>
 </head>
-
 <body>
+<div class="container">
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <span>TUTORLOOP</span>
+        </div>
+        <nav>
+            <a href="tutee_dashboard.php" class="active">Dashboard</a>
+            <a href="tutee_session.php">Sessions</a>
+            <a href="tutee_messages.php">Messages</a>
+            <a href="tutee_profile.php">Profile</a>
+        </nav>
+    </aside>
 
-<div class="app">
+    <main class="main">
+        <header class="topbar">
+            <h1>Good Morning ☀️, <?php echo htmlspecialchars($tutee_name); ?> 🎓</h1>
+            <a href="logout.php" class="logout" style="text-decoration: none; padding: 8px 16px; background: #fec107; color: #000; border-radius: 8px; font-weight: 600;">Logout</a>
+        </header>
 
-  <header class="topbar">
-    <h1>Dashboard</h1>
-    <div class="topbar-right">
-      <div class="profile">👤</div>
-      <a href="logout.php" class="logout-btn">Logout</a>
-    </div>
-  </header>
+        <section class="cards">
+            <div class="card"><h2><?php echo $completed_count; ?></h2><p>Completed</p></div>
+            <div class="card"><h2><?php echo $requests_count; ?></h2><p>Requests</p></div>
+            <div class="card"><h2><?php echo $subjects_count; ?></h2><p>Subjects</p></div>
+            <div class="card"><h2><?php echo $upcoming_count; ?></h2><p>Upcoming</p></div>
+        </section>
 
-  <main class="main">
-
-    <section class="stats">
-      <div class="card"><h2>0</h2><p>Completed</p></div>
-      <div class="card"><h2><?php echo $pending_count; ?></h2><p>Requests</p></div>
-      <div class="card"><h2>0</h2><p>Subjects</p></div>
-      <div class="card"><h2>0</h2><p>Upcoming</p></div>
-    </section>
-
-    <section class="search">
-      <h2>Find a Tutor</h2>
-      <form method="GET" action="">
-        <input type="text" name="search" placeholder="Search subject, tutor, or keyword..." value="<?php echo htmlspecialchars($search_query); ?>">
-        <button type="submit">Search</button>
-      </form>
-    </section>
-
-    <?php if ($search_performed): ?>
-      <section class="search-results">
-        <?php if (!empty($search_results)): ?>
-          <h3>Search Results</h3>
-          <?php foreach ($search_results as $tutor): ?>
-    <div class="tutor-card">
-        <h4><?php echo htmlspecialchars($tutor['name']); ?></h4>
-
-        <p><strong>Subject:</strong> <?php echo htmlspecialchars($tutor['subject_name']); ?></p>
-        <p><strong>Rate:</strong> ₱<?php echo htmlspecialchars($tutor['tutoring_rate']); ?>/hour</p>
-        <p><strong>Availability:</strong> <?php echo htmlspecialchars($tutor['availability_schedule']); ?></p>
-        <p><strong>Rating:</strong> ⭐ <?php echo htmlspecialchars($tutor['average_rating']); ?></p>
-        <p><strong>Description:</strong> <?php echo htmlspecialchars($tutor['description']); ?></p>
-
-        <a href="request_session.php?tutor_id=<?php echo $tutor['tutor_id']; ?>" class="request-btn">Request Session</a>
-    </div>
-<?php endforeach; ?>
-        <?php else: ?>
-          <div class="no-results">
-            <p>No tutors found.</p>
-          </div>
-        <?php endif; ?>
-      </section>
-    <?php endif; ?>
-
-    <section class="grid">
-      <div class="box">
-        <h3>My Requests</h3>
-        <?php if ($requested_sessions->num_rows > 0): ?>
-          <?php while ($session = $requested_sessions->fetch_assoc()): ?>
-            <div class="session-item">
-              <h4><?php echo htmlspecialchars($session['tutor_name']); ?></h4>
-              <p><strong>Subject:</strong> <?php echo htmlspecialchars($session['subject_name']); ?></p>
-              <p><strong>Schedule:</strong> <?php echo htmlspecialchars($session['requested_schedule']); ?></p>
-              <p class="status-<?php echo strtolower($session['session_status']); ?>">
-                <strong>Status:</strong> <?php echo htmlspecialchars($session['session_status']); ?>
-              </p>
-              <?php if (!empty($session['request_note'])): ?>
-                <p><strong>Note:</strong> <?php echo htmlspecialchars($session['request_note']); ?></p>
-              <?php endif; ?>
+        <section class="search-section">
+            <div class="box search-box">
+                <h3>Find a Tutor</h3>
+                <form action="search_results.php" method="GET" class="search-bar">
+                    <input type="text" name="tutor_query" placeholder="Enter tutor name..." required>
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
             </div>
-          <?php endwhile; ?>
-        <?php else: ?>
-          <p>No requests yet</p>
-        <?php endif; ?>
-      </div>
-      
-      <div class="box">
-        <h3>Upcoming</h3>
-        <?php if ($upcoming_sessions->num_rows > 0): ?>
-          <?php while ($session = $upcoming_sessions->fetch_assoc()): ?>
-            <div class="session-item">
-              <h4><?php echo htmlspecialchars($session['tutor_name']); ?></h4>
-              <p><strong>Subject:</strong> <?php echo htmlspecialchars($session['subject_name']); ?></p>
-              <p><strong>Schedule:</strong> <?php echo htmlspecialchars($session['requested_schedule']); ?></p>
-              <p class="status-accepted"><strong>Status:</strong> Accepted</p>
+        </section>
+
+        <section class="bottom">
+            <div class="box">
+                <h3>My Requests</h3>
+                <?php if ($my_requests && $my_requests->num_rows > 0): ?>
+                    <?php while($row = $my_requests->fetch_assoc()): 
+                        $is_outdated = (strtotime($row['requested_schedule']) < time());
+                        $current_db_status = $row['session_status'];
+                        
+                        // If it's still pending but the time has passed, show as Expired
+                        $display_status = ($current_db_status == 'Pending' && $is_outdated) ? 'Expired' : $current_db_status;
+                    ?>
+                        <div class="activity-item" style="border-bottom: 1px solid #edf2f7; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+                            <p style="margin: 0;">
+                                <strong><?php echo htmlspecialchars($row['subject_name']); ?></strong> 
+                                <br><small>Tutor: <?php echo htmlspecialchars($row['tutor_name']); ?></small>
+                            </p>
+                            <span class="status-tag <?php echo strtolower($display_status); ?>">
+                                <?php echo $display_status; ?>
+                            </span>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p>You haven't made any requests yet. Find a tutor above!</p>
+                <?php endif; ?>
             </div>
-          <?php endwhile; ?>
-        <?php else: ?>
-          <p>No sessions yet</p>
-        <?php endif; ?>
-      </div>
-      <div class="box"><h3>Recommended</h3><p>No tutors yet</p></div>
-      <div class="box"><h3>Messages</h3><p>No messages yet</p></div>
-    </section>
 
-  </main>
-
-  <nav class="bottom-nav">
-    <a class="active">🏠</a>
-    <a>🔍</a>
-    <a>💬</a>
-    <a>⭐</a>
-    <a>⚙️</a>
-  </nav>
-
+            <div class="box">
+                <h3>Upcoming Sessions</h3>
+                <?php
+                // Standardizing to include 'Ongoing' in the upcoming list if the time hasn't passed
+                $upcoming_list = $conn->query("SELECT s.requested_schedule, u.name as tutor_name 
+                                               FROM sessions s 
+                                               JOIN users u ON s.tutor_id = u.user_id 
+                                               WHERE s.tutee_id = $tutee_id 
+                                               AND s.session_status IN ('Accepted', 'Ongoing') 
+                                               AND s.requested_schedule > NOW() 
+                                               ORDER BY s.requested_schedule ASC 
+                                               LIMIT 2");
+                
+                if ($upcoming_list && $upcoming_list->num_rows > 0): 
+                    while($up = $upcoming_list->fetch_assoc()): ?>
+                        <div class="activity-item" style="padding: 10px 0; border-bottom: 1px solid #edf2f7;">
+                            <p style="margin: 0;">
+                                <strong><?php echo htmlspecialchars($up['tutor_name']); ?></strong><br>
+                                <span class="session-time" style="font-size: 13px; color: #4a5568;">
+                                    🗓️ <?php echo date("M d, Y - h:i A", strtotime($up['requested_schedule'])); ?>
+                                </span>
+                            </p>
+                        </div>
+                    <?php endwhile;
+                else: ?>
+                    <p style="color: #718096; font-size: 14px;">No active upcoming sessions.</p>
+                <?php endif; ?>
+            </div>
+        </section>
+    </main>
 </div>
-
-<script src="Frontend/js/tutee_dashboard.js"></script>
 </body>
 </html>

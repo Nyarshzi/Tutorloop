@@ -1,0 +1,97 @@
+/* SESSIONS CONTAINER */
+.sessions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+/* SESSION CARD */
+.session-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.session-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* INFO SECTION */
+.session-info h3 {
+    margin-bottom: 10px;
+    color: #0d2a4a; /* Matches your sidebar navy */
+    font-size: 1.2rem;
+}
+
+.session-info p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+/* ACTIONS / BUTTONS */
+.session-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.session-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.join {
+    background-color: #d4a017; /* Your brand gold */
+    color: #000;
+}
+
+.join:hover {
+    background-color: #b88a14;
+}
+
+.cancel {
+    background-color: #dc3545; /* Red for cancellation */
+    color: white;
+}
+
+.cancel:hover {
+    background-color: #c82333;
+}
+
+/* EMPTY STATE */
+.session-card.empty {
+    justify-content: center;
+    color: #888;
+    font-style: italic;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 900px) {
+    .session-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .session-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .session-actions button {
+        width: 48%;
+        text-align: center;
+    }
+}

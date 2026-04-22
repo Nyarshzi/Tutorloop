@@ -68,3 +68,38 @@ function vibrate() {
 document.querySelectorAll("button").forEach(btn => {
   btn.addEventListener("click", vibrate);
 });
+
+// Show section function for sidebar navigation
+function showSection(sectionId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.classList.remove('active');
+    });
+    // Show the selected section
+    const activeSection = document.getElementById(sectionId);
+    if (activeSection) {
+        activeSection.classList.add('active');
+    }
+    // Update sidebar active state
+    const sidebarLinks = document.querySelectorAll('.sidebar ul li');
+    sidebarLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+    // Find the link that matches
+    const activeLink = Array.from(sidebarLinks).find(link => link.getAttribute('onclick') === `showSection('${sectionId}')`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+}
+
+// Logout function
+function logout() {
+    window.location.href = 'logout.php';
+}
+
+// Placeholder for bookSession
+function bookSession(event) {
+    event.preventDefault();
+    alert('Booking functionality not implemented yet.');
+}

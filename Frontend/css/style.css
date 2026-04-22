@@ -1,286 +1,289 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ================= GLOBAL STYLES ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #020b22;
-    color: white;
-    min-height: 100vh;
-    overflow: hidden;
+:root{
+  --navy:#071a3d;
+  --mustard:#d4a017;
+  --cream:#f2ede3;
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    padding: 24px 20px 8px;
+/* ================= BODY & BACKGROUND ================= */
+body{
+  min-height:100vh;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(to right,#071a3d,#020c22);
+  overflow-x:hidden;
+  transition: background 0.8s ease;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
 }
 
-.logo {
-    width: 58px;
-    height: 58px;
-    object-fit: contain;
+body.light-on {
+    /* This makes the dark background feel warm when the lamp is on */
+    background: radial-gradient(circle at 25% 50%, 
+                                #051a41 0%, 
+                                #071a3d 100%);
 }
 
-.title {
-    color: #f0c766;
-    font-size: 2.4rem;
-    font-weight: 700;
+/* ================= OVERLAY ================= */
+.overlay{
+  position:fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.3);
+  z-index: 1;
 }
 
-.container {
-    position: relative;
+/* ================= MAIN CONTAINER ================= */
+.main {
     width: 100%;
-    height: calc(100vh - 100px);
+    height: 100vh;
     display: flex;
-    justify-content: center;
+    justify-content: center; 
     align-items: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
 }
 
-.container::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background:
-        radial-gradient(ellipse at 35% 55%,
-            rgba(255, 200, 80, 0.35) 0%,
-            rgba(255, 180, 50, 0.25) 15%,
-            rgba(255, 170, 40, 0.15) 30%,
-            rgba(255, 160, 30, 0.08) 45%,
-            rgba(255, 150, 20, 0.00) 65%
-        ),
-
-        linear-gradient(
-            to right,
-            rgba(255, 180, 50, 0.12) 0%,
-            rgba(255, 180, 50, 0.08) 20%,
-            rgba(255, 180, 50, 0.04) 40%,
-            rgba(255, 180, 50, 0.00) 65%
-        );
-
-    opacity: 0;
-    transition: opacity 0.45s ease;
-    pointer-events: none;
-    z-index: 0;
-    filter: blur(18px);
-}
-
-.container.lamp-active::before {
-    opacity: 1;
-}
-
-.lamp {
-    position: absolute;
-    left: 34%; /* ← SHIFTED LEFT */
-    top: 52%;
-    transform: translate(-50%, -50%);
-}
-
-.shade {
-    width: 120px;
-    height: 60px;
-    background: #f3f3f3;
-    border-radius: 60px 60px 0 0;
-    margin: 0 auto;
-}
-
-.stand {
-    width: 8px;
-    height: 120px;
-    background: #e6e6e6;
-    margin: 0 auto;
-}
-
-.base {
-    width: 60px;
-    height: 10px;
-    background: #e6e6e6;
-    border-radius: 10px;
-    margin: 0 auto;
-}
-
-.string {
-    position: absolute;
-    right: 28px;
-    top: 56px;
-    width: 3px;
-    height: 78px;
-    background: #e6e6e6;
-    cursor: pointer;
-    z-index: 5;
-}
-
-.string::after {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: -3.5px;
-    width: 10px;
-    height: 10px;
-    background: #e6e6e6;
-    border-radius: 50%;
-}
-
-.light-beam {
+/* ================= LAMP SECTION ================= */
+.lamp-wrapper {
     position: absolute;
     left: 50%;
-    top: 30px;
     transform: translateX(-50%);
-    width: 600px;
-    height: 400px;
-
-    background: radial-gradient(
-        ellipse at 50% 0%,
-        rgba(255, 220, 120, 0.35) 0%,
-        rgba(255, 200, 80, 0.22) 20%,
-        rgba(255, 180, 50, 0.12) 40%,
-        rgba(255, 160, 30, 0.00) 65%
-    );
-
-    opacity: 0;
-    filter: blur(30px);
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 5;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.light-beam.beam-on {
+body.light-on .lamp-wrapper {
+    left: 25%;
+}
+
+.lamp-glow {
+  position:absolute;
+  width:350px;
+  height:350px;
+  background:radial-gradient(circle, var(--mustard) 0%, transparent 70%);
+  opacity:0;
+  transition:0.6s;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+body.light-on .lamp-glow {
     opacity: 1;
 }
 
+.lamp{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.shade{
+  width:120px;
+  height:60px;
+  background:var(--cream);
+  border-radius:60px 60px 0 0;
+  position:relative;
+  transition: box-shadow 0.6s;
+}
+
+body.light-on .shade{
+  box-shadow:0 0 40px var(--mustard);
+}
+
+.string{
+  position:absolute;
+  right:20px;
+  top:55px;
+  width:3px;
+  height:50px;
+  background:var(--cream);
+  cursor:pointer;
+}
+
+.string:active {
+    transform: translateY(10px);
+    transition: transform 0.1s;
+}
+
+.knob{
+  width:10px;
+  height:10px;
+  background:var(--mustard);
+  border-radius:50%;
+  position:absolute;
+  bottom:-6px;
+  left:-3.5px;
+}
+
+.stand{
+  width:6px;
+  height:110px;
+  background:var(--cream);
+}
+
+/* ================= LOGIN BOX ================= */
 .login-box {
-    width: 360px;
-    min-height: 285px;
-    background: rgba(32, 35, 46, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 18px;
-    padding: 28px 26px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-    position: relative;
-    z-index: 3;
-    margin-left: 300px;
-    transition: box-shadow 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+  position:absolute;
+  right:10%;
+  width:350px;
+  max-width:90%;
+  padding:25px;
+  background:rgba(255,255,255,0.05);
+  border-radius:15px;
+  border:1px solid rgba(212,160,23,0.5);
+  backdrop-filter:blur(10px);
+  opacity:0;
+  transform:translateY(30px);
+  transition: 0.5s ease;
+  z-index: 10;
 }
 
-.login-box.glow {
-    box-shadow:
-        0 0 0 1px rgba(255, 219, 120, 0.18),
-        0 0 30px rgba(255, 206, 110, 0.30),
-        0 0 70px rgba(255, 190, 80, 0.22),
-        0 0 130px rgba(255, 170, 40, 0.12);
+.login-box.active {
+  opacity:1;
+  transform:translateY(0);
+  box-shadow:0 0 40px var(--mustard);
 }
 
-.login-box h2 {
+.logo{
+  width:50px;
+  display:block;
+  margin:0 auto 10px;
+}
+
+.login-box h2{
+  text-align:center;
+  color:#fff;
+  margin-bottom:10px;
+}
+
+/* ================= FORMS & INPUTS ================= */
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:none;
+  border-radius:5px;
+  font-size: 14px;
+}
+
+.password-container{
+  position:relative;
+}
+
+.show-text{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--mustard);
+  cursor:pointer;
+  font-size:12px;
+  font-weight: bold;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top: 10px;
+  background:var(--mustard);
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  color: #fff;
+  cursor:pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+    background: #b88a14;
+}
+
+/* ================= REGISTER LINK (UPDATED) ================= */
+.register-link {
     text-align: center;
-    color: #ffffff;
-    margin-bottom: 22px;
-    font-size: 1.9rem;
-    font-weight: 700;
-}
-
-.hidden {
-    display: none;
-}
-
-.login-box form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.login-box input {
-    width: 100%;
-    height: 42px;
-    border: none;
-    outline: none;
-    border-radius: 8px;
-    padding: 0 14px;
+    margin-top: 20px;
+    color: #fff;
     font-size: 14px;
-    background: #f4f4f4;
-    color: #222;
 }
 
-.password-container {
-    position: relative;
+.register-link a {
+    color: var(--mustard);
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+    transition: 0.3s ease;
 }
 
-.password-container input {
-    padding-right: 70px;
+.register-link a:hover {
+    color: var(--cream);
+    text-shadow: 0 0 10px var(--mustard);
 }
 
-.toggle-pass {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #d8b24e;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-}
-
-#loginBtn {
-    height: 42px;
-    border: none;
-    border-radius: 999px;
-    background: #d8b24e;
-    color: #1d1d1d;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.25s ease;
-}
-
-#loginBtn:hover {
-    background: #e5bf58;
-}
-
+/* ================= ERROR MESSAGE ================= */
 .warning-message {
-    margin-top: 12px;
+    margin-top: 15px;
     text-align: center;
     font-size: 13px;
-    color: #ff8f8f;
-    font-weight: 600;
 }
 
-@media (max-width: 768px) {
-    body {
-        overflow-y: auto;
-    }
+/* ================= RESPONSIVENESS ================= */
 
-    .title {
-        font-size: 1.8rem;
-    }
+/* TABLET */
+@media(max-width:900px){
+  body.light-on .lamp-wrapper {
+    left:20%;
+  }
 
-    .container {
-        flex-direction: column;
-        height: auto;
-        min-height: calc(100vh - 100px);
-        padding: 20px;
-    }
+  .login-box{
+    right:5%;
+    width:320px;
+  }
+}
 
-    .container::before {
-        width: 100%;
-        height: 100%;
-    }
+/* MOBILE */
+@media(max-width:600px) {
+  body{
+    overflow:auto;
+  }
 
-    .lamp {
-        position: relative;
-        left: auto;
-        top: auto;
-        transform: none;
-        margin-bottom: 30px;
-    }
+  .main{
+    flex-direction:column;
+    height: auto;
+    padding: 40px 0;
+  }
 
-    .login-box {
-        margin-left: 0;
-        width: 100%;
-        max-width: 360px;
-    }
+  .lamp-wrapper{
+    position:relative;
+    left:0 !important;
+    transform:none !important;
+    margin-bottom:20px;
+  }
+
+  .lamp-glow{
+    width:250px;
+    height:250px;
+  }
+
+  .login-box{
+    position:relative;
+    right:auto;
+    width:90%;
+    opacity: 1; /* Force visible on mobile if needed */
+    transform: none;
+  }
 }

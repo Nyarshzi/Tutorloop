@@ -1,0 +1,112 @@
+/* Center the card in the main area */
+.profile {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* LARGER CONTAINER */
+.profile-card {
+    background: white; /* Changed to white for a cleaner look */
+    padding: 50px;     /* Increased padding */
+    border-radius: 25px;
+    width: 100%;
+    max-width: 600px;  /* Increased width */
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Added soft shadow */
+}
+
+/* CIRCULAR AVATAR BOX */
+.profile-avatar-container {
+    position: relative; /* Necessary for the overlay positioning */
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 25px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #d4a017;
+    cursor: pointer;
+}
+
+.change-pic-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    color: white;
+    padding: 8px 0;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    opacity: 0; /* Hidden by default */
+    transition: 0.3s;
+}
+
+.profile-avatar-container:hover .change-pic-overlay {
+    opacity: 1; /* Shows "Change" when hovering */
+}
+
+/* IMAGE FIT */
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Prevents stretching */
+}
+
+.avatar-placeholder {
+    font-size: 60px;
+    font-weight: bold;
+    color: #0d2a4a; /* Your Navy theme color */
+}
+
+/* TEXT STYLING */
+.profile-card h2 {
+    font-size: 28px;
+    color: #0d2a4a;
+    margin-bottom: 5px;
+}
+
+.role-tag {
+    color: #718096;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.profile-details {
+    text-align: left;
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.profile-details p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #4a5568;
+}
+
+.status-active {
+    color: #2f855a;
+    font-weight: bold;
+}
+
+/* Reusing your dashboard button style */
+.search-btn {
+    width: 100%;
+    padding: 15px;
+    background: #d4a017;
+    border: none;
+    border-radius: 12px;
+    color: #0d2a4a;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.search-btn:hover {
+    background: #b88a14;
+    transform: translateY(-2px);
+}

@@ -1,0 +1,227 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body { 
+    background: #d9d2c3; }
+
+.container { 
+    display: flex; 
+    min-height: 100vh; }
+
+/* SIDEBAR & TOPBAR */
+.sidebar { 
+    width: 260px; 
+    background: #0d2a4a; 
+    color: white; 
+    padding: 25px 20px; 
+    height: 100vh; 
+    position: sticky; 
+    top: 0; }
+
+.logo { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    font-weight: bold; 
+    margin-bottom: 50px; }
+
+.logo img { 
+    width: 40px; 
+    height: 40px; }
+
+.sidebar nav a { 
+    display: block; 
+    padding: 14px 18px; 
+    margin-bottom: 10px; 
+    border-radius: 10px; 
+    text-decoration: none; 
+    color: #bdc3c7; 
+    transition: 0.3s; }
+
+.sidebar nav a.active { 
+    background: #d4a017; 
+    color: #0d2a4a; 
+    font-weight: bold; }
+
+.main { 
+    flex: 1; 
+    padding: 25px 35px; }
+
+.topbar { 
+    background: #0d2a4a; 
+    color: white; 
+    padding: 20px 30px; 
+    border-radius: 14px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 30px; }
+
+.logout { 
+    background: #d4a017; 
+    border: none; 
+    padding: 8px 20px; 
+    border-radius: 8px; 
+    font-weight: bold; 
+    cursor: pointer; }
+
+/* PROFILE GRID */
+.profile { 
+    display: grid; 
+    grid-template-columns: 350px 1fr; 
+    gap: 30px; }
+
+/* AVATAR & CARD FIXES */
+.profile-card { 
+    background: #ffffff; 
+    border-radius: 24px; 
+    overflow: hidden; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+    display: flex; 
+    flex-direction: column; }
+
+.profile-header-accent { 
+    height: 100px; 
+    background: linear-gradient(135deg, #0d2a4a 0%, #1a4a7a 100%); }
+
+.profile-content { 
+    padding: 0 25px 30px 25px; 
+    margin-top: -65px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
+    flex-grow: 1; }
+
+/* THE CIRCLE & CENTERED TEXT */
+.avatar-container {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin-bottom: 15px;
+}
+
+.avatar-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid #ffffff;
+    background: #0d2a4a;
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center;     /* Vertically center */
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.avatar-text {
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.profile-avatar { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; }
+
+/* FACEBOOK STYLE STATUS DOT */
+.active-status-dot {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: #31a24c; /* Facebook Green */
+    border: 4px solid #ffffff;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+/* TEXT & BUTTONS */
+.profile-name { 
+    color: #0d2a4a; 
+    font-size: 24px; 
+    font-weight: 700; 
+    margin-bottom: 8px; }
+
+.profile-tagline { 
+    color: #7f8c8d; 
+    font-size: 14px; 
+    line-height: 1.5; 
+    margin-bottom: 25px; }
+
+.primary-btn { 
+    background: #d4a017; 
+    border: none; 
+    padding: 12px 35px; 
+    border-radius: 12px; 
+    font-weight: bold; 
+    color: #0d2a4a; 
+    cursor: pointer; 
+    transition: 0.2s; }
+
+.primary-btn:hover { 
+    background: #c09015; 
+    transform: scale(1.05); }
+
+/* STATS BAR */
+.profile-stats-grid { 
+    background: #fcf8ee; 
+    display: flex; 
+    padding: 20px 0; 
+    border-top: 1px solid #f1e4c3; }
+
+.stat-item { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; }
+
+.stat-value { 
+    font-size: 22px; 
+    font-weight: 800; 
+    color: #0d2a4a; }
+
+.stat-label { 
+    font-size: 11px; 
+    color: #7f8c8d; 
+    text-transform: uppercase; 
+    font-weight: bold; }
+
+.stat-divider { 
+    width: 1px; 
+    background: #e0d7c1; 
+    height: 35px; }
+
+/* DETAILS */
+.profile-details { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 25px; }
+
+.detail-box { 
+    background: #ffffff; 
+    border-radius: 20px; 
+    padding: 30px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+.detail-box h3 { 
+    margin-bottom: 20px; 
+    color: #0d2a4a; 
+    border-bottom: 2px solid #fcf8ee; 
+    padding-bottom: 12px; }
+
+.detail-box p { 
+    font-size: 15px; 
+    margin-bottom: 15px; }
+
+.detail-box p strong { 
+    display: inline-block; 
+    width: 140px; 
+    color: #0d2a4a; }
