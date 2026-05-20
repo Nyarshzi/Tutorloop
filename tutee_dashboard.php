@@ -48,6 +48,15 @@ $my_requests = $conn->query("
     WHERE s.tutee_id = $tutee_id 
     ORDER BY s.session_id DESC LIMIT 3
 ");
+
+// Fetch Recent Messages for the Tutee Dashboard
+$recent_messages = $conn->query("
+    SELECT m.message_content, m.date_sent, u.name AS sender_name, m.sender_id
+    FROM messages m
+    JOIN users u ON m.sender_id = u.user_id
+    WHERE m.receiver_id = $tutee_id
+    ORDER BY m.date_sent DESC LIMIT 3
+");
 ?>
 
 <!DOCTYPE html>
@@ -199,6 +208,32 @@ $my_requests = $conn->query("
                 else: ?>
                     <p style="color:#718096; font-size:14px;">
                         No upcoming sessions yet.
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="box">
+                <h3>Recent Messages</h3>
+                <?php if ($recent_messages && $recent_messages->num_rows > 0): ?>
+                    <?php while($msg = $recent_messages->fetch_assoc()): ?>
+                        <div class="activity-item" onclick="location.href='tutee_messages.php?tutor_id=<?php echo $msg['sender_id']; ?>'" style="cursor:pointer;">
+                            <p style="margin:0;">
+                                <strong>
+                                    <?php echo htmlspecialchars($msg['sender_name']); ?>
+                                </strong>
+                                <br>
+                                <small style="color:#718096; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; max-width: 200px;">
+                                    <?php echo htmlspecialchars(substr($msg['message_content'], 0, 50)); ?><?php echo strlen($msg['message_content']) > 50 ? '...' : ''; ?>
+                                </small>
+                            </p>
+                            <span style="font-size: 11px; color: #999;">
+                                <?php echo date("M j, g:i A", strtotime($msg['date_sent'])); ?>
+                            </span>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p style="color:#718096; font-size:14px;">
+                        No recent messages.
                     </p>
                 <?php endif; ?>
             </div>

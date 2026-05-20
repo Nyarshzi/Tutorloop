@@ -32,15 +32,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['session_id']) && isse
         
         // Update the database using 'session_status'
         // This change will be visible to the Tutee immediately on their dashboard
-        $sql = "UPDATE sessions 
-                SET session_status = '$final_status' 
-                WHERE session_id = $session_id AND tutor_id = $tutor_id";
+        $stmt = $conn->prepare("UPDATE sessions 
+                                SET session_status = ? 
+                                WHERE session_id = ? AND tutor_id = ?");
+        $stmt->bind_param("sii", $final_status, $session_id, $tutor_id);
 
-        if ($conn->query($sql)) {
+        if ($stmt->execute()) {
+            $stmt->close();
             // Redirect back with a success message
             header("Location: tutor_session_request.php?msg=success&new_status=" . $final_status);
             exit();
         } else {
+            $stmt->close();
             echo "Error updating record: " . $conn->error;
         }
     } else {

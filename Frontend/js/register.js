@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnText = submitBtn ? submitBtn.querySelector("span") : null;
     
     const passwordInput = document.getElementById("password");
+    const confirmInput = document.getElementById("confirm_password");
     const togglePasswordBtn = document.getElementById("togglePassword");
+    const toggleConfirmPasswordBtn = document.getElementById("toggleConfirmPassword");
 
     const roleGroup = document.getElementById("roleGroup");
     const roleBtn = document.getElementById("roleBtn");
@@ -19,6 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const isPassword = passwordInput.type === "password";
             passwordInput.type = isPassword ? "text" : "password";
             togglePasswordBtn.textContent = isPassword ? "Hide" : "Show";
+        });
+    }
+
+    // Confirm Password Toggle
+    if (toggleConfirmPasswordBtn && confirmInput) {
+        toggleConfirmPasswordBtn.addEventListener("click", () => {
+            const isPassword = confirmInput.type === "password";
+            confirmInput.type = isPassword ? "text" : "password";
+            toggleConfirmPasswordBtn.textContent = isPassword ? "Hide" : "Show";
         });
     }
 
@@ -47,9 +58,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Form Submission
+    // Form Submission with password validation
     if (form && submitBtn) {
-        form.addEventListener("submit", () => {
+        form.addEventListener("submit", (e) => {
+            const password = passwordInput.value;
+            const confirmPassword = confirmInput.value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert("Passwords do not match. Please make sure both password fields are identical.");
+                return false;
+            }
+
             if (btnText && loader) {
                 btnText.style.visibility = "hidden";
                 loader.style.display = "block";

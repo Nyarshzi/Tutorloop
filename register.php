@@ -18,12 +18,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST['email'] ?? '');
     $student_id = trim($_POST['student_id'] ?? ''); // student_id included from previous logic
     $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
     $role = $_POST['role'] ?? ''; // hidden input from JS
     $allowed_domain = "@students.isatu.edu.ph";
 
     if ($name !== '' && $email !== '' && $password !== '' && $role !== '') {
-        // --- DOMAIN GATEKEEPER ---
-        if (substr($email, -strlen($allowed_domain)) !== $allowed_domain) {
+        // --- PASSWORD MATCH VALIDATION ---
+        if ($password !== $confirm_password) {
+            $message = "Passwords do not match.";
+        } elseif (substr($email, -strlen($allowed_domain)) !== $allowed_domain) {
+            // --- DOMAIN GATEKEEPER ---
             $message = "Only ISAT U student emails are allowed.";
         } else {
             // Check if email already exists
@@ -76,6 +80,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="password-box">
                     <input type="password" name="password" id="password" placeholder="Password" required>
                     <button type="button" id="togglePassword">Show</button>
+                </div>
+
+                <div class="password-box">
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+                    <button type="button" id="toggleConfirmPassword">Show</button>
                 </div>
 
                 <div class="dropdown" id="roleGroup">
