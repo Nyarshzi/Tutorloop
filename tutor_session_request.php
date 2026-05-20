@@ -72,10 +72,13 @@ $result = $conn->query($sql);
         </div>
         <nav>
             <a href="tutor_dashboard.php">Dashboard</a>
-            <a class="active">Session Requests</a>
+            <a href="tutor_profile.php">My Profile</a>
             <a href="tutor_myschedule.php">My Schedule</a>
+            <a href="tutor_session_request.php" class="active">Session Requests</a>
             <a href="tutor_mystudents.php">My Students</a>
-            <a href="tutor_profile.php">Profile</a>
+            <a href="tutor_messages.php">Messages</a>
+            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -93,20 +96,20 @@ $result = $conn->query($sql);
                     
                     // Logic checks
                     $is_booked = in_array($session_time, $booked_slots);
-                    // Comparison: If scheduled time is earlier than NOW
                     $is_outdated = (strtotime($session_time) < time());
                     
+                    // Any non-finalized session whose requested schedule has passed is overdue
+                    $is_overdue = ($is_outdated && !in_array($session_status, ['Completed', 'Declined']));
                     $is_conflict = ($session_status == 'Pending' && $is_booked);
-                    $is_expired = ($session_status == 'Pending' && $is_outdated);
                 ?>
                     
-                    <div class="request-card <?php echo ($session_status == 'Completed' || $session_status == 'Declined' || $is_expired) ? 'archived-card' : ''; ?>">
+                    <div class="request-card <?php echo ($session_status == 'Completed' || $session_status == 'Declined' || $is_overdue) ? 'archived-card' : ''; ?>">
                         <div class="info">
                             <div class="header-row">
                                 <h3><?php echo htmlspecialchars($row['student_name']); ?></h3>
                                 
-                                <?php if($is_expired): ?>
-                                    <span class="badge-expired">Expired</span>
+                                <?php if($is_overdue): ?>
+                                    <span class="badge-expired">Request overdue</span>
                                 <?php elseif($is_conflict): ?>
                                     <span class="badge-unavailable">Conflict</span>
                                 <?php elseif($session_status == 'Ongoing' || $session_status == 'Accepted'): ?>
@@ -121,16 +124,16 @@ $result = $conn->query($sql);
                             <p><strong>Subject:</strong> <?php echo htmlspecialchars($row['subject_name']); ?></p>
                             <p><strong>Schedule:</strong> <?php echo date("F j, Y - g:i A", strtotime($session_time)); ?></p>
                             
-                            <?php if($is_expired): ?>
-                                <p class="conflict-text" style="color: #d9534f; font-weight: bold;">⚠️ This request has expired and can no longer be accepted.</p>
+                            <?php if($is_overdue): ?>
+                                <p class="conflict-text" style="color: #d9534f; font-weight: bold;">⚠️ Request overdue: this session time has already passed.</p>
                             <?php elseif($is_conflict): ?>
                                 <p class="conflict-text">⚠️ Slot occupied by a confirmed session.</p>
                             <?php endif; ?>
                         </div>
 
                         <div class="actions">
-                            <?php if ($is_expired): ?>
-                                <span class="history-label">Expired</span>
+                            <?php if ($is_overdue && $session_status == 'Pending'): ?>
+                                <span class="history-label">Request overdue</span>
                             
                             <?php elseif ($session_status == 'Pending' && !$is_booked): ?>
                                 <form action="handle_request.php" method="POST">

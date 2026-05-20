@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("config/db.php");
+date_default_timezone_set('Asia/Manila'); // Keep tutor greeting in sync with dashboard timestamps
 
 // 1. Access Control
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
@@ -11,6 +12,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
 $tutor_id = $_SESSION['user_id'];
 $tutor_name = $_SESSION['user_name'] ?? 'Tutor';
 $current_time = date("Y-m-d H:i:s");
+
+$currentHour = (int) date('H');
+if ($currentHour >= 12 && $currentHour < 18) {
+    $greeting = 'Good Afternoon ';
+} elseif ($currentHour >= 18 && $currentHour <= 23) {
+    $greeting = 'Good Evening ';
+} else {
+    $greeting = 'Good Morning';
+}
 
 // Section 2: Fetch Dashboard Statistics
 $pending_count   = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutor_id = $tutor_id AND session_status = 'Pending'")->fetch_assoc()['c'];
@@ -40,6 +50,13 @@ $upcoming_sessions = $conn->query("SELECT
     WHERE s.tutor_id = $tutor_id AND s.session_status IN ('Accepted', 'Ongoing') 
     AND s.requested_schedule >= '$current_time'
     ORDER BY s.requested_schedule ASC LIMIT 3");
+
+// NEW SECTION: Fetch Recent Messages for the Tutor Dashboard 
+$recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name AS tutee_name, m.sender_id
+    FROM messages m
+    JOIN users u ON (m.sender_id = u.user_id)
+    WHERE m.receiver_id = $tutor_id
+    ORDER BY m.date_sent DESC LIMIT 3");
 ?>
 
 <!DOCTYPE html>
@@ -59,16 +76,19 @@ $upcoming_sessions = $conn->query("SELECT
         </div>
         <nav>
             <a href="tutor_dashboard.php" class="active">Dashboard</a>
-            <a href="tutor_session_request.php">Session Requests</a>
+            <a href="tutor_profile.php">My Profile</a>
             <a href="tutor_myschedule.php">My Schedule</a>
+            <a href="tutor_session_request.php">Session Requests</a>
             <a href="tutor_mystudents.php">My Students</a>
-            <a href="tutor_profile.php">Profile</a>
+            <a href="tutor_messages.php">Messages</a>
+            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main"> 
         <header class="topbar">
-            <h1>Good Morning ☀️, <?php echo htmlspecialchars($tutor_name); ?></h1>
+            <h1><?php echo htmlspecialchars($greeting); ?> ☀️, <?php echo htmlspecialchars($tutor_name); ?></h1>
             <a href="logout.php" class="logout">Logout</a>
         </header>
 
@@ -126,6 +146,25 @@ $upcoming_sessions = $conn->query("SELECT
                     <?php endwhile; ?>
                 <?php else: ?>
                     <p>No sessions scheduled</p>
+                <?php endif; ?>
+            </div>
+
+            <div class="box">
+                <h3>Recent Messages</h3>
+                <?php if ($recent_messages && $recent_messages->num_rows > 0): ?>
+                    <?php while($msg = $recent_messages->fetch_assoc()): ?>
+                        <div class="session-item" onclick="location.href='tutor_messages.php?tutee_id=<?php echo $msg['sender_id']; ?>'" style="cursor:pointer;">
+                            <p><strong><?php echo htmlspecialchars($msg['tutee_name']); ?></strong></p>
+                            <p class="session-details" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <?php echo htmlspecialchars($msg['message_content']); ?>
+                            </p>
+                            <p class="session-details" style="font-size: 11px; color: #999;">
+                                <?php echo date("M j, g:i A", strtotime($msg['date_sent'])); ?>
+                            </p>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p>No recent messages</p>
                 <?php endif; ?>
             </div>
         </section>

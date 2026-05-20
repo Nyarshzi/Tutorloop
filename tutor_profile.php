@@ -29,7 +29,7 @@ if (!$status_res || (int)$status_res['is_verified'] === 0) {
 // FROM HERE DOWN: EVERYTHING IS YOUR ORIGINAL UNTOUCHED CODE
 // FETCHING DATA - Updated to pull profile_pic from 'users u'
 $sql = "SELECT u.name, u.email, u.profile_pic, tp.tutor_id, tp.tutoring_rate, tp.average_rating, 
-               tp.description, tp.phone_number, tp.availability_schedule,
+               tp.description, tp.phone_number,
                s.subject_name 
         FROM users u 
         JOIN tutor_profiles tp ON u.user_id = tp.tutor_id 
@@ -77,10 +77,13 @@ if ($result && $result->num_rows > 0) {
         </div>
         <nav>
             <a href="tutor_dashboard.php">Dashboard</a>
-            <a href="tutor_session_request.php">Session Requests</a>
+            <a href="tutor_profile.php" class="active">My Profile</a>
             <a href="tutor_myschedule.php">My Schedule</a>
+            <a href="tutor_session_request.php">Session Requests</a>
             <a href="tutor_mystudents.php">My Students</a>
-            <a class="active">Profile</a>
+            <a href="tutor_messages.php">Messages</a>
+            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -143,20 +146,6 @@ if ($result && $result->num_rows > 0) {
                     <h3>Tutoring Details</h3>
                     <p><strong>Subject:</strong> <?php echo htmlspecialchars($row['subject_name'] ?? 'Not set'); ?></p>
                     <p><strong>Rate per Hour:</strong> ₱<?php echo number_format($row['tutoring_rate'], 2); ?></p>
-                    <p><strong>Availability:</strong></p>
-                    <div style="font-size: 0.9em; margin-top: 5px; color: #555;">
-                        <?php 
-                        if (!empty($row['availability_schedule'])) {
-                            $slots = explode('|', $row['availability_schedule']);
-                            foreach ($slots as $slot) {
-                                $data = explode(',', $slot);
-                                if (count($data) == 3) {
-                                    echo "<div>• " . $data[0] . ": " . date("g:i A", strtotime($data[1])) . " - " . date("g:i A", strtotime($data[2])) . "</div>";
-                                }
-                            }
-                        } else { echo "No active schedule."; }
-                        ?>
-                    </div>
                 </div>
             </div>
         </section>

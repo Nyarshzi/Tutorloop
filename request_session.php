@@ -19,7 +19,7 @@ if (!isset($_GET['tutor_id']) || empty($_GET['tutor_id'])) {
 $tutor_id = intval($_GET['tutor_id']);
 
 // Load tutor
-$sql = "SELECT tp.tutor_id, u.name, tp.tutoring_rate, tp.availability_schedule, tp.subject_id, s.subject_name
+$sql = "SELECT tp.tutor_id, u.name, tp.tutoring_rate, tp.subject_id, s.subject_name
         FROM tutor_profiles tp
         INNER JOIN users u ON tp.tutor_id = u.user_id
         INNER JOIN subjects s ON tp.subject_id = s.subject_id
@@ -81,7 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p><strong>Tutor:</strong> <?php echo htmlspecialchars($tutor['name']); ?></p>
         <p><strong>Subject:</strong> <?php echo htmlspecialchars($tutor['subject_name']); ?></p>
         <p><strong>Rate:</strong> ₱<?php echo $tutor['tutoring_rate']; ?></p>
-        <p><strong>Availability:</strong> <?php echo $tutor['availability_schedule']; ?></p>
     </div>
 
     <form method="POST">

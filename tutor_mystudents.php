@@ -60,10 +60,13 @@ $result = $stmt->get_result();
         </div>
         <nav>
             <a href="tutor_dashboard.php">Dashboard</a>
-            <a href="tutor_session_request.php">Session Requests</a>
+            <a href="tutor_profile.php">My Profile</a>
             <a href="tutor_myschedule.php">My Schedule</a>
+            <a href="tutor_session_request.php">Session Requests</a>
             <a href="tutor_mystudents.php" class="active">My Students</a>
-            <a href="tutor_profile.php">Profile</a>
+            <a href="tutor_messages.php">Messages</a>
+            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 

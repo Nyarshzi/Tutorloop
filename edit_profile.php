@@ -59,8 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php" class="active">Profile</a>
+            <a href="tutor_dashboard.php">Dashboard</a>
+            <a href="tutor_profile.php" class="active">My Profile</a>
+            <a href="tutor_myschedule.php">My Schedule</a>
+            <a href="tutor_session_request.php">Session Requests</a>
+            <a href="tutor_mystudents.php">My Students</a>
+            <a href="tutor_messages.php">Messages</a>
+            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 

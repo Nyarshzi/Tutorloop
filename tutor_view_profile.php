@@ -2,18 +2,23 @@
 session_start();
 include("config/db.php");
 
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'tutee') {
+    header("Location: login.php");
+    exit();
+}
+
 if (!isset($_GET['tutor_id'])) {
-    header("Location: tutee_dashboard.php");
+    header("Location: search_results.php");
     exit();
 }
 
 $tutor_id = intval($_GET['tutor_id']);
 
-// Fetch tutor details
-$sql = "SELECT u.name, u.profile_pic, tp.description, tp.tutoring_rate, s.subject_name 
-        FROM users u 
-        JOIN tutor_profiles tp ON u.user_id = tp.tutor_id 
-        LEFT JOIN subjects s ON tp.subject_id = s.subject_id
+$sql = "SELECT u.name, u.email, u.profile_pic,
+               tp.description, tp.phone_number, 
+               tp.average_rating, tp.tutoring_rate
+        FROM users u
+        JOIN tutor_profiles tp ON u.user_id = tp.tutor_id
         WHERE u.user_id = ?";
 
 $stmt = $conn->prepare($sql);
@@ -35,6 +40,28 @@ if (!$tutor) {
     <title><?php echo htmlspecialchars($tutor['name']); ?> | TutorLoop</title>
     <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
     <link rel="stylesheet" href="Frontend/css/tutor_view_profile.css">
+    <style>
+        .profile-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 20px;
+        }
+        .message-btn {
+            background-color: #f0f7ff;
+            color: #007bff;
+            border: 1px solid #007bff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-right: 10px;
+        }
+        .message-btn:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -45,45 +72,159 @@ if (!$tutor) {
         </div>
         <nav>
             <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_session.php">Sessions</a>
+            <a href="tutee_profile.php">My Profile</a>
+            <a href="search_results.php" class="active">Find a Tutor</a>
+            <a href="tutee_session.php">My Sessions</a>
+            <a href="tutee_mytutor.php">My Tutors</a>
             <a href="tutee_messages.php">Messages</a>
-            <a href="tutee_profile.php">Profile</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
+            <a href="search_results.php" class="logout" 
+               style="text-align:left;">← Back to Search</a>
             <h1>Tutor Profile</h1>
-            <a href="search_results.php" class="logout">Back to Search</a>
         </header>
 
         <section class="profile-container">
             <div class="profile-card-view">
+
+                <!-- Profile Header -->
                 <div class="profile-header">
                     <div class="profile-img-container">
-                        <?php if(!empty($tutor['profile_pic'])): ?>
-                            <img src="uploads/<?php echo $tutor['profile_pic']; ?>" alt="Tutor">
+                        <?php if(!empty($tutor['profile_pic']) && 
+                                  file_exists("uploads/" . $tutor['profile_pic'])): ?>
+                            <img src="uploads/<?php echo htmlspecialchars($tutor['profile_pic']); ?>" 
+                                 alt="Tutor"
+                                 style="width:100%; height:100%; 
+                                        object-fit:cover; border-radius:8px;">
                         <?php else: ?>
-                            <div class="placeholder-avatar"><?php echo strtoupper(substr($tutor['name'], 0, 1)); ?></div>
+                            <div class="placeholder-avatar">
+                                <?php echo strtoupper(substr($tutor['name'], 0, 1)); ?>
+                            </div>
                         <?php endif; ?>
                     </div>
+
                     <div class="profile-main-info">
                         <h2><?php echo htmlspecialchars($tutor['name']); ?></h2>
-                        <span class="subject-tag"><?php echo htmlspecialchars($tutor['subject_name'] ?? 'General Tutor'); ?></span>
-                        <p class="rate"><strong>Rate:</strong> ₱<?php echo number_format($tutor['tutoring_rate'], 2); ?>/hr</p>
+
+                        <?php if(!empty($tutor['average_rating'])): ?>
+                            <p class="rating">
+                                ⭐ <?php echo number_format($tutor['average_rating'], 1); ?>/5.0
+                            </p>
+                        <?php else: ?>
+                            <p class="rating" style="color:#999;">No ratings yet</p>
+                        <?php endif; ?>
+
+                        <?php if(!empty($tutor['phone_number'])): ?>
+                            <p class="phone">
+                                <strong>Phone:</strong> 
+                                <?php echo htmlspecialchars($tutor['phone_number']); ?>
+                            </p>
+                        <?php endif; ?>
                     </div>
                 </div>
 
                 <hr>
 
+                <!-- Bio -->
                 <div class="profile-body">
                     <h3>About Me</h3>
-                    <p class="bio"><?php echo nl2br(htmlspecialchars($tutor['description'])); ?></p>
+                    <?php if(!empty($tutor['description'])): ?>
+                        <p class="bio">
+                            <?php echo nl2br(htmlspecialchars($tutor['description'])); ?>
+                        </p>
+                    <?php else: ?>
+                        <p class="bio" style="color:#999;">No bio added yet.</p>
+                    <?php endif; ?>
                 </div>
 
-                <div class="profile-footer">
-                    <button class="book-btn" onclick="location.href='request_session.php?tutor_id=<?php echo $tutor_id; ?>'">Book a Session</button>
+                <hr>
+
+                <!-- Subjects and Availability -->
+                <h3 style="margin-top:20px;">Subjects & Availability</h3>
+
+                <?php
+                $subjects_sql = "SELECT ts.id as tutor_subject_id, 
+                                        s.subject_name, ts.rate
+                                 FROM tutor_subjects ts
+                                 JOIN subjects s ON ts.subject_id = s.subject_id
+                                 WHERE ts.tutor_id = ?
+                                 ORDER BY s.subject_name ASC";
+                $subjects_stmt = $conn->prepare($subjects_sql);
+                $subjects_stmt->bind_param("i", $tutor_id);
+                $subjects_stmt->execute();
+                $subjects_result = $subjects_stmt->get_result();
+
+                if ($subjects_result->num_rows > 0):
+                    while($subject = $subjects_result->fetch_assoc()):
+                ?>
+                <div style="margin-bottom:20px; border:1px solid #ddd;
+                            padding:15px; border-radius:8px;">
+                    <h4>
+                        <?php echo htmlspecialchars($subject['subject_name']); ?>
+                        — ₱<?php echo number_format($subject['rate'], 2); ?>/hr
+                    </h4>
+
+                    <?php
+                    $avail_sql = "SELECT day_of_week, start_time, end_time
+                                  FROM tutor_availability
+                                  WHERE tutor_subject_id = ?
+                                  ORDER BY FIELD(day_of_week,
+                                    'Monday','Tuesday','Wednesday',
+                                    'Thursday','Friday','Saturday','Sunday')";
+                    $avail_stmt = $conn->prepare($avail_sql);
+                    $avail_stmt->bind_param("i", $subject['tutor_subject_id']);
+                    $avail_stmt->execute();
+                    $avail_result = $avail_stmt->get_result();
+
+                    if ($avail_result->num_rows > 0):
+                    ?>
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <tr style="background:#f9f9f9; border-bottom:1px solid #ddd;">
+                            <th style="text-align:left; padding:8px;">Day</th>
+                            <th style="text-align:left; padding:8px;">Start Time</th>
+                            <th style="text-align:left; padding:8px;">End Time</th>
+                        </tr>
+                        <?php while($avail = $avail_result->fetch_assoc()): ?>
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:8px;">
+                                <?php echo htmlspecialchars($avail['day_of_week']); ?>
+                            </td>
+                            <td style="padding:8px;">
+                                <?php echo date('g:i A', strtotime($avail['start_time'])); ?>
+                            </td>
+                            <td style="padding:8px;">
+                                <?php echo date('g:i A', strtotime($avail['end_time'])); ?>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </table>
+
+                    <?php else: ?>
+                    <p style="color:#666; margin-top:8px;">
+                        No schedule set for this subject yet.
+                    </p>
+                    <?php endif; ?>
                 </div>
+
+                <?php
+                    endwhile;
+                else:
+                ?>
+                <p style="color:#666;">No subjects added yet.</p>
+                <?php endif; ?>
+
+                <!-- Request Session Button -->
+                <div class="profile-footer">
+                    <button class="book-btn"
+                        onclick="location.href='request_session.php?tutor_id=
+                        <?php echo $tutor_id; ?>'">
+                        Request a Session
+                    </button>
+                </div>
+
             </div>
         </section>
     </main>

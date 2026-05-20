@@ -1,0 +1,177 @@
+/* --- TUTOR RATINGS PAGE STYLES --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #d9d2c3;
+}
+
+/* 1. Main Layout Structure */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    background: #0d2a4a;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.logo img {
+    width: 35px;
+}
+
+.logo span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 14px 20px;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.sidebar nav a.active, .sidebar nav a:hover {
+    background: #d4a017;
+    color: #000;
+}
+
+/* 2. Content Area Styles */
+.main {
+    flex: 1;
+    padding: 35px;
+}
+
+.topbar {
+    background: #0d2a4a;
+    color: white;
+    padding: 25px 40px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.logout {
+    background: #d4a017;
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Average Rating Section */
+.average-rating {
+    margin-bottom: 30px;
+}
+
+.rating-summary {
+    background: #f1f1f1;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+}
+
+.rating-summary h2 {
+    color: #0d2a4a;
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+.stars {
+    font-size: 24px;
+}
+
+.star {
+    color: #ddd;
+}
+
+.star.filled {
+    color: #d4a017;
+}
+
+/* Feedback List */
+.feedback-list h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #0d2a4a;
+    border-bottom: 2px solid #d4a017;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.feedback-card {
+    background: #f1f1f1;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.rating {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.comment {
+    font-style: italic;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #666;
+}
+
+.details span {
+    flex: 1;
+}
+
+/* 4. Responsive Adjustments */
+@media (max-width: 768px) {
+    .details {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .topbar h1 {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+}

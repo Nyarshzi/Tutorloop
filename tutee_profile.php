@@ -43,15 +43,17 @@ $profile_img = !empty($user['profile_pic']) ? $user['profile_pic'] : null;
 
         <nav>
             <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_session.php">Sessions</a>
+            <a href="tutee_profile.php" class="active">My Profile</a>
+            <a href="search_results.php">Find a Tutor</a>
+            <a href="tutee_session.php">My Sessions</a>
+            <a href="tutee_mytutor.php">My Tutors</a>
             <a href="tutee_messages.php">Messages</a>
-            <a href="tutee_profile.php" class="active">Profile</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
-            <button class="menu-btn" id="menuBtn"></button>
+            <button class="menu-btn" id="menuBtn">☰</button>
             <h1>My Profile</h1>
             <button class="logout" onclick="location.href='logout.php'">Logout</button>
         </header>

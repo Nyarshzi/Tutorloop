@@ -80,13 +80,25 @@ textarea { min-height: 100px; width: 100%; resize: vertical; }
 .remove-btn { background: none; border: none; color: #ff4d4d; font-size: 20px; cursor: pointer; }
 .add-sub-btn { background: white; border: 2px dashed #cbd5e0; width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; color: #4a5568; }
 
-/* --- NEW ADDITIONS FOR FUNCTIONAL SYNC --- */
-
 /* Input for adding a new subject name */
-#new-subject-input { 
-    margin-top: 10px; 
-    display: none; 
-    border: 1.5px solid var(--gold); 
+#custom_subject_input {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #eee;
+    border-radius: 10px;
+    background: #fafafa;
+    font-size: 14px;
+    outline: none;
+    margin-top: 10px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.25s ease, max-height 0.25s ease;
+}
+
+#custom_subject_input.visible {
+    opacity: 1;
+    max-height: 80px;
 }
 
 /* Container for displaying the currently saved tutoring service */
@@ -96,6 +108,157 @@ textarea { min-height: 100px; width: 100%; resize: vertical; }
     border-radius: 12px; 
     padding: 15px; 
     margin-bottom: 20px; 
+}
+
+/* ===== NEW SUBJECT & SCHEDULE STYLES ===== */
+
+.add-subject-container {
+    background: #fafafa;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.add-subject-container .form-row {
+    margin-bottom: 12px;
+}
+
+#add_subject_btn {
+    background: var(--gold);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    color: var(--navy);
+    cursor: pointer;
+    width: 100%;
+    transition: 0.2s;
+}
+
+#add_subject_btn:hover {
+    background: #c09014;
+}
+
+/* Subject Card Styles */
+.subject-card {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: #fefefe;
+}
+
+.subject-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.subject-card-header h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0;
+}
+
+.subject-card-header > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rate-display {
+    font-size: 13px;
+    color: #718096;
+    font-weight: 500;
+}
+
+.remove-subject-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.remove-subject-btn:hover {
+    background: #e63946;
+}
+
+/* Schedule Container & Rows */
+.schedule-container {
+    margin-bottom: 12px;
+}
+
+.schedule-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+
+.schedule-row .day-select,
+.schedule-row input[type="time"] {
+    padding: 10px;
+    border: 1.5px solid #eee;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.schedule-row .day-select {
+    flex: 0 0 130px;
+    background: white;
+}
+
+.schedule-row input[type="time"] {
+    flex: 0 0 120px;
+    background: white;
+}
+
+.schedule-row .remove-schedule-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: 0.2s;
+}
+
+.schedule-row .remove-schedule-btn:hover {
+    background: #e63946;
+}
+
+/* Add Schedule Button */
+.add-schedule-btn {
+    background: white;
+    border: 2px solid var(--gold);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    color: var(--gold);
+    cursor: pointer;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.add-schedule-btn:hover {
+    background: var(--gold);
+    color: white;
 }
 
 .saved-item { 

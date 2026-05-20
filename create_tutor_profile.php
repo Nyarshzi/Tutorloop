@@ -10,25 +10,14 @@ if (!isset($_SESSION['user_id'])) {
 $tutor_id = $_SESSION['user_id'];
 
 // 1. FETCH CURRENT DATA
-$sql = "SELECT u.name, u.email, u.profile_pic, tp.description, tp.phone_number, tp.tutoring_rate, 
-               tp.availability_schedule, tp.subject_id, s.subject_name 
+$sql = "SELECT u.name, u.email, u.profile_pic, tp.description, tp.phone_number 
         FROM users u 
-        LEFT JOIN tutor_profiles tp ON u.user_id = tp.tutor_id 
-        LEFT JOIN subjects s ON tp.subject_id = s.subject_id
+        LEFT JOIN tutor_profiles tp ON u.user_id = tp.tutor_id
         WHERE u.user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $tutor_id);
 $stmt->execute();
 $user_data = $stmt->get_result()->fetch_assoc();
-
-// 2. HANDLE REMOVE ACTION
-if (isset($_GET['remove_service'])) {
-    $clear = $conn->prepare("UPDATE tutor_profiles SET tutoring_rate = 0, availability_schedule = '', subject_id = NULL WHERE tutor_id = ?");
-    $clear->bind_param("i", $tutor_id);
-    $clear->execute();
-    header("Location: create_tutor_profile.php?status=removed");
-    exit();
-}
 
 // 3. UPDATE LOGIC (Save All Changes)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -36,32 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $bio = $_POST['bio'];
-    $rate = $_POST['tutoring_rate'];
     
-    // Subject Logic
-    $subject_id = !empty($_POST['subject_id']) ? $_POST['subject_id'] : null;
-    if ($subject_id == "new" && !empty($_POST['new_subject_name'])) {
-        $new_sub = $_POST['new_subject_name'];
-        $stmt_sub = $conn->prepare("INSERT INTO subjects (subject_name) VALUES (?)");
-        $stmt_sub->bind_param("s", $new_sub);
-        $stmt_sub->execute();
-        $subject_id = $conn->insert_id;
-    }
-
-    // Availability String Logic
-    $days = $_POST['avail_day'] ?? [];
-    $starts = $_POST['avail_start'] ?? [];
-    $ends = $_POST['avail_end'] ?? [];
-    $schedule_entries = [];
-    
-    for ($i = 0; $i < count($days); $i++) {
-        if (!empty($days[$i]) && !empty($starts[$i]) && !empty($ends[$i])) {
-            $schedule_entries[] = $days[$i] . "," . $starts[$i] . "," . $ends[$i];
-        }
-    }
-    $availability_string = implode("|", $schedule_entries);
-
-    // 4. IMAGE UPLOAD LOGIC
+    // Update profile picture if uploaded
     $profile_pic = $user_data['profile_pic'];
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0) {
         $ext = pathinfo($_FILES["profile_picture"]["name"], PATHINFO_EXTENSION);
@@ -73,8 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $profile_pic = $new_name;
         }
     }
-
-    // 5. UPDATE DATABASE (UPSERT LOGIC)
     
     // Always update 'users' table
     $upd_user = $conn->prepare("UPDATE users SET name=?, email=?, profile_pic=? WHERE user_id=?");
@@ -89,16 +52,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($profile_exists) {
         // UPDATE existing record
-        $upd = $conn->prepare("UPDATE tutor_profiles SET description=?, phone_number=?, tutoring_rate=?, availability_schedule=?, subject_id=? WHERE tutor_id=?");
-        $upd->bind_param("ssdsii", $bio, $phone, $rate, $availability_string, $subject_id, $tutor_id);
+        $upd = $conn->prepare("UPDATE tutor_profiles SET description=?, phone_number=? WHERE tutor_id=?");
+        $upd->bind_param("ssi", $bio, $phone, $tutor_id);
     } else {
         // INSERT new record for new tutor
-        $upd = $conn->prepare("INSERT INTO tutor_profiles (description, phone_number, tutoring_rate, availability_schedule, subject_id, tutor_id) VALUES (?, ?, ?, ?, ?, ?)");
-        $upd->bind_param("ssdsii", $bio, $phone, $rate, $availability_string, $subject_id, $tutor_id);
+        $upd = $conn->prepare("INSERT INTO tutor_profiles (description, phone_number, tutor_id) VALUES (?, ?, ?)");
+        $upd->bind_param("ssi", $bio, $phone, $tutor_id);
     }
     $upd->execute();
 
-    header("Location: tutor_profile.php");
+    header("Location: create_tutor_profile.php");
     exit();
 }
 ?>
@@ -127,8 +90,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <nav>
             <a href="tutor_dashboard.php">Dashboard</a>
-            <a href="tutor_session_request.php">Sessions</a>
-            <a href="create_tutor_profile.php" class="active">Profile</a>
+            <a href="create_tutor_profile.php" class="active">My Profile</a>
+            <a href="tutor_myschedule.php">My Schedule</a>
+            <a href="tutor_session_request.php">Session Requests</a>
+            <a href="tutor_mystudents.php">My Students</a>
+            <a href="tutor_messages.php">Messages</a>
+            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -170,73 +138,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-row"><label>Contact Number</label><input type="text" name="phone" value="<?php echo htmlspecialchars($user_data['phone_number'] ?? ''); ?>"></div>
                 </div>
 
-                <?php if (!empty($user_data['subject_id'])): ?>
-                <div class="section-card">
-                    <h3 class="section-title">Current Active Service</h3>
-                    <div class="saved-info-container">
-                        <div class="saved-item">
-                            <div>
-                                <strong>Subject:</strong> <?php echo htmlspecialchars($user_data['subject_name']); ?><br>
-                                <strong>Rate:</strong> ₱<?php echo number_format($user_data['tutoring_rate'], 2); ?>/hr
-                            </div>
-                            <div>
-                                <span class="btn-edit" onclick="populateFields('<?php echo $user_data['subject_id']; ?>', '<?php echo $user_data['tutoring_rate']; ?>')">Edit</span>
-                                <a href="?remove_service=1" class="btn-remove" onclick="return confirm('Remove this service?')">Remove</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php endif; ?>
-
-                <div class="section-card">
-                    <h3 class="section-title">Tutoring Schedule & Rate</h3>
-                    <div class="form-row">
-                        <label>Subject</label>
-                        <select name="subject_id" id="input_subject">
-                            <option value="">-- Select Subject --</option>
-                            <?php
-                            $subj_query = "SELECT * FROM subjects";
-                            $subj_result = $conn->query($subj_query);
-                            while($subj = $subj_result->fetch_assoc()) {
-                                $selected = ($subj['subject_id'] == $user_data['subject_id']) ? "selected" : "";
-                                echo "<option value='{$subj['subject_id']}' $selected>{$subj['subject_name']}</option>";
-                            }
-                            ?>
-                            <option value="new">+ Add New Subject</option>
-                        </select>
-                        <input type="text" name="new_subject_name" id="new-subject-input" placeholder="Enter new subject name">
-                    </div>
-                    <div class="form-row">
-                        <label>Rate (₱)/hr</label>
-                        <input type="number" step="0.01" name="tutoring_rate" id="input_rate" value="<?php echo htmlspecialchars($user_data['tutoring_rate'] ?? ''); ?>" placeholder="0.00">
-                    </div>
-                    <label class="slot-label">Available Slots</label>
-                    <div id="availability-container"></div>
-                    <button type="button" id="add-row-btn" class="add-sub-btn">+ Add Day & Time Slot</button>
-                </div>
-
                 <div class="section-card">
                     <h3 class="section-title">Bio</h3>
                     <textarea name="bio"><?php echo htmlspecialchars($user_data['description'] ?? ''); ?></textarea>
                 </div>
             </div>
         </form>
+        
+        <div style="text-align: center; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <p style="margin: 0; font-size: 16px; color: #333;">
+                To manage your subjects and availability, go to <a href="tutor_myschedule.php" style="color: #d4a017; font-weight: bold;">My Schedule</a>
+            </p>
+        </div>
     </main>
 </div>
 
-<script>
-    const savedSchedule = "<?php echo $user_data['availability_schedule'] ?? ''; ?>";
-    
-    document.getElementById('input_subject').addEventListener('change', function() {
-        document.getElementById('new-subject-input').style.display = (this.value === 'new') ? 'block' : 'none';
-    });
-
-    function populateFields(subId, rate) {
-        document.getElementById('input_subject').value = subId;
-        document.getElementById('input_rate').value = rate;
-        document.getElementById('input_subject').scrollIntoView({ behavior: 'smooth' });
-    }
-</script>
 <script src="Frontend/js/create_tutor_profile.js"></script>
 </body>
 </html>

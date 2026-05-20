@@ -1,10 +1,10 @@
 <?php
 session_start();
-$conn = new mysqli("localhost", "root", "", "tutorloop_db");
+include("config/db.php"); 
 
 if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
     header("Location: login.php"); 
     exit();
 }
@@ -18,15 +18,15 @@ $contacts_sql = "SELECT DISTINCT u.user_id, u.name
                  AND u.user_id != $current_user_id";
 $contacts_result = $conn->query($contacts_sql);
 
-$selected_tutor_id = isset($_GET['tutor_id']) ? (int)$_GET['tutor_id'] : 0;
-$selected_tutor_name = "Select a contact";
+$selected_tutee_id = isset($_GET['tutee_id']) ? (int)$_GET['tutee_id'] : 0;
+$selected_tutee_name = "Select a student";
 
-if ($selected_tutor_id > 0) {
+if ($selected_tutee_id > 0) {
     $name_query = $conn->prepare("SELECT name FROM users WHERE user_id = ?");
-    $name_query->bind_param("i", $selected_tutor_id);
+    $name_query->bind_param("i", $selected_tutee_id);
     $name_query->execute();
     $name_result = $name_query->get_result();
-    if($row = $name_result->fetch_assoc()) { $selected_tutor_name = $row['name']; }
+    if($row = $name_result->fetch_assoc()) { $selected_tutee_name = $row['name']; }
 }
 ?>
 
@@ -36,8 +36,8 @@ if ($selected_tutor_id > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
-    <link rel="stylesheet" href="Frontend/css/tutee_messages.css">
+    <link rel="stylesheet" href="Frontend/css/tutor_dashboard.css">
+    <link rel="stylesheet" href="Frontend/css/tutor_messages.css"> 
 </head>
 <body>
 <div class="container">
@@ -47,44 +47,46 @@ if ($selected_tutor_id > 0) {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
-            <a href="search_results.php">Find a Tutor</a>
-            <a href="tutee_session.php">My Sessions</a>
-            <a href="tutee_mytutor.php">My Tutors</a>
-            <a href="tutee_messages.php" class="active">Messages</a>
+            <a href="tutor_dashboard.php">Dashboard</a>
+            <a href="tutor_profile.php">My Profile</a>
+            <a href="tutor_myschedule.php">My Schedule</a>
+            <a href="tutor_session_request.php">Session Requests</a>
+            <a href="tutor_mystudents.php">My Students</a>
+            <a href="tutor_messages.php" class="active">Messages</a>
+            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
-            <h1>Messages</h1>
+            <h1>Student Messages</h1>
             <button class="logout" onclick="location.href='logout.php'">Logout</button>
         </header>
 
         <div class="messages">
             <div class="contacts">
-                <div class="contacts-title">Tutors</div>
+                <div class="contacts-title">My Students</div>
                 <?php if ($contacts_result && $contacts_result->num_rows > 0): ?>
                     <?php while($contact = $contacts_result->fetch_assoc()): ?>
-                        <div class="contact <?php echo ($selected_tutor_id == $contact['user_id']) ? 'active' : ''; ?>" 
-                             onclick="location.href='?tutor_id=<?php echo $contact['user_id']; ?>'">
+                        <div class="contact <?php echo ($selected_tutee_id == $contact['user_id']) ? 'active' : ''; ?>" 
+                             onclick="location.href='?tutee_id=<?php echo $contact['user_id']; ?>'">
                             <?php echo htmlspecialchars($contact['name']); ?>
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <p class="no-data">No tutors found.</p>
+                    <p class="no-data">No conversations found.</p>
                 <?php endif; ?>
             </div>
 
             <div class="chat">
-                <div class="chat-header"><?php echo htmlspecialchars($selected_tutor_name); ?></div>
+                <div class="chat-header"><?php echo htmlspecialchars($selected_tutee_name); ?></div>
                 <div class="chat-body">
-                    <?php if ($selected_tutor_id > 0): 
+                    <?php if ($selected_tutee_id > 0): 
                         $msg_sql = "SELECT * FROM messages 
-                                    WHERE (sender_id = $current_user_id AND receiver_id = $selected_tutor_id)
-                                    OR (sender_id = $selected_tutor_id AND receiver_id = $current_user_id)
+                                    WHERE (sender_id = $current_user_id AND receiver_id = $selected_tutee_id)
+                                    OR (sender_id = $selected_tutee_id AND receiver_id = $current_user_id)
                                     ORDER BY date_sent ASC";
                         $chat_messages = $conn->query($msg_sql);
                         while($msg = $chat_messages->fetch_assoc()): ?>
@@ -93,13 +95,13 @@ if ($selected_tutor_id > 0) {
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <div class="chat-empty">Select a tutor to view your messages</div>
+                        <div class="chat-empty">Select a student to view your messages</div>
                     <?php endif; ?>
                 </div>
-                <?php if ($selected_tutor_id > 0): ?>
+                <?php if ($selected_tutee_id > 0): ?>
                 <form action="send_message.php" method="POST" class="chat-input">
-                    <input type="hidden" name="receiver_id" value="<?php echo $selected_tutor_id; ?>">
-                    <input type="text" name="message" placeholder="Type a message..." required autocomplete="off">
+                    <input type="hidden" name="receiver_id" value="<?php echo $selected_tutee_id; ?>">
+                    <input type="text" name="message" placeholder="Type a reply..." required autocomplete="off">
                     <button type="submit">Send</button>
                 </form>
                 <?php endif; ?>
@@ -107,6 +109,6 @@ if ($selected_tutor_id > 0) {
         </div>
     </main>
 </div>
-<script src="Frontend/js/tutee_messages.js"></script>
+<script src="Frontend/js/tutor_messages.js"></script>
 </body>
 </html>
