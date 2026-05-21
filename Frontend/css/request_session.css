@@ -82,3 +82,113 @@ button:hover {
     text-decoration: none;
     color: #d4a63f;
 }
+
+/* ════════════════════════════════════════
+   MOBILE RESPONSIVENESS
+   ════════════════════════════════════════ */
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    .container {
+        padding: 25px;
+        max-width: 600px;
+    }
+
+    h1 {
+        font-size: 22px;
+        margin-bottom: 18px;
+    }
+
+    .tutor-info {
+        padding: 14px;
+        margin-bottom: 18px;
+    }
+
+    .tutor-info p {
+        font-size: 14px;
+    }
+
+    label {
+        font-size: 14px;
+        margin-top: 14px;
+    }
+
+    input, textarea {
+        padding: 11px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 13px;
+        font-size: 15px;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .tutor-info {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+
+    .tutor-info p {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .message {
+        padding: 10px;
+        font-size: 13px;
+        margin-bottom: 14px;
+        border-radius: 6px;
+    }
+
+    label {
+        font-size: 14px;
+        margin-top: 14px;
+        font-weight: 600;
+    }
+
+    input, textarea {
+        padding: 12px;
+        font-size: 16px; /* Prevents iOS zoom on input focus */
+        border-radius: 6px;
+    }
+
+    textarea {
+        min-height: 80px;
+    }
+
+    button {
+        padding: 14px;
+        font-size: 16px;
+        margin-top: 18px;
+        border-radius: 8px;
+    }
+
+    .back {
+        font-size: 14px;
+        margin-top: 16px;
+        display: block;
+        text-align: center;
+    }
+}

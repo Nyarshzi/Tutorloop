@@ -96,3 +96,120 @@ hr {
     background: #b88a14;
     transform: translateY(-2px);
 }
+
+/* ════════════════════════════════════════
+   MOBILE RESPONSIVENESS
+   ════════════════════════════════════════ */
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    .profile-container {
+        padding-top: 15px;
+    }
+
+    .profile-card-view {
+        padding: 30px;
+        max-width: 600px;
+    }
+
+    .profile-header {
+        gap: 20px;
+    }
+
+    .profile-img-container img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .placeholder-avatar {
+        width: 120px;
+        height: 120px;
+        font-size: 40px;
+    }
+
+    .profile-main-info h2 {
+        font-size: 24px;
+    }
+
+    .rate {
+        font-size: 16px;
+    }
+
+    .book-btn {
+        padding: 13px 35px;
+        font-size: 15px;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    .profile-container {
+        padding: 10px;
+        padding-top: 10px;
+    }
+
+    .profile-card-view {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .profile-img-container img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+
+    .placeholder-avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+        border-radius: 50%;
+    }
+
+    .profile-main-info h2 {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+
+    .subject-tag {
+        display: inline-block;
+        font-size: 13px;
+        padding: 4px 12px;
+    }
+
+    .rate {
+        font-size: 16px;
+        margin-top: 12px;
+    }
+
+    hr {
+        margin: 20px 0;
+    }
+
+    .profile-body h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .bio {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .profile-footer {
+        margin-top: 28px;
+    }
+
+    .book-btn {
+        padding: 14px 30px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+}

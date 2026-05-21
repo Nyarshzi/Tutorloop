@@ -95,3 +95,140 @@
     background: white;
     border-radius: 15px;
 }
+
+/* ════════════════════════════════════════
+   MOBILE RESPONSIVENESS
+   ════════════════════════════════════════ */
+
+/* Tablet and smaller */
+@media (max-width: 1024px) {
+    .tutor-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+}
+
+/* Mobile - single column layout */
+@media (max-width: 768px) {
+    .results-container {
+        padding: 15px;
+    }
+
+    .tutor-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 18px;
+    }
+
+    .tutor-card {
+        padding-bottom: 18px;
+    }
+
+    .tutor-image {
+        height: 100px;
+        margin-bottom: 40px;
+    }
+
+    .tutor-image img, .avatar-placeholder {
+        width: 80px;
+        height: 80px;
+        bottom: -40px;
+    }
+
+    .tutor-info {
+        padding: 0 12px;
+    }
+
+    .tutor-name-link h3 {
+        font-size: 16px;
+    }
+
+    .tutor-subject {
+        font-size: 13px;
+    }
+
+    .tutor-rate {
+        font-size: 14px;
+    }
+
+    .view-btn {
+        padding: 7px 16px;
+        font-size: 13px;
+    }
+
+    .no-results {
+        padding: 40px 20px;
+    }
+}
+
+/* Small mobile phones */
+@media (max-width: 480px) {
+    .results-container {
+        padding: 10px;
+    }
+
+    .tutor-grid {
+        grid-template-columns: 1fr; /* Single column on small screens */
+        gap: 16px;
+    }
+
+    .tutor-card {
+        border-radius: 12px;
+        padding-bottom: 16px;
+    }
+
+    .tutor-image {
+        height: 90px;
+        margin-bottom: 35px;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .tutor-image img, .avatar-placeholder {
+        width: 70px;
+        height: 70px;
+        bottom: -35px;
+        border: 3px solid white;
+    }
+
+    .avatar-placeholder {
+        font-size: 28px;
+    }
+
+    .tutor-info {
+        padding: 0 14px;
+    }
+
+    .tutor-name-link h3 {
+        font-size: 17px;
+        margin: 0 0 4px;
+    }
+
+    .tutor-subject {
+        font-size: 13px;
+        margin: 4px 0 8px;
+    }
+
+    .tutor-rate {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+
+    .view-btn {
+        padding: 10px 18px;
+        font-size: 14px;
+        margin: 0 14px;
+        width: calc(100% - 28px);
+    }
+
+    .no-results {
+        padding: 35px 15px;
+        border-radius: 12px;
+    }
+
+    .no-results h3 {
+        font-size: 18px;
+    }
+
+    .no-results p {
+        font-size: 14px;
+    }
+}

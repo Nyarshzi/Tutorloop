@@ -110,3 +110,105 @@
     background: #b88a14;
     transform: translateY(-2px);
 }
+
+/* ════════════════════════════════════════
+   MOBILE RESPONSIVENESS
+   ════════════════════════════════════════ */
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    .profile {
+        margin-top: 30px;
+    }
+
+    .profile-card {
+        padding: 40px 30px;
+        max-width: 500px;
+    }
+
+    .profile-avatar-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .avatar-placeholder {
+        font-size: 50px;
+    }
+
+    .profile-card h2 {
+        font-size: 24px;
+    }
+
+    .role-tag {
+        font-size: 14px;
+    }
+
+    .profile-details {
+        padding: 16px;
+    }
+
+    .profile-details p {
+        font-size: 15px;
+    }
+
+    .search-btn {
+        padding: 13px;
+        font-size: 15px;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    .profile {
+        margin-top: 20px;
+        padding: 0 15px;
+    }
+
+    .profile-card {
+        padding: 30px 20px;
+        border-radius: 18px;
+    }
+
+    .profile-avatar-container {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+        border-width: 3px;
+    }
+
+    .avatar-placeholder {
+        font-size: 40px;
+    }
+
+    .change-pic-overlay {
+        font-size: 10px;
+        padding: 6px 0;
+    }
+
+    .profile-card h2 {
+        font-size: 22px;
+        margin-bottom: 4px;
+    }
+
+    .role-tag {
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .profile-details {
+        padding: 14px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+
+    .profile-details p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .search-btn {
+        padding: 14px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+}
