@@ -68,7 +68,13 @@ body {
     padding: 10px 22px;
     border-radius: 10px;
     font-weight: bold; 
-    cursor: pointer; }
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.logout:hover {
+    background-color: #b8860b;
+}
 
 /* PROFILE GRID */
 .profile { 
