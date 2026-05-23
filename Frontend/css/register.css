@@ -223,3 +223,116 @@ input:focus, select:focus {
 @keyframes spin {
     to { transform: rotate(360deg) translate(-50%, -50%); }
 }
+
+/* ════════════════════════════════════════
+   MOBILE RESPONSIVENESS
+   ════════════════════════════════════════ */
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        align-items: flex-start;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 400px;
+        padding: 25px 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+    }
+
+    input, select {
+        font-size: 14px;
+        padding: 11px;
+    }
+
+    .dropdown button {
+        padding: 11px;
+        font-size: 14px;
+    }
+
+    #submitBtn {
+        padding: 13px;
+        font-size: 15px;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+    }
+
+    .container {
+        padding: 15px;
+        justify-content: flex-start;
+        padding-top: 40px;
+    }
+
+    .card {
+        padding: 20px 18px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(212, 160, 23, 0.15);
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    input, select {
+        padding: 12px;
+        font-size: 16px; /* Prevents iOS zoom on input focus */
+        margin-bottom: 10px;
+    }
+
+    .password-box input {
+        padding-right: 50px;
+    }
+
+    .password-box button {
+        padding: 4px 12px;
+        font-size: 12px;
+    }
+
+    .dropdown button {
+        padding: 12px;
+        font-size: 16px; /* Prevents iOS zoom */
+    }
+
+    .dropdown-content div {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    #submitBtn {
+        padding: 14px;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+
+    .login-link {
+        font-size: 14px;
+        margin-top: 18px;
+    }
+
+    .warning-message {
+        font-size: 13px;
+        margin-top: 12px;
+    }
+}

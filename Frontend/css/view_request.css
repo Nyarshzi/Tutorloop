@@ -69,3 +69,108 @@ h1 {
     border-radius: 8px;
     background: #f1f1f1;
 }
+
+/* ════════════════════════════════════════
+   MOBILE RESPONSIVENESS
+   ════════════════════════════════════════ */
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    .container {
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 22px;
+        margin-bottom: 18px;
+    }
+
+    .request-card {
+        padding: 16px;
+        margin-bottom: 14px;
+    }
+
+    .request-card h3 {
+        font-size: 16px;
+    }
+
+    .request-card p {
+        font-size: 14px;
+    }
+
+    .accept-btn,
+    .decline-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .back-link {
+        font-size: 14px;
+        margin-top: 18px;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .request-card {
+        padding: 14px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .request-card h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .request-card p {
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+    }
+
+    .accept-btn,
+    .decline-btn {
+        padding: 10px 14px;
+        font-size: 14px;
+        margin-right: 0;
+        flex: 1;
+        text-align: center;
+    }
+
+    .back-link {
+        font-size: 14px;
+        margin-top: 16px;
+        display: block;
+        text-align: center;
+    }
+
+    .empty-box {
+        padding: 16px;
+        font-size: 14px;
+        text-align: center;
+    }
+}

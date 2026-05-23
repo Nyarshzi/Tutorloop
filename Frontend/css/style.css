@@ -287,3 +287,70 @@ button:hover {
     transform: none;
   }
 }
+
+/* Small phones */
+@media(max-width:480px) {
+  body {
+    overflow: auto;
+  }
+
+  .main {
+    flex-direction: column;
+    height: auto;
+    padding: 30px 15px;
+    min-height: 100vh;
+  }
+
+  .lamp-wrapper {
+    position: relative;
+    left: 0 !important;
+    transform: none !important;
+    margin-bottom: 15px;
+  }
+
+  .lamp-glow {
+    width: 200px;
+    height: 200px;
+  }
+
+  .shade {
+    width: 100px;
+    height: 50px;
+  }
+
+  .string {
+    right: 15px;
+    height: 40px;
+  }
+
+  .stand {
+    height: 90px;
+  }
+
+  .login-box {
+    position: relative;
+    right: auto;
+    width: 100%;
+    padding: 20px;
+    opacity: 1;
+    transform: none;
+  }
+
+  .login-box h2 {
+    font-size: 20px;
+  }
+
+  input {
+    padding: 12px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  button {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .register-link {
+    font-size: 13px;
+  }
+}

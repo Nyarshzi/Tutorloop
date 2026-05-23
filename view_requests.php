@@ -30,6 +30,8 @@ $result = $stmt->get_result();
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Requests</title>
     <link rel="stylesheet" href="Frontend/css/view_requests.css">
 </head>
