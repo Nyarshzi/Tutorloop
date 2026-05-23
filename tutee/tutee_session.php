@@ -1,10 +1,10 @@
 <?php
 session_start();
-include("config/db.php");
+include("../config/db.php");
 date_default_timezone_set('Asia/Manila');
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutee') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -39,20 +39,20 @@ function hasFeedback($conn, $session_id) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Sessions | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
-    <link rel="stylesheet" href="Frontend/css/tutee_session.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_dashboard.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_session.css">
 </head>
 <body>
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
             <a href="tutee_dashboard.php">Dashboard</a>
             <a href="tutee_profile.php">My Profile</a>
-            <a href="search_results.php">Find a Tutor</a>
+            <a href="../search_results.php">Find a Tutor</a>
             <a href="tutee_session.php" class="active">My Sessions</a>
             <a href="tutee_mytutor.php">My Tutors</a>
             <a href="tutee_messages.php">Messages</a>
@@ -63,7 +63,7 @@ function hasFeedback($conn, $session_id) {
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
             <h1>My Sessions</h1>
-            <button class="logout" onclick="location.href='logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
         </header>
 
         <?php if (isset($_SESSION['success'])): ?>
@@ -122,7 +122,7 @@ function hasFeedback($conn, $session_id) {
                             </span>
                             <?php if (!$already_rated): ?>
                                 <button class="join" 
-                                    onclick="location.href='feedback.php?session_id=<?php echo $row['session_id']; ?>'">
+                                    onclick="location.href='../feedback.php?session_id=<?php echo $row['session_id']; ?>'">
                                     Leave Feedback
                                 </button>
                             <?php else: ?>
@@ -149,7 +149,7 @@ function hasFeedback($conn, $session_id) {
             <?php else: ?>
                 <div class="session-card empty">
                     <p>No sessions found. 
-                        <a href="search_results.php">Find a tutor</a> to get started.
+                        <a href="../search_results.php">Find a tutor</a> to get started.
                     </p>
                 </div>
             <?php endif; ?>
@@ -160,7 +160,7 @@ function hasFeedback($conn, $session_id) {
 <script>
 function confirmCancel(id) {
     if (confirm('Are you sure you want to cancel this request?')) {
-        window.location.href = 'cancel_session.php?session_id=' + id;
+        window.location.href = '../tutor/api/cancel_session.php?session_id=' + id;
     }
 }
 const menuBtn = document.getElementById('menuBtn');

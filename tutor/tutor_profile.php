@@ -1,11 +1,11 @@
 <?php
 session_start();
-include("config/db.php");
+include("../config/db.php");
 
 // --- START OF ADDED VERIFICATION LOGIC ---
 // 1. Access Control: Check if logged in, if role is tutor, and if verified
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'tutor') {
-    header("Location: login.php");
+        header("Location: ../login.php");
     exit();
 }
 
@@ -20,8 +20,7 @@ $status_res = $status_check->get_result()->fetch_assoc();
 if (!$status_res || (int)$status_res['is_verified'] === 0) {
     // If not verified, kick them back to login with a message
     session_destroy();
-    header("Location: login.php?error=unverified");
-    exit();
+    header("Location: ../login.php?error=unverified");    exit();
 }
 // --- END OF ADDED VERIFICATION LOGIC ---
 
@@ -54,7 +53,7 @@ if ($result && $result->num_rows > 0) {
 
     $rating_val = ($row['average_rating'] > 0) ? number_format($row['average_rating'], 1) : "0.0";
 } else {
-    header("Location: create_tutor_profile.php");
+    header("Location: ../create_tutor_profile.php");
     exit();
 }
 ?>
@@ -65,7 +64,7 @@ if ($result && $result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutor_profile.css">
+    <link rel="stylesheet" href="../Frontend/css/tutor_profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -73,7 +72,7 @@ if ($result && $result->num_rows > 0) {
 <div class="container">
     <aside class="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
@@ -84,14 +83,14 @@ if ($result && $result->num_rows > 0) {
             <a href="tutor_mystudents.php">My Students</a>
             <a href="tutor_messages.php">Messages</a>
             <a href="tutor_ratings.php">My Ratings</a>
-            <a href="analytics.php">Analytics</a>
+            <a href="../analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1>My Profile</h1>
-            <button class="logout" onclick="window.location.href='logout.php'">Logout</button>
+            <button class="logout" onclick="window.location.href='../logout.php'">Logout</button>
         </header>
 
         <section class="profile">
@@ -101,7 +100,7 @@ if ($result && $result->num_rows > 0) {
                     <div class="avatar-container">
                         <div class="avatar-frame" style="border-radius: 50%; overflow: hidden; border: 4px solid #d4a017;">
                             <?php if(!empty($row['profile_pic'])): ?>
-                                <img src="uploads/<?php echo htmlspecialchars($row['profile_pic']); ?>?v=<?php echo time(); ?>" 
+                                <img src="../uploads/.../<?php echo htmlspecialchars($row['profile_pic']); ?>?v=<?php echo time(); ?>" 
                                      alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
                             <?php else: ?>
                                 <span class="avatar-text"><?php echo $initials; ?></span>
@@ -116,7 +115,7 @@ if ($result && $result->num_rows > 0) {
                     <p class="profile-tagline"><?php echo htmlspecialchars($row['description']); ?></p>
                     
                     <div class="action-area">
-                        <a href="create_tutor_profile.php">
+                        <a href="../create_tutor_profile.php">
                             <button class="primary-btn">Edit Profile</button>
                         </a>
                     </div>

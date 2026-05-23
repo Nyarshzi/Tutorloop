@@ -1,10 +1,10 @@
 <?php
 session_start();
-include("config/db.php");
+include("../config/db.php");
 date_default_timezone_set('Asia/Manila');
 
 if (!isset($_SESSION['user_id']) || strtolower(trim($_SESSION['role'])) !== 'tutee') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -108,7 +108,7 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Tutors | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_dashboard.css">
     <style>
         .rate-card { margin-bottom: 24px; padding: 24px; background: #ffffff; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
         .tutor-card { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 0; border-bottom: 1px solid #f0f0f0; }
@@ -131,13 +131,13 @@ $result = $stmt->get_result();
 <div class="container">
     <aside class="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
             <a href="tutee_dashboard.php">Dashboard</a>
             <a href="tutee_profile.php">My Profile</a>
-            <a href="search_results.php">Find a Tutor</a>
+            <a href="../search_results.php">Find a Tutor</a>
             <a href="tutee_session.php">My Sessions</a>
             <a href="tutee_mytutor.php" class="active">My Tutors</a>
             <a href="tutee_messages.php">Messages</a>
@@ -147,7 +147,7 @@ $result = $stmt->get_result();
     <main class="main">
         <header class="topbar">
             <h1>My Tutor</h1>
-            <button class="logout" onclick="location.href='logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
         </header>
 
         <section class="rate-card">

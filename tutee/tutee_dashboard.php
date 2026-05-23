@@ -1,10 +1,10 @@
 <?php
 session_start();
-include("config/db.php");
+include("../config/db.php");
 date_default_timezone_set('Asia/Manila');
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutee') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -65,7 +65,7 @@ $recent_messages = $conn->query("
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutee Dashboard | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         .status-tag { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; display: inline-block; }
@@ -84,13 +84,13 @@ $recent_messages = $conn->query("
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
             <a href="tutee_dashboard.php" class="active">Dashboard</a>
             <a href="tutee_profile.php">My Profile</a>
-            <a href="search_results.php">Find a Tutor</a>
+            <a href="../search_results.php">Find a Tutor</a>
             <a href="tutee_session.php">My Sessions</a>
             <a href="tutee_mytutor.php">My Tutors</a>
             <a href="tutee_messages.php">Messages</a>
@@ -107,7 +107,7 @@ $recent_messages = $conn->query("
             <h1 class="greeting-short">
                 Hi, <?php echo htmlspecialchars($tutee_name); ?>! 👋
             </h1>
-            <a href="logout.php" class="logout">Logout</a>
+            <a href="../logout.php" class="logout">Logout</a>
         </header>
 
         <!-- Stats Cards -->

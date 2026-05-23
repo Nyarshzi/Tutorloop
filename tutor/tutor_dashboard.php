@@ -1,11 +1,11 @@
 <?php
 session_start();
-include("config/db.php");
+include("../config/db.php");
 date_default_timezone_set('Asia/Manila'); // Keep tutor greeting in sync with dashboard timestamps
 
 // 1. Access Control
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -65,14 +65,12 @@ $recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name A
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutor Dashboard | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutor_dashboard.css">
-</head>
+<link rel="stylesheet" href="../Frontend/css/tutor_dashboard.css"></head>
 <body>
 <div class="container"> 
     <aside class="sidebar"> 
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
-            <span>TUTORLOOP</span>
+<img src="../Frontend/images/Tutorloop_logo.png" alt="logo">            <span>TUTORLOOP</span>
         </div>
         <nav>
             <a href="tutor_dashboard.php" class="active">Dashboard</a>
@@ -82,14 +80,14 @@ $recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name A
             <a href="tutor_mystudents.php">My Students</a>
             <a href="tutor_messages.php">Messages</a>
             <a href="tutor_ratings.php">My Ratings</a>
-            <a href="analytics.php">Analytics</a>
+            <a href="../analytics.php">Analytics</a> 
         </nav>
     </aside>
 
     <main class="main"> 
         <header class="topbar">
             <h1><?php echo htmlspecialchars($greeting); ?> ☀️, <?php echo htmlspecialchars($tutor_name); ?></h1>
-            <a href="logout.php" class="logout">Logout</a>
+            <a href="../logout.php" class="logout">Logout</a>
         </header>
 
         <section class="cards">
@@ -136,7 +134,7 @@ $recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name A
                             <p class="session-details">Student: <?php echo htmlspecialchars($row['tutee_name']); ?> | Rate: ₱<?php echo number_format($row['hourly_rate'], 2); ?></p>
                             
                             <div class="dashboard-actions">
-                                <form action="handle_request.php" method="POST">
+                                <form action="../tutor/api/handle_request.php" method="POST">
                                     <input type="hidden" name="session_id" value="<?php echo $row['session_id']; ?>">
                                     <button type="submit" name="action" value="Complete" class="btn-small btn-done">Done</button>
                                     <button type="submit" name="action" value="Paid" class="btn-small btn-paid">Paid</button>

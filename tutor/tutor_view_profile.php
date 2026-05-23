@@ -1,14 +1,13 @@
 <?php
 session_start();
-include("config/db.php");
-
+include("../config/db.php");
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'tutee') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
 if (!isset($_GET['tutor_id'])) {
-    header("Location: search_results.php");
+    header("Location: ../search_results.php");
     exit();
 }
 
@@ -38,8 +37,8 @@ if (!$tutor) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($tutor['name']); ?> | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
-    <link rel="stylesheet" href="Frontend/css/tutor_view_profile.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_dashboard.css">
+    <link rel="stylesheet" href="../Frontend/css/tutor_view_profile.css">
     <style>
         .profile-footer {
             display: flex;
@@ -67,16 +66,17 @@ if (!$tutor) {
 <div class="container">
     <aside class="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
+
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
-            <a href="search_results.php" class="active">Find a Tutor</a>
-            <a href="tutee_session.php">My Sessions</a>
-            <a href="tutee_mytutor.php">My Tutors</a>
-            <a href="tutee_messages.php">Messages</a>
+            <a href="../tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="../tutee/tutee_profile.php">My Profile</a>
+            <a href="../tutee/search_results.php" class="active">Find a Tutor</a>
+            <a href="../tutee/tutee_session.php">My Sessions</a>
+            <a href="../tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="../tutee/tutee_messages.php">Messages</a>
         </nav>
     </aside>
 
@@ -95,7 +95,7 @@ if (!$tutor) {
                     <div class="profile-img-container">
                         <?php if(!empty($tutor['profile_pic']) && 
                                   file_exists("uploads/" . $tutor['profile_pic'])): ?>
-                            <img src="uploads/<?php echo htmlspecialchars($tutor['profile_pic']); ?>" 
+                            <img src="../uploads/...<?php echo htmlspecialchars($tutor['profile_pic']); ?>" 
                                  alt="Tutor"
                                  style="width:100%; height:100%; 
                                         object-fit:cover; border-radius:8px;">
@@ -219,7 +219,7 @@ if (!$tutor) {
                 <!-- Request Session Button -->
                 <div class="profile-footer">
                     <button class="book-btn"
-                        onclick="location.href='request_session.php?tutor_id=
+                        onclick="location.href='../tutee/api/request_session.php?tutor_id=
                         <?php echo $tutor_id; ?>'">
                         Request a Session
                     </button>

@@ -1,10 +1,10 @@
 <?php
 session_start();
-include("config/db.php");
+include("../config/db.php");
 
 // Access Control
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Schedule | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutor_myschedule.css">
+    <link rel="stylesheet" href="../Frontend/css/tutor_myschedule.css">
     
     <style>
         /* CSS FIXES FOR NAVIGATION */
@@ -154,8 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
-            <span>TUTORLOOP</span>
+<img src="../Frontend/images/Tutorloop_logo.png" alt="logo">            <span>TUTORLOOP</span>
         </div>
         <nav>
             <a href="tutor_dashboard.php">Dashboard</a>
@@ -165,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="tutor_mystudents.php">My Students</a>
             <a href="tutor_messages.php">Messages</a>
             <a href="tutor_ratings.php">My Ratings</a>
-            <a href="analytics.php">Analytics</a>
+            <a href="../analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -173,7 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
             <h1>My Schedule</h1>
-            <button class="logout" onclick="location.href='logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
         </header>
 
         <section class="schedule">
@@ -311,7 +310,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     return;
                 }
 
-                fetch('add_subject.php', {
+                fetch('../tutee/api/add_subject.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

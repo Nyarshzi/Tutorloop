@@ -1,9 +1,9 @@
 <?php
 session_start();
-include("config/db.php"); // Using your existing db config path
+include("../config/db.php"); // Using your existing db config path
 
 if (!isset($_SESSION['user_id'])) { 
-    header("Location: login.php"); 
+    header("Location: ../login.php"); 
     exit(); 
 }
 
@@ -32,8 +32,7 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Students | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutor_myschedule.css">
-    <style>
+    <link rel="stylesheet" href="../Frontend/css/tutor_myschedule.css">    <style>
         .sidebar nav a { text-decoration: none !important; color: white !important; display: block; padding: 12px; margin-bottom: 10px; border-radius: 8px; }
         .sidebar nav a.active, .sidebar nav a:hover { background: #d4a017; color: black !important; }
         
@@ -55,7 +54,7 @@ $result = $stmt->get_result();
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
@@ -66,14 +65,14 @@ $result = $stmt->get_result();
             <a href="tutor_mystudents.php" class="active">My Students</a>
             <a href="tutor_messages.php">Messages</a>
             <a href="tutor_ratings.php">My Ratings</a>
-            <a href="analytics.php">Analytics</a>
+            <a href="../analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1>My Students</h1>
-            <button class="logout" onclick="location.href='logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
         </header>
 
         <section class="schedule">

@@ -1,11 +1,12 @@
 <?php
 session_start();
+include("../config/db.php");
 $conn = new mysqli("localhost", "root", "", "tutorloop_db");
 
 if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); 
+    header("Location: ../login.php"); 
     exit();
 }
 
@@ -36,20 +37,20 @@ if ($selected_tutor_id > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages | TutorLoop</title>
-    <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
-    <link rel="stylesheet" href="Frontend/css/tutee_messages.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_dashboard.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_messages.css">
 </head>
 <body>
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
-            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
             <a href="tutee_dashboard.php">Dashboard</a>
             <a href="tutee_profile.php">My Profile</a>
-            <a href="search_results.php">Find a Tutor</a>
+            <a href="../search_results.php">Find a Tutor</a>
             <a href="tutee_session.php">My Sessions</a>
             <a href="tutee_mytutor.php">My Tutors</a>
             <a href="tutee_messages.php" class="active">Messages</a>
@@ -60,7 +61,7 @@ if ($selected_tutor_id > 0) {
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
             <h1>Messages</h1>
-            <button class="logout" onclick="location.href='logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
         </header>
 
         <div class="messages">
@@ -97,7 +98,7 @@ if ($selected_tutor_id > 0) {
                     <?php endif; ?>
                 </div>
                 <?php if ($selected_tutor_id > 0): ?>
-                <form action="send_message.php" method="POST" class="chat-input">
+                <form action="../send_message.php" method="POST" class="chat-input">
                     <input type="hidden" name="receiver_id" value="<?php echo $selected_tutor_id; ?>">
                     <input type="text" name="message" placeholder="Type a message..." required autocomplete="off">
                     <button type="submit">Send</button>
@@ -107,6 +108,6 @@ if ($selected_tutor_id > 0) {
         </div>
     </main>
 </div>
-<script src="Frontend/js/tutee_messages.js"></script>
+<script src="../Frontend/js/tutee_messages.js"></script>
 </body>
 </html>
