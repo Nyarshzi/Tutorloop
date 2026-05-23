@@ -62,10 +62,11 @@ body {
     margin-bottom: 30px; }
 
 .logout { 
-    background: #d4a017; 
+    background-color: #d4a017 !important;
+    color: #0d2a4a;
     border: none; 
-    padding: 8px 20px; 
-    border-radius: 8px; 
+    padding: 10px 22px;
+    border-radius: 10px;
     font-weight: bold; 
     cursor: pointer; }
 
