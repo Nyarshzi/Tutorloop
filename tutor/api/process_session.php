@@ -1,5 +1,5 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "tutorloop_db");
+include("../../config/db.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get data from the form
@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ($tutor_id, $tutee_id, $subject_id, '$requested_schedule', '$request_note', 'Pending', 'Pending')";
 
     if ($conn->query($sql) === TRUE) {
-        echo "<script>alert('Booking request sent!'); window.location.href='tutee_dashboard.php';</script>";
+        echo "<script>alert('Booking request sent!'); window.location.href='../../tutee/tutee_dashboard.php';</script>";
     } else {
         echo "Error: " . $conn->error;
     }

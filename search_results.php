@@ -67,19 +67,19 @@ function getTutorSubjects($conn, $tutor_id) {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
             <a href="search_results.php" class="active">Find a Tutor</a>
-            <a href="tutee_session.php">My Sessions</a>
-            <a href="tutee_mytutor.php">My Tutors</a>
-            <a href="tutee_messages.php">Messages</a>
+            <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1>Find a Tutor</h1>
-            <a href="tutee_dashboard.php" class="logout">Back</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php" class="logout">Back</a>
         </header>
 
         <section class="filter-section">

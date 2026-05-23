@@ -47,14 +47,14 @@ if ($selected_tutee_id > 0) {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutor_dashboard.php">Dashboard</a>
-            <a href="tutor_profile.php">My Profile</a>
-            <a href="tutor_myschedule.php">My Schedule</a>
-            <a href="tutor_session_request.php">Session Requests</a>
-            <a href="tutor_mystudents.php">My Students</a>
-            <a href="tutor_messages.php" class="active">Messages</a>
-            <a href="tutor_ratings.php">My Ratings</a>
-            <a href="../analytics.php">Analytics</a>
+            <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutor/tutor_profile.php">My Profile</a>
+            <a href="/tutorloop/tutor/tutor_myschedule.php">My Schedule</a>
+            <a href="/tutorloop/tutor/tutor_session_request.php">Session Requests</a>
+            <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
+            <a href="/tutorloop/tutor/tutor_messages.php" class="active">Messages</a>
+            <a href="/tutorloop/tutor/tutor_ratings.php">My Ratings</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -99,7 +99,7 @@ if ($selected_tutee_id > 0) {
                     <?php endif; ?>
                 </div>
                 <?php if ($selected_tutee_id > 0): ?>
-                <form actio<form action="../send_message.php"n="send_message.php" method="POST" class="chat-input">
+                <form actio<form action="/tutorloop/send_message.php"n="send_message.php" method="POST" class="chat-input">
                     <input type="hidden" name="receiver_id" value="<?php echo $selected_tutee_id; ?>">
                     <input type="text" name="message" placeholder="Type a reply..." required autocomplete="off">
                     <button type="submit">Send</button>

@@ -1,8 +1,9 @@
 <?php
 session_start();
-include("../config/db.php");
+include("config/db.php");
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
-    header("Location: ../login.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -50,32 +51,32 @@ $feedback_result = $feedback_stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Ratings | TutorLoop</title>
-    <link rel="stylesheet" href="../Frontend/css/tutor_dashboard.css">
-    <link rel="stylesheet" href="../Frontend/css/tutor_ratings.css">
+    <link rel="stylesheet" href="Frontend/css/tutor_dashboard.css">
+    <link rel="stylesheet" href="Frontend/css/tutor_ratings.css">
 </head>
 <body>
 <div class="container">
     <aside class="sidebar">
         <div class="logo">
-            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
             <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
-            <a href="/tutorloop/create_tutor_profile.php">My Profile</a>
+            <a href="create_tutor_profile.php">My Profile</a>
             <a href="/tutorloop/tutor/tutor_myschedule.php">My Schedule</a>
             <a href="/tutorloop/tutor/tutor_session_request.php">Session Requests</a>
             <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
             <a href="/tutorloop/tutor/tutor_messages.php">Messages</a>
             <a href="/tutorloop/tutor/tutor_ratings.php" class="active">My Ratings</a>
-            <a href="/tutorloop/analytics.php">Analytics</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1>My Ratings & Feedback</h1>
-            <a href="/tutorloop/logout.php" class="logout">Logout</a>
+            <a href="logout.php" class="logout">Logout</a>
         </header>
 
         <!-- Average Rating Summary -->

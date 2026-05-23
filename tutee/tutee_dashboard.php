@@ -88,12 +88,13 @@ $recent_messages = $conn->query("
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php" class="active">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
-            <a href="../search_results.php">Find a Tutor</a>
-            <a href="tutee_session.php">My Sessions</a>
-            <a href="tutee_mytutor.php">My Tutors</a>
-            <a href="tutee_messages.php">Messages</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php" class="active">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
+            <a href="/tutorloop/search_results.php">Find a Tutor</a>
+            <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -107,7 +108,7 @@ $recent_messages = $conn->query("
             <h1 class="greeting-short">
                 Hi, <?php echo htmlspecialchars($tutee_name); ?>! 👋
             </h1>
-            <a href="../logout.php" class="logout">Logout</a>
+            <a href="/tutorloop/logout.php" class="logout">Logout</a>
         </header>
 
         <!-- Stats Cards -->

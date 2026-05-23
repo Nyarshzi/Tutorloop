@@ -1,10 +1,10 @@
 <?php
 session_start();
-include("config/db.php");
+include("../../config/db.php");
 
 // 1. Security Check
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: ../../login.php");
     exit();
 }
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['session_id']) && isse
         if ($stmt->execute()) {
             $stmt->close();
             // Redirect back with a success message
-            header("Location: tutor_session_request.php?msg=success&new_status=" . $final_status);
+            header("Location: /tutorloop/tutor/tutor_session_request.php?msg=success&new_status=" . $final_status);
             exit();
         } else {
             $stmt->close();
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['session_id']) && isse
         echo "Invalid action received: " . htmlspecialchars($raw_action);
     }
 } else {
-    header("Location: tutor_session_request.php");
+    header("Location: /tutorloop/tutor/tutor_session_request.php");
     exit();
 }
 ?>

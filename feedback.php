@@ -108,12 +108,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
             <a href="search_results.php">Find a Tutor</a>
-            <a href="tutee_session.php" class="active">My Sessions</a>
-            <a href="tutee_mytutor.php">My Tutors</a>
-            <a href="tutee_messages.php">Messages</a>
+            <a href="/tutorloop/tutee/tutee_session.php" class="active">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
         </nav>
     </aside>
 
@@ -128,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div style="background:#d4edda; color:#155724; padding:12px 16px;
                             border-radius:8px; margin-bottom:16px;">
                     <?php echo $success; ?>
-                    <a href="tutee_session.php" style="margin-left:10px; 
+                    <a href="/tutorloop/tutee/tutee_session.php" style="margin-left:10px; 
                         color:#155724; font-weight:600;">
                         Back to My Sessions
                     </a>

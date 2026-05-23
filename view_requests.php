@@ -1,8 +1,9 @@
 <?php
 session_start();
-include("../../config/db.php");
+include("config/db.php");
+
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || strtolower(trim($_SESSION['role'])) !== 'tutor') {
-    header("Location: ../../login.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -32,7 +33,7 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Requests</title>
-    <link rel="stylesheet" href="../../Frontend/css/view_requests.css">
+    <link rel="stylesheet" href="Frontend/css/view_requests.css">
 </head>
 <body>
 
@@ -58,7 +59,7 @@ $result = $stmt->get_result();
         <div class="empty-box">No pending requests yet</div>
     <?php endif; ?>
 
-    <a href="../tutor_dashboard.php" class="back-link">← Back to Dashboard</a>
+    <a href="/tutorloop/tutor/tutor_dashboard.php" class="back-link">← Back to Dashboard</a>
 </div>
 
 </body>

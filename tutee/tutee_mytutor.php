@@ -135,19 +135,20 @@ $result = $stmt->get_result();
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
-            <a href="../search_results.php">Find a Tutor</a>
-            <a href="tutee_session.php">My Sessions</a>
-            <a href="tutee_mytutor.php" class="active">My Tutors</a>
-            <a href="tutee_messages.php">Messages</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
+            <a href="/tutorloop/search_results.php">Find a Tutor</a>
+            <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php" class="active">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1>My Tutor</h1>
-            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
 
         <section class="rate-card">

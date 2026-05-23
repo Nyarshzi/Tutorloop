@@ -48,12 +48,13 @@ if ($selected_tutor_id > 0) {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
-            <a href="../search_results.php">Find a Tutor</a>
-            <a href="tutee_session.php">My Sessions</a>
-            <a href="tutee_mytutor.php">My Tutors</a>
-            <a href="tutee_messages.php" class="active">Messages</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
+            <a href="/tutorloop/search_results.php">Find a Tutor</a>
+            <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php" class="active">Messages</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -61,7 +62,7 @@ if ($selected_tutor_id > 0) {
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
             <h1>Messages</h1>
-            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
 
         <div class="messages">
@@ -98,7 +99,7 @@ if ($selected_tutor_id > 0) {
                     <?php endif; ?>
                 </div>
                 <?php if ($selected_tutor_id > 0): ?>
-                <form action="../send_message.php" method="POST" class="chat-input">
+                <form action="/tutorloop/send_message.php" method="POST" class="chat-input">
                     <input type="hidden" name="receiver_id" value="<?php echo $selected_tutor_id; ?>">
                     <input type="text" name="message" placeholder="Type a message..." required autocomplete="off">
                     <button type="submit">Send</button>

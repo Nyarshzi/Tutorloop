@@ -90,13 +90,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutor_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
             <a href="create_tutor_profile.php" class="active">My Profile</a>
-            <a href="tutor_myschedule.php">My Schedule</a>
-            <a href="tutor_session_request.php">Session Requests</a>
-            <a href="tutor_mystudents.php">My Students</a>
-            <a href="tutor_messages.php">Messages</a>
-            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="/tutorloop/tutor/tutor_myschedule.php">My Schedule</a>
+            <a href="/tutorloop/tutor/tutor_session_request.php">Session Requests</a>
+            <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
+            <a href="/tutorloop/tutor/tutor_messages.php">Messages</a>
+            <a href="/tutorloop/tutor/tutor_ratings.php">My Ratings</a>
             <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
@@ -148,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <div style="text-align: center; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
             <p style="margin: 0; font-size: 16px; color: #333;">
-                To manage your subjects and availability, go to <a href="tutor_myschedule.php" style="color: #d4a017; font-weight: bold;">My Schedule</a>
+                To manage your subjects and availability, go to <a href="/tutorloop/tutor/tutor_myschedule.php" style="color: #d4a017; font-weight: bold;">My Schedule</a>
             </p>
         </div>
     </main>

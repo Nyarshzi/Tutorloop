@@ -1,6 +1,5 @@
 <?php
 session_start();
-include("../config/db.php");
 date_default_timezone_set('Asia/Manila'); // Ensures timezone matches your location
 
 /**
@@ -21,7 +20,7 @@ if ($conn->connect_error) {
  * 2. SESSION AUTHENTICATION
  */
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -61,14 +60,14 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Management | TutorLoop</title>
-    <link rel="stylesheet" href="../Frontend/css/tutor_session_request.css">
+    <link rel="stylesheet" href="Frontend/css/tutor_session_request.css">
 </head>
 <body>
 
 <div class="container">
     <aside class="sidebar">
         <div class="logo">
-            <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">
+            <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
         <nav>
@@ -79,14 +78,14 @@ $result = $conn->query($sql);
             <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
             <a href="/tutorloop/tutor/tutor_messages.php">Messages</a>
             <a href="/tutorloop/tutor/tutor_ratings.php">My Ratings</a>
-            <a href="/tutorloop/analytics.php">Analytics</a>
+            <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1>Session Management</h1>
-            <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='logout.php'">Logout</button>
         </header>
 
         <section class="requests">
@@ -137,14 +136,14 @@ $result = $conn->query($sql);
                                 <span class="history-label">Request overdue</span>
                             
                             <?php elseif ($session_status == 'Pending' && !$is_booked): ?>
-                                <form action="/tutorloop/tutor/api/handle_request.php" method="POST">
+                                <form action="handle_request.php" method="POST">
                                     <input type="hidden" name="session_id" value="<?php echo $row['session_id']; ?>">
                                     <button type="submit" name="action" value="Accept" class="accept">Accept</button>
                                     <button type="submit" name="action" value="Decline" class="decline">Decline</button>
                                 </form>
 
                             <?php elseif ($session_status == 'Accepted' || $session_status == 'Ongoing'): ?>
-                                <form action="/tutorloop/tutor/api/handle_request.php" method="POST">
+                                <form action="handle_request.php" method="POST">
                                     <input type="hidden" name="session_id" value="<?php echo $row['session_id']; ?>">
                                     <button type="submit" name="action" value="Complete" class="accept">Mark Done</button>
                                 </form>

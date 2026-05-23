@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("config/db.php");
+include("../../config/db.php");
 
 if (isset($_POST['session_id']) && isset($_POST['action'])) {
     $session_id = $_POST['session_id'];
@@ -12,7 +12,7 @@ if (isset($_POST['session_id']) && isset($_POST['action'])) {
     $stmt->bind_param("sii", $action, $session_id, $tutor_id);
     
     if ($stmt->execute()) {
-        header("Location: tutor_session_request.php?msg=updated");
+        header("Location: /tutorloop/tutor/tutor_session_request.php?msg=updated");
     } else {
         echo "Error updating record: " . $conn->error;
     }

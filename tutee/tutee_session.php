@@ -50,12 +50,13 @@ function hasFeedback($conn, $session_id) {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutee_dashboard.php">Dashboard</a>
-            <a href="tutee_profile.php">My Profile</a>
-            <a href="../search_results.php">Find a Tutor</a>
-            <a href="tutee_session.php" class="active">My Sessions</a>
-            <a href="tutee_mytutor.php">My Tutors</a>
-            <a href="tutee_messages.php">Messages</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
+            <a href="/tutorloop/search_results.php">Find a Tutor</a>
+            <a href="/tutorloop/tutee/tutee_session.php" class="active">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>    
         </nav>
     </aside>
 
@@ -63,7 +64,7 @@ function hasFeedback($conn, $session_id) {
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
             <h1>My Sessions</h1>
-            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
 
         <?php if (isset($_SESSION['success'])): ?>
@@ -122,7 +123,7 @@ function hasFeedback($conn, $session_id) {
                             </span>
                             <?php if (!$already_rated): ?>
                                 <button class="join" 
-                                    onclick="location.href='../feedback.php?session_id=<?php echo $row['session_id']; ?>'">
+                                    onclick="location.href='/tutorloop/feedback.php?session_id=<?php echo $row['session_id']; ?>'">
                                     Leave Feedback
                                 </button>
                             <?php else: ?>
@@ -149,7 +150,7 @@ function hasFeedback($conn, $session_id) {
             <?php else: ?>
                 <div class="session-card empty">
                     <p>No sessions found. 
-                        <a href="../search_results.php">Find a tutor</a> to get started.
+                        <a href="/tutorloop/search_results.php">Find a tutor</a> to get started.
                     </p>
                 </div>
             <?php endif; ?>
@@ -160,7 +161,7 @@ function hasFeedback($conn, $session_id) {
 <script>
 function confirmCancel(id) {
     if (confirm('Are you sure you want to cancel this request?')) {
-        window.location.href = '../tutor/api/cancel_session.php?session_id=' + id;
+        window.location.href = '/tutorloop/tutor/api/cancel_session.php?session_id=' + id;
     }
 }
 const menuBtn = document.getElementById('menuBtn');

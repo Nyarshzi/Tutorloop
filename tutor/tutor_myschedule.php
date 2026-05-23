@@ -157,14 +157,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">            <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutor_dashboard.php">Dashboard</a>
-            <a href="tutor_profile.php">My Profile</a>
-            <a href="tutor_myschedule.php" class="active">My Schedule</a>
-            <a href="tutor_session_request.php">Session Requests</a>
-            <a href="tutor_mystudents.php">My Students</a>
-            <a href="tutor_messages.php">Messages</a>
-            <a href="tutor_ratings.php">My Ratings</a>
-            <a href="../analytics.php">Analytics</a>
+            <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutor/tutor_profile.php">My Profile</a>
+            <a href="/tutorloop/tutor/tutor_myschedule.php" class="active">My Schedule</a>
+            <a href="/tutorloop/tutor/tutor_session_request.php">Session Requests</a>
+            <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
+            <a href="/tutorloop/tutor/tutor_messages.php">Messages</a>
+            <a href="/tutorloop/tutor/tutor_ratings.php">My Ratings</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 
@@ -172,7 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
             <h1>My Schedule</h1>
-            <button class="logout" onclick="location.href='../logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
 
         <section class="schedule">
@@ -310,7 +310,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     return;
                 }
 
-                fetch('../tutee/api/add_subject.php', {
+                fetch('/tutorloop/tutee/api/add_subject.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

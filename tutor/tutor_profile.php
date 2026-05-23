@@ -76,21 +76,21 @@ if ($result && $result->num_rows > 0) {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutor_dashboard.php">Dashboard</a>
-            <a href="tutor_profile.php" class="active">My Profile</a>
-            <a href="tutor_myschedule.php">My Schedule</a>
-            <a href="tutor_session_request.php">Session Requests</a>
-            <a href="tutor_mystudents.php">My Students</a>
-            <a href="tutor_messages.php">Messages</a>
-            <a href="tutor_ratings.php">My Ratings</a>
-            <a href="../analytics.php">Analytics</a>
+            <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutor/tutor_profile.php" class="active">My Profile</a>
+            <a href="/tutorloop/tutor/tutor_myschedule.php">My Schedule</a>
+            <a href="/tutorloop/tutor/tutor_session_request.php">Session Requests</a>
+            <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
+            <a href="/tutorloop/tutor/tutor_messages.php">Messages</a>
+            <a href="/tutorloop/tutor/tutor_ratings.php">My Ratings</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1>My Profile</h1>
-            <button class="logout" onclick="window.location.href='../logout.php'">Logout</button>
+            <button class="logout" onclick="window.location.href='/tutorloop/logout.php'">Logout</button>
         </header>
 
         <section class="profile">
@@ -115,7 +115,7 @@ if ($result && $result->num_rows > 0) {
                     <p class="profile-tagline"><?php echo htmlspecialchars($row['description']); ?></p>
                     
                     <div class="action-area">
-                        <a href="../create_tutor_profile.php">
+                        <a href="/tutorloop/create_tutor_profile.php">
                             <button class="primary-btn">Edit Profile</button>
                         </a>
                     </div>

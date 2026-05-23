@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="tutor_dashboard.php">Dashboard</a>
-            <a href="tutor_profile.php" class="active">My Profile</a>
-            <a href="tutor_myschedule.php">My Schedule</a>
-            <a href="tutor_session_request.php">Session Requests</a>
-            <a href="tutor_mystudents.php">My Students</a>
-            <a href="tutor_messages.php">Messages</a>
-            <a href="tutor_ratings.php">My Ratings</a>
+            <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutor/tutor_profile.php" class="active">My Profile</a>
+            <a href="/tutorloop/tutor/tutor_myschedule.php">My Schedule</a>
+            <a href="/tutorloop/tutor/tutor_session_request.php">Session Requests</a>
+            <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
+            <a href="/tutorloop/tutor/tutor_messages.php">Messages</a>
+            <a href="/tutorloop/tutor/tutor_ratings.php">My Ratings</a>
             <a href="analytics.php">Analytics</a>
         </nav>
     </aside>
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <main class="main">
         <header class="topbar">
             <h1>Edit Profile</h1>
-            <a href="tutee_profile.php" class="logout">Cancel</a>
+            <a href="/tutorloop/tutee/tutee_profile.php" class="logout">Cancel</a>
         </header>
 
         <section class="profile">

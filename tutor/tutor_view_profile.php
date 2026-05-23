@@ -71,12 +71,12 @@ if (!$tutor) {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="../tutee/tutee_dashboard.php">Dashboard</a>
-            <a href="../tutee/tutee_profile.php">My Profile</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
             <a href="../tutee/search_results.php" class="active">Find a Tutor</a>
-            <a href="../tutee/tutee_session.php">My Sessions</a>
-            <a href="../tutee/tutee_mytutor.php">My Tutors</a>
-            <a href="../tutee/tutee_messages.php">Messages</a>
+            <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
         </nav>
     </aside>
 
@@ -219,7 +219,7 @@ if (!$tutor) {
                 <!-- Request Session Button -->
                 <div class="profile-footer">
                     <button class="book-btn"
-                        onclick="location.href='../tutee/api/request_session.php?tutor_id=
+                        onclick="location.href='/tutorloop/tutee/api/request_session.php?tutor_id=
                         <?php echo $tutor_id; ?>'">
                         Request a Session
                     </button>

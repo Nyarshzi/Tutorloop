@@ -1,5 +1,5 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "tutorloop_db");
+include("../../config/db.php");
 
 if (isset($_GET['id'])) {
     $session_id = (int)$_GET['id'];

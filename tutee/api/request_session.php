@@ -1,9 +1,8 @@
 <?php
 session_start();
-include("config/db.php");
-
+include("../../config/db.php");
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || strtolower(trim($_SESSION['role'])) !== 'tutee') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -115,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Session</title>
-    <link rel="stylesheet" href="Frontend/css/request_session.css">
+    <link rel="stylesheet" href="../../Frontend/css/request_session.css">
 </head>
 
 <body>
@@ -152,10 +151,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </form>
 
-    <a href="tutee_dashboard.php" class="back">← Back</a>
+    <a href="/tutorloop/tutee/tutee_dashboard.php"href="../tutee_dashboard.php" class="back">← Back</a>
 
 </div>
 
-<script src="Frontend/js/request_session.js"></script>
+<script src="../../Frontend/js/request_session.js"></script>
 </body>
 </html>

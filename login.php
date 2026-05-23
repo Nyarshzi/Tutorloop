@@ -12,7 +12,7 @@ $email = "";
 
 // 3. Redirect if already logged in
 if (isset($_SESSION['user_id']) && !empty($_SESSION['role'])) {
-    $target = ($_SESSION['role'] === 'tutor') ? 'tutor_dashboard.php' : 'tutee_dashboard.php';
+    $target = ($_SESSION['role'] === 'tutor') ? 'tutor/tutor_dashboard.php' : 'tutee/tutee_dashboard.php';
     header("Location: $target");
     exit();
 }
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             $_SESSION['user_id'] = $user['user_id'];
                             $_SESSION['role'] = $user['role'];
                             $_SESSION['name'] = $user['name'];
-                            header("Location: " . ($user['role'] === 'tutor' ? 'tutor_dashboard.php' : 'tutee_dashboard.php'));
+                            header("Location: " . ($user['role'] === 'tutor' ? 'tutor/tutor_dashboard.php' : 'tutee/tutee_dashboard.php'));
                             exit();
                         }
                     } else { $message = "Incorrect password."; }
