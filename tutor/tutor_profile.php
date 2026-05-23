@@ -27,17 +27,23 @@ if (!$status_res || (int)$status_res['is_verified'] === 0) {
 
 // FROM HERE DOWN: EVERYTHING IS YOUR ORIGINAL UNTOUCHED CODE
 // FETCHING DATA - Updated to pull profile_pic from 'users u'
-$sql = "SELECT u.name, u.email, u.profile_pic, tp.tutor_id, tp.tutoring_rate, tp.average_rating, 
-               tp.description, tp.phone_number,
-               s.subject_name 
+$sql = "SELECT 
+            u.name, u.email, u.profile_pic, tp.tutor_id, tp.tutoring_rate, 
+            tp.average_rating,tp.description, tp.phone_number
         FROM users u 
-        JOIN tutor_profiles tp ON u.user_id = tp.tutor_id 
-        LEFT JOIN subjects s ON tp.subject_id = s.subject_id
+        JOIN tutor_profiles tp 
+            ON u.user_id = tp.tutor_id 
         WHERE u.user_id = ?";
 
 $stmt = $conn->prepare($sql);
+
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
+
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
+
 $result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
