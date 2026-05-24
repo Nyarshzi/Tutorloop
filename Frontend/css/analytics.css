@@ -1,4 +1,6 @@
 /* --- ANALYTICS PAGE STYLES --- */
+/* TutorLoop | Dark Blue #0d2a4a + Gold #d4a017 theme */
+
 * {
     margin: 0;
     padding: 0;
@@ -8,161 +10,560 @@
 
 body {
     background: #d9d2c3;
+    min-height: 100vh;
 }
 
-/* 1. Main Layout Structure */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. MAIN LAYOUT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .container {
     display: flex;
     min-height: 100vh;
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. SIDEBAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .sidebar {
-    width: 260px;
+    width: 240px;
     background: #0d2a4a;
     color: white;
-    padding: 30px 20px;
+    padding: 28px 18px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 40px;
+    gap: 10px;
+    margin-bottom: 32px;
+    flex-shrink: 0;
 }
 
-.logo img {
-    width: 35px;
+.logo img  { width: 32px; flex-shrink: 0; }
+.logo span { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+
+/* Mobile hamburger — hidden on desktop */
+.sidebar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
-.logo span {
-    font-size: 20px;
-    font-weight: bold;
-}
+.sidebar-toggle:hover { background: rgba(255,255,255,0.1); }
 
 .sidebar nav a {
-    display: block;
-    padding: 14px 20px;
-    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: rgba(255,255,255,0.85);
     text-decoration: none;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    transition: 0.3s;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    transition: background 0.2s, color 0.2s;
 }
 
-.sidebar nav a.active, .sidebar nav a:hover {
+.sidebar nav a.active,
+.sidebar nav a:hover {
     background: #d4a017;
     color: #000;
+    font-weight: 600;
 }
 
-/* 2. Content Area Styles */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. MAIN CONTENT AREA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .main {
     flex: 1;
-    padding: 35px;
+    padding: 28px;
+    min-width: 0; /* prevents flex overflow */
+    overflow-x: hidden;
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   4. TOPBAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .topbar {
     background: #0d2a4a;
     color: white;
-    padding: 25px 40px;
-    border-radius: 18px;
+    padding: 20px 28px;
+    border-radius: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 35px;
+    margin-bottom: 28px;
+}
+
+.topbar h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
 .logout {
     background: #d4a017;
     color: #000;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 10px;
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 14px;
     text-decoration: none;
+    transition: background 0.2s;
+    white-space: nowrap;
 }
 
-/* Stats Cards */
+.logout:hover { background: #b88a14; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   5. SECTION HEADINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.section-heading {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0d2a4a;
+    margin: 0 0 14px 2px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   6. STAT CARDS GRID
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .stats-cards {
     display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: stretch;
+}
+
+/* 3-column variant for Platform Overview */
+.stats-cards.stats-3col {
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-bottom: 40px;
 }
 
 .stat-card {
     background: #f1f1f1;
-    padding: 30px 20px;
-    border-radius: 20px;
+    padding: 24px 16px;
+    border-radius: 16px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 110px;
 }
 
 .stat-card h2 {
     color: #d4a017;
-    font-size: 36px;
-    margin-bottom: 10px;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1;
 }
 
 .stat-card p {
-    color: #333;
-    font-size: 16px;
+    color: #444;
+    font-size: 13px;
+    line-height: 1.4;
 }
 
-/* Charts Section */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   7. CHARTS GRID
+   Key fix: grid-auto-rows + align-items:stretch
+   ensures all cards in a row are equal height
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .charts {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    grid-auto-rows: 340px; /* fixed row height = equal cards */
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: stretch;
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   8. CHART CONTAINER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .chart-container {
     background: #f1f1f1;
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* prevents any child from breaking the card */
 }
 
 .chart-container h3 {
-    margin-bottom: 20px;
-    font-size: 18px;
+    font-size: 15px;
+    font-weight: 600;
     color: #0d2a4a;
     border-bottom: 2px solid #d4a017;
     display: inline-block;
-    padding-bottom: 5px;
+    padding-bottom: 4px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
 }
 
-.chart-container canvas {
-    max-height: 300px;
+/* chart-wrapper fills remaining space and keeps canvas inside */
+.chart-wrapper {
+    flex: 1;
+    position: relative;
+    min-height: 0; /* critical — allows flex child to shrink */
 }
 
-/* 4. Responsive Adjustments */
+.chart-wrapper canvas {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.empty-msg {
+    color: #999;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   9. ACTIVITY FEED
+   Spans full width, scrolls internally
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.activity-feed {
+    grid-column: 1 / -1;
+    grid-row: auto; /* sits naturally after charts */
+    height: auto;   /* override the fixed grid-auto-rows */
+    min-height: 200px;
+    max-height: 420px;
+}
+
+.activity-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Custom scrollbar */
+.activity-list::-webkit-scrollbar       { width: 4px; }
+.activity-list::-webkit-scrollbar-track { background: #e8e4dc; border-radius: 10px; }
+.activity-list::-webkit-scrollbar-thumb { background: #d4a017; border-radius: 10px; }
+.activity-list::-webkit-scrollbar-thumb:hover { background: #b88a14; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   10. ACTIVITY ITEMS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 13px;
+    background: #fff;
+    border-radius: 10px;
+    border-left: 4px solid #d4a017;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+}
+
+.activity-item:hover {
+    background: #f7f4ef;
+    transform: translateX(3px);
+}
+
+.activity-icon {
+    font-size: 18px;
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f1f1f1;
+    flex-shrink: 0;
+}
+
+.activity-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-actor {
+    font-weight: 600;
+    font-size: 13px;
+    color: #0d2a4a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+}
+
+.activity-detail {
+    font-size: 12px;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-type-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: #0d2a4a;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.activity-time {
+    font-size: 11px;
+    color: #aaa;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.activity-empty {
+    color: #999;
+    font-size: 14px;
+    text-align: center;
+    padding: 40px 0;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   11. ACTIVITY TYPE COLORS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.act-requested  { border-left-color: #17a2b8; }
+.act-requested  .activity-type-badge { background: #17a2b8; }
+
+.act-accepted   { border-left-color: #28a745; }
+.act-accepted   .activity-type-badge { background: #28a745; }
+
+.act-completed  { border-left-color: #0d2a4a; }
+.act-completed  .activity-type-badge { background: #0d2a4a; }
+
+.act-declined   { border-left-color: #dc3545; }
+.act-declined   .activity-type-badge { background: #dc3545; }
+
+.act-cancelled  { border-left-color: #6c757d; }
+.act-cancelled  .activity-type-badge { background: #6c757d; }
+
+.act-feedback   { border-left-color: #d4a017; }
+.act-feedback   .activity-type-badge { background: #d4a017; color: #000; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   12. RESPONSIVE — TABLET (≤1024px)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 1024px) {
-    .charts {
-        grid-template-columns: 1fr;
+    .sidebar {
+        width: 200px;
+        padding: 20px 12px;
     }
+
     .stats-cards {
         grid-template-columns: repeat(2, 1fr);
     }
-}
 
-@media (max-width: 768px) {
-    .stats-cards {
+    .stats-cards.stats-3col {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .charts {
         grid-template-columns: 1fr;
+        grid-auto-rows: 300px;
     }
-    .topbar h1 {
-        font-size: 18px;
+
+    .activity-feed {
+        grid-column: 1;
     }
 }
 
-@media (max-width: 600px) {
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   13. RESPONSIVE — MOBILE (≤768px)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 768px) {
+    /* Stack layout vertically */
     .container {
         flex-direction: column;
     }
+
+    /* Sidebar becomes a top bar */
     .sidebar {
         width: 100%;
         height: auto;
-        position: relative;
+        position: static;
+        padding: 16px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .logo {
+        margin-bottom: 0;
+        flex: 1;
+    }
+
+    /* Show hamburger on mobile */
+    .sidebar-toggle {
+        display: block;
+    }
+
+    /* Nav hidden by default on mobile */
+    .sidebar nav {
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255,255,255,0.15);
+        margin-top: 4px;
+    }
+
+    /* Shown when toggled */
+    .sidebar nav.nav-open {
+        display: flex;
+    }
+
+    .sidebar nav a {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    /* Main content full width */
+    .main {
+        padding: 16px;
+    }
+
+    .topbar {
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+    }
+
+    .topbar h1 {
+        font-size: 17px;
+    }
+
+    .logout {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    /* 2-column stat cards on mobile */
+    .stats-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .stats-cards.stats-3col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card {
+        padding: 18px 12px;
+        min-height: 90px;
+    }
+
+    .stat-card h2 {
+        font-size: 24px;
+    }
+
+    .stat-card p {
+        font-size: 12px;
+    }
+
+    /* Single column charts */
+    .charts {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 260px;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .chart-container {
+        padding: 16px;
+    }
+
+    .chart-container h3 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    /* Activity feed height reduced on mobile */
+    .activity-feed {
+        grid-column: 1;
+        max-height: 340px;
+    }
+
+    .activity-item {
+        padding: 9px 11px;
+        gap: 8px;
+    }
+
+    .activity-icon {
+        min-width: 30px;
+        height: 30px;
+        font-size: 15px;
+    }
+
+    .activity-actor {
+        font-size: 12px;
+    }
+
+    .activity-detail {
+        font-size: 11px;
+    }
+
+    .section-heading {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   14. RESPONSIVE — SMALL MOBILE (≤420px)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 420px) {
+    .stats-cards,
+    .stats-cards.stats-3col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card h2 {
+        font-size: 20px;
+    }
+
+    .topbar h1 {
+        font-size: 15px;
+    }
+
+    .logout {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .charts {
+        grid-auto-rows: 220px;
     }
 }

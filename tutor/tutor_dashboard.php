@@ -28,6 +28,8 @@ $students_count  = $conn->query("SELECT COUNT(DISTINCT tutee_id) as c FROM sessi
 $completed_count = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutor_id = $tutor_id AND session_status = 'Completed'")->fetch_assoc()['c'];
 $upcoming_count  = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutor_id = $tutor_id AND session_status IN ('Accepted', 'Ongoing')")->fetch_assoc()['c'];
 
+$rating_row = $conn->query("SELECT average_rating FROM tutor_profiles WHERE tutor_id = $tutor_id")->fetch_assoc();
+$my_rating = $rating_row ? round($rating_row['average_rating'], 1) : 0;
 // Section 3: Recent Requests
 $pending_requests = $conn->query("SELECT s.requested_schedule, u.name AS tutee_name, sub.subject_name 
     FROM sessions s 
@@ -108,6 +110,7 @@ $recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name A
                 <h2><?php echo $completed_count; ?></h2>
                 <p>Completed</p>
             </div>
+            
         </section>
 
         <section class="bottom">
