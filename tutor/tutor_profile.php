@@ -28,12 +28,24 @@ if (!$status_res || (int)$status_res['is_verified'] === 0) {
 // FROM HERE DOWN: EVERYTHING IS YOUR ORIGINAL UNTOUCHED CODE
 // FETCHING DATA - Updated to pull profile_pic from 'users u'
 $sql = "SELECT 
-            u.name, u.email, u.profile_pic, tp.tutor_id, tp.tutoring_rate, 
-            tp.average_rating,tp.description, tp.phone_number
-        FROM users u 
+            u.name,
+            u.email,
+            u.profile_pic,
+            tp.tutor_id,
+            tp.average_rating,
+            tp.description,
+            tp.phone_number,
+            ts.rate AS tutoring_rate,
+            GROUP_CONCAT(DISTINCT s.subject_name SEPARATOR ', ') AS subject_name
+        FROM users u
         JOIN tutor_profiles tp 
-            ON u.user_id = tp.tutor_id 
-        WHERE u.user_id = ?";
+            ON u.user_id = tp.tutor_id
+        LEFT JOIN tutor_subjects ts
+            ON tp.tutor_id = ts.tutor_id
+        LEFT JOIN subjects s
+            ON ts.subject_id = s.subject_id
+        WHERE u.user_id = ?
+        GROUP BY u.user_id";
 
 $stmt = $conn->prepare($sql);
 

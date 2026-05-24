@@ -291,6 +291,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             const selectedId = subjectSelector.value;
             const selectedText = subjectSelector.options[subjectSelector.selectedIndex] ? subjectSelector.options[subjectSelector.selectedIndex].text : '';
             const rate = rateInput.value;
+            if (!rate || parseFloat(rate) <= 0) {
+    alert('Please enter a valid rate');
+    return;
+}
 
             // Validation
             if (!selectedId) {
@@ -352,10 +356,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return;
             }
 
-            createCard(selectedId, selectedText);
+            createCard(selectedId, selectedText, rate);
         });
 
-        const createCard = (subjectId, subjectText) => {
+        const createCard = (subjectId, subjectText, rate) => {
             const card = document.createElement('div');
             card.className = 'subject-card';
             card.dataset.index = subjectCount;
