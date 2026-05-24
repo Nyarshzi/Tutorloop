@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $upd->execute();
 
-    header("Location: create_tutor_profile.php");
+    header("Location: tutor/tutor_profile.php");
     exit();
 }
 ?>
