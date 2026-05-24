@@ -157,6 +157,8 @@
     border-radius: 10px;
 }
 
+
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {
     .container {

@@ -149,13 +149,14 @@ function getTutorSubjects($conn, $tutor_id) {
                                 </div>
 
                                 <button class="view-btn" 
-                                    onclick="location.href='tutor_view_profile.php?tutor_id=<?php echo $tutor['tutor_id']; ?>'">
+                                    onclick="location.href='/tutorloop/tutor/tutor_view_profile.php?tutor_id=<?php echo $tutor['tutor_id']; ?>'">
                                     View Profile
                                 </button>
                             </div>
-                        </div>
+                        </div
                     <?php endwhile; ?>
-                </div>
+            </div
+
             <?php else: ?>
                 <div class="no-results">
                     <p><?php echo $selected_subject_id > 0 ? 'No tutors found teaching this subject.' : 'No tutors available yet.'; ?></p>

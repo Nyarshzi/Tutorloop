@@ -1,24 +1,35 @@
 // DYNAMIC GREETING
-const title = document.querySelector(".topbar h1");
+document.addEventListener("DOMContentLoaded", function () {
 
-const hour = new Date().getHours();
+    console.log("JS WORKING");
 
-if (hour < 12) {
-  title.textContent = "Good Morning ☀️";
-} else if (hour < 18) {
-  title.textContent = "Good Afternoon 🌤️";
-} else {
-  title.textContent = "Good Evening 🌙";
-}
+    const headerTitle = document.getElementById("greetingText");
 
-// BOTTOM NAV ACTIVE STATE
-const navLinks = document.querySelectorAll(".bottom-nav a");
+    if (!headerTitle) {
+        console.log("greetingText not found");
+        return;
+    }
 
-navLinks.forEach(link => {
-  link.addEventListener("click", () => {
-    navLinks.forEach(l => l.classList.remove("active"));
-    link.classList.add("active");
-  });
+    const tuteeName = headerTitle.dataset.name;
+
+    const hour = new Date().getHours();
+
+    let greeting = "";
+    let emoji = "";
+
+    if (hour >= 5 && hour < 12) {
+        greeting = "Good Morning";
+        emoji = "☀️";
+    } else if (hour >= 12 && hour < 18) {
+        greeting = "Good Afternoon";
+        emoji = "🌤️";
+    } else {
+        greeting = "Good Evening";
+        emoji = "🌙";
+    }
+
+    headerTitle.innerHTML = `${greeting} ${emoji}, ${tuteeName}`;
+
 });
 
 // SEARCH FUNCTION (DEMO)

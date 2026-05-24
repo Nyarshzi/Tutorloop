@@ -62,7 +62,7 @@ if ($selected_tutee_id > 0) {
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
             <h1>Student Messages</h1>
-            <button class="../logout.php" onclick="location.href='logout.php'">Logout</button>
+            <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
 
         <div class="messages">
@@ -99,7 +99,7 @@ if ($selected_tutee_id > 0) {
                     <?php endif; ?>
                 </div>
                 <?php if ($selected_tutee_id > 0): ?>
-                <form actio<form action="/tutorloop/send_message.php"n="send_message.php" method="POST" class="chat-input">
+                 <form action="/tutorloop/send_message.php" method="POST" class="chat-input">
                     <input type="hidden" name="receiver_id" value="<?php echo $selected_tutee_id; ?>">
                     <input type="text" name="message" placeholder="Type a reply..." required autocomplete="off">
                     <button type="submit">Send</button>

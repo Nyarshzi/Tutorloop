@@ -19,7 +19,7 @@
 
 /* CIRCULAR AVATAR BOX */
 .profile-avatar-container {
-    position: relative; /* Necessary for the overlay positioning */
+    position: relative;
     width: 150px;
     height: 150px;
     margin: 0 auto 25px;
@@ -27,6 +27,11 @@
     overflow: hidden;
     border: 4px solid #d4a017;
     cursor: pointer;
+    background: #f1f1f1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .change-pic-overlay {
@@ -52,7 +57,9 @@
 .avatar-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Prevents stretching */
+    object-fit: cover;
+    object-position: center;
+    display: block;
 }
 
 .avatar-placeholder {
@@ -212,3 +219,4 @@
         border-radius: 10px;
     }
 }
+

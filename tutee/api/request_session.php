@@ -18,11 +18,21 @@ if (!isset($_GET['tutor_id']) || empty($_GET['tutor_id'])) {
 $tutor_id = intval($_GET['tutor_id']);
 
 // Load tutor
-$sql = "SELECT tp.tutor_id, u.name, tp.tutoring_rate, tp.subject_id, s.subject_name
+$sql = "SELECT 
+            tp.tutor_id,
+            u.name,
+            tp.tutoring_rate,
+            ts.subject_id,
+            s.subject_name
         FROM tutor_profiles tp
-        INNER JOIN users u ON tp.tutor_id = u.user_id
-        INNER JOIN subjects s ON tp.subject_id = s.subject_id
-        WHERE tp.tutor_id = ? LIMIT 1";
+        INNER JOIN users u 
+            ON tp.tutor_id = u.user_id
+        LEFT JOIN tutor_subjects ts 
+            ON tp.tutor_id = ts.tutor_id
+        LEFT JOIN subjects s 
+            ON ts.subject_id = s.subject_id
+        WHERE tp.tutor_id = ?
+        LIMIT 1";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $tutor_id);
@@ -151,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </form>
 
-    <a href="/tutorloop/tutee/tutee_dashboard.php"href="../tutee_dashboard.php" class="back">← Back</a>
+    <a href="/tutorloop/tutee/tutee_dashboard.php"class="back">← Back</a>
 
 </div>
 

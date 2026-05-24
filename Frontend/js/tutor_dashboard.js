@@ -1,15 +1,36 @@
 //  GREETING
-const headerTitle = document.querySelector(".dashboard-header h1");
+document.addEventListener("DOMContentLoaded", function () {
 
-const hour = new Date().getHours();
+    console.log("JS WORKING");
 
-if (hour < 12) {
-  headerTitle.textContent = "Good Morning, Tutor ☀️";
-} else if (hour < 18) {
-  headerTitle.textContent = "Good Afternoon, Tutor 🌤️";
-} else {
-  headerTitle.textContent = "Good Evening, Tutor 🌙";
-}
+    const headerTitle = document.getElementById("greetingText");
+
+    if (!headerTitle) {
+        console.log("greetingText not found");
+        return;
+    }
+
+    const tutorName = headerTitle.dataset.name;
+
+    const hour = new Date().getHours();
+
+    let greeting = "";
+    let emoji = "";
+
+    if (hour >= 5 && hour < 12) {
+        greeting = "Good Morning";
+        emoji = "☀️";
+    } else if (hour >= 12 && hour < 18) {
+        greeting = "Good Afternoon";
+        emoji = "🌤️";
+    } else {
+        greeting = "Good Evening";
+        emoji = "🌙";
+    }
+
+    headerTitle.innerHTML = `${greeting} ${emoji}, ${tutorName}`;
+
+});
 
 //  TOUCH FEEDBACK
 document.querySelectorAll(".stat-card, .action-card").forEach(el => {

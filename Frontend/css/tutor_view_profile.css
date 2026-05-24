@@ -1,94 +1,174 @@
 .profile-container {
     display: flex;
     justify-content: center;
-    padding-top: 20px;
+    padding: 30px;
 }
 
 .profile-card-view {
     background: white;
     width: 100%;
-    max-width: 700px;
+    max-width: 950px;
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
+/* =========================
+   PROFILE HEADER
+========================= */
+
 .profile-header {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-bottom: 25px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 40px;
+    align-items: start;
 }
 
-.profile-img-container img {
-    width: 150px;
-    height: 150px;
-    border-radius: 15px;
-    object-fit: cover;
-    border: 3px solid var(--gold);
-}
-
-.placeholder-avatar {
-    width: 150px;
-    height: 150px;
-    background: var(--navy);
-    color: white;
-    font-size: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 15px;
+.profile-main-info {
+    width: 100%;
 }
 
 .profile-main-info h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
-.subject-tag {
-    background: #eef2f7;
+    font-size: 38px;
+    margin-bottom: 12px;
     color: var(--navy);
-    padding: 5px 15px;
+}
+
+.rating {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.phone {
+    color: #555;
+    font-size: 16px;
+}
+
+/* =========================
+   PROFILE IMAGE
+========================= */
+
+.profile-img-container {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
     border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
+    border: 3px solid var(--gold);
+    flex-shrink: 0;
 }
 
-.rate {
-    margin-top: 15px;
-    font-size: 18px;
+.profile-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
-hr {
-    border: 0;
-    border-top: 1px solid #eee;
-    margin: 25px 0;
+/* =========================
+   PLACEHOLDER AVATAR
+========================= */
+
+.placeholder-avatar {
+    width: 100%;
+    height: 100%;
+    background: var(--navy);
+    color: white;
+    font-size: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================
+   ABOUT SECTION
+========================= */
+
+.profile-body {
+    margin-top: 10px;
 }
 
 .profile-body h3 {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     color: var(--navy);
+    font-size: 24px;
 }
 
 .bio {
     color: #4a5568;
-    line-height: 1.6;
+    line-height: 1.8;
+    font-size: 16px;
 }
+
+/* =========================
+   SUBJECTS
+========================= */
+
+.subject-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.subject-card h4 {
+    color: var(--navy);
+    margin-bottom: 15px;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background: #f8f8f8;
+    font-weight: 700;
+}
+
+table tr {
+    border-bottom: 1px solid #eee;
+}
+
+/* =========================
+   DIVIDERS
+========================= */
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+
+/* =========================
+   FOOTER BUTTON
+========================= */
 
 .profile-footer {
     margin-top: 35px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .book-btn {
     background: var(--gold);
     color: var(--navy);
     border: none;
-    padding: 15px 40px;
+    padding: 15px 35px;
     border-radius: 12px;
     font-weight: 700;
     font-size: 16px;
     cursor: pointer;
-    width: 100%;
     transition: 0.3s;
 }
 
@@ -97,55 +177,56 @@ hr {
     transform: translateY(-2px);
 }
 
-/* ════════════════════════════════════════
-   MOBILE RESPONSIVENESS
-   ════════════════════════════════════════ */
+/* =========================
+   TABLET RESPONSIVE
+========================= */
 
-/* Tablet and smaller */
 @media (max-width: 768px) {
+
     .profile-container {
-        padding-top: 15px;
+        padding: 20px;
     }
 
     .profile-card-view {
         padding: 30px;
-        max-width: 600px;
     }
 
     .profile-header {
-        gap: 20px;
+        grid-template-columns: 1fr;
+        text-align: center;
     }
 
-    .profile-img-container img {
-        width: 120px;
-        height: 120px;
-    }
-
-    .placeholder-avatar {
-        width: 120px;
-        height: 120px;
-        font-size: 40px;
+    .profile-img-container {
+        margin: 0 auto;
+        width: 170px;
+        height: 170px;
     }
 
     .profile-main-info h2 {
-        font-size: 24px;
+        font-size: 30px;
     }
 
-    .rate {
-        font-size: 16px;
+    .rating {
+        font-size: 20px;
+    }
+
+    .profile-footer {
+        justify-content: center;
     }
 
     .book-btn {
-        padding: 13px 35px;
-        font-size: 15px;
+        width: 100%;
     }
 }
 
-/* Mobile phones */
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
 @media (max-width: 480px) {
+
     .profile-container {
-        padding: 10px;
-        padding-top: 10px;
+        padding: 12px;
     }
 
     .profile-card-view {
@@ -153,63 +234,36 @@ hr {
         border-radius: 15px;
     }
 
-    .profile-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 15px;
-    }
-
-    .profile-img-container img {
-        width: 100px;
-        height: 100px;
+    .profile-img-container {
+        width: 130px;
+        height: 130px;
         border-radius: 50%;
     }
 
     .placeholder-avatar {
-        width: 100px;
-        height: 100px;
-        font-size: 36px;
-        border-radius: 50%;
+        font-size: 50px;
     }
 
     .profile-main-info h2 {
-        font-size: 22px;
-        margin-bottom: 8px;
-    }
-
-    .subject-tag {
-        display: inline-block;
-        font-size: 13px;
-        padding: 4px 12px;
-    }
-
-    .rate {
-        font-size: 16px;
-        margin-top: 12px;
-    }
-
-    hr {
-        margin: 20px 0;
+        font-size: 24px;
     }
 
     .profile-body h3 {
-        font-size: 16px;
-        margin-bottom: 8px;
+        font-size: 20px;
     }
 
     .bio {
         font-size: 14px;
-        line-height: 1.5;
     }
 
-    .profile-footer {
-        margin-top: 28px;
+    table th,
+    table td {
+        font-size: 14px;
+        padding: 8px;
     }
 
     .book-btn {
-        padding: 14px 30px;
-        font-size: 16px;
-        border-radius: 10px;
+        padding: 14px 20px;
+        font-size: 15px;
     }
 }

@@ -101,10 +101,8 @@ $recent_messages = $conn->query("
     <main class="main">
         <header class="topbar">
             <button class="menu-btn" id="menuBtn">☰</button>
-            <h1 class="greeting-full">
-                <?php echo htmlspecialchars($greeting); ?> ☀️, 
-                <?php echo htmlspecialchars($tutee_name); ?> 🎓
-            </h1>
+             <h1 id="greetingText" data-name="<?php echo htmlspecialchars($tutee_name); ?>">
+                Loading...</h1>
             <h1 class="greeting-short">
                 Hi, <?php echo htmlspecialchars($tutee_name); ?>! 👋
             </h1>
@@ -135,7 +133,7 @@ $recent_messages = $conn->query("
         <section class="search-section">
             <div class="box">
                 <h3>Find a Tutor</h3>
-                <form action="search_results.php" method="GET" class="search-bar">
+                <form action="/tutorloop/search_results.php" method="GET" class="search-bar">
                     <input type="text" name="tutor_query" 
                            placeholder="Enter tutor name..." required>
                     <button type="submit" class="search-btn">Search</button>
@@ -172,7 +170,7 @@ $recent_messages = $conn->query("
                 <?php else: ?>
                     <p style="color:#718096; font-size:14px;">
                         No requests yet. 
-                        <a href="search_results.php" 
+                        <a href="/tutorloop/search_results.php" 
                            style="color:var(--gold);">Find a tutor!</a>
                     </p>
                 <?php endif; ?>
@@ -260,5 +258,6 @@ if (overlay) {
     });
 }
 </script>
+<script src="/TutorLoop/Frontend/js/tutee_dashboard.js"></script>
 </body>
 </html>

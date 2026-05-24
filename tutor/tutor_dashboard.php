@@ -86,7 +86,8 @@ $recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name A
 
     <main class="main"> 
         <header class="topbar">
-            <h1><?php echo htmlspecialchars($greeting); ?> ☀️, <?php echo htmlspecialchars($tutor_name); ?></h1>
+           <h1 id="greetingText" data-name="<?php echo htmlspecialchars($tutor_name); ?>">
+    Loading...</h1>
             <a href="/tutorloop/logout.php" class="logout">Logout</a>
         </header>
 
@@ -168,5 +169,6 @@ $recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name A
         </section>
     </main>
 </div>
+ <script src="/TutorLoop/Frontend/js/tutor_dashboard.js"></script>
 </body>
 </html>

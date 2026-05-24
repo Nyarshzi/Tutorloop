@@ -29,7 +29,9 @@ $profile_img = !empty($user['profile_pic']) ? $user['profile_pic'] : null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | TutorLoop</title>
     <link rel="stylesheet" href="../Frontend/css/tutee_dashboard.css">
-    <link rel="stylesheet" href="../Frontend/css/tutee_session.css"
+    <link rel="stylesheet" href="../Frontend/css/tutee_session.css">
+    <link rel="stylesheet" href="../Frontend/css/tutee_profile.css">
+    
 </head>
 <body>
 
@@ -62,11 +64,13 @@ $profile_img = !empty($user['profile_pic']) ? $user['profile_pic'] : null;
             <div class="profile-card">
                 <form id="profilePicForm" action="../upload_profile_pic.php" method="POST" enctype="multipart/form-data">
                     <div class="profile-avatar-container">
-                        <?php if($profile_img): ?>
-                            <img src="../uploads/<?php echo htmlspecialchars($profile_img); ?>" alt="Profile Picture" class="avatar-img">
-                        <?php else: ?>
-                            <div class="avatar-placeholder"><?php echo strtoupper(substr($display_name, 0, 1)); ?></div>
-                        <?php endif; ?>
+                       <?php
+                        $profilePath = (!empty($profile_img) && file_exists("../uploads/" . $profile_img))
+                        ? "../uploads/" . $profile_img
+                        : "../uploads/default.png";
+                        ?>
+
+                        <img src="<?php echo $profilePath; ?>" alt="Profile Picture" class="avatar-img">
                         
                         <input type="file" name="profile_pic" id="fileInput" style="display: none;" onchange="document.getElementById('profilePicForm').submit();">
                         

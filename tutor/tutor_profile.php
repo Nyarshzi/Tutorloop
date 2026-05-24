@@ -104,15 +104,29 @@ if ($result && $result->num_rows > 0) {
                 <div class="profile-header-accent"></div>
                 <div class="profile-content">
                     <div class="avatar-container">
-                        <div class="avatar-frame" style="border-radius: 50%; overflow: hidden; border: 4px solid #d4a017;">
-                            <?php if(!empty($row['profile_pic'])): ?>
-                                <img src="../uploads/.../<?php echo htmlspecialchars($row['profile_pic']); ?>?v=<?php echo time(); ?>" 
-                                     alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="avatar-frame" style="border-radius: 50%; overflow: hidden; border: 4px solid #d4a017;">
+                    <?php
+                    $profilePic = !empty($row['profile_pic'])
+                        ? "../uploads/" . htmlspecialchars($row['profile_pic'])
+                        : "";
+                        ?>
+
+                        <?php if(!empty($row['profile_pic'])): ?>
+
+                        <img src="<?php echo $profilePic; ?>?v=<?php echo time(); ?>"
+                        alt="Profile"
+                        style="width: 100%; height: 100%; object-fit: cover;">
+
                             <?php else: ?>
-                                <span class="avatar-text"><?php echo $initials; ?></span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+
+                            <span class="avatar-text">
+                                <?php echo $initials; ?>
+                            </span>
+
+                        <?php endif; ?>
+
+                </div>
+             </div>
                     
                     <h2 class="profile-name"><?php echo htmlspecialchars($row['name']); ?></h2>
                     <p class="profile-tagline" style="color: #d4a017; font-weight: bold;">
