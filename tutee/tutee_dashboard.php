@@ -113,11 +113,11 @@ $recent_messages = $conn->query("
         <section class="cards">
             <div class="card">
                 <h2><?php echo $completed_count; ?></h2>
-                <p>Completed</p>
+                <p>Completed Sessions</p>
             </div>
             <div class="card">
                 <h2><?php echo $requests_count; ?></h2>
-                <p>Requests</p>
+                <p>Active Requests</p>
             </div>
             <div class="card">
                 <h2><?php echo $subjects_count; ?></h2>
@@ -125,7 +125,7 @@ $recent_messages = $conn->query("
             </div>
             <div class="card">
                 <h2><?php echo $upcoming_count; ?></h2>
-                <p>Upcoming</p>
+                <p>Upcoming Sessions</p>
             </div>
         </section>
 
@@ -211,7 +211,7 @@ $recent_messages = $conn->query("
                 <?php endif; ?>
             </div>
 
-            <div class="box">
+            <div class="box" onclick="location.href='/tutorloop/tutee/tutee_messages.php'" style="cursor:pointer;">
                 <h3>Recent Messages</h3>
                 <?php if ($recent_messages && $recent_messages->num_rows > 0): ?>
                     <?php while($msg = $recent_messages->fetch_assoc()): ?>

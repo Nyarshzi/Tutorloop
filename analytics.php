@@ -60,6 +60,106 @@ while ($row = $role_distribution->fetch_assoc()) {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RECENT PLATFORM ACTIVITY
+// Uses only columns confirmed to exist in the live DB.
+// No timestamp columns — ordered by session_id instead.
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+$activity_query = $conn->query("
+    SELECT activity_type, actor_name, detail, sort_key
+    FROM (
+
+        SELECT 'Session Requested' AS activity_type,
+            tutee.name AS actor_name,
+            CONCAT('Requested ', sub.subject_name, ' with ', tutor.name) AS detail,
+            s.session_id AS sort_key
+        FROM sessions s
+        JOIN users tutee  ON s.tutee_id   = tutee.user_id
+        JOIN users tutor  ON s.tutor_id   = tutor.user_id
+        JOIN subjects sub ON s.subject_id = sub.subject_id
+        WHERE s.session_status = 'Pending'
+
+        UNION ALL
+
+        SELECT 'Session Accepted' AS activity_type,
+            tutor.name AS actor_name,
+            CONCAT('Accepted ', sub.subject_name, ' session with ', tutee.name) AS detail,
+            s.session_id AS sort_key
+        FROM sessions s
+        JOIN users tutor  ON s.tutor_id   = tutor.user_id
+        JOIN users tutee  ON s.tutee_id   = tutee.user_id
+        JOIN subjects sub ON s.subject_id = sub.subject_id
+        WHERE s.session_status = 'Accepted'
+
+        UNION ALL
+
+        SELECT 'Session Completed' AS activity_type,
+            tutee.name AS actor_name,
+            CONCAT('Completed ', sub.subject_name, ' session with ', tutor.name) AS detail,
+            s.session_id AS sort_key
+        FROM sessions s
+        JOIN users tutee  ON s.tutee_id   = tutee.user_id
+        JOIN users tutor  ON s.tutor_id   = tutor.user_id
+        JOIN subjects sub ON s.subject_id = sub.subject_id
+        WHERE s.session_status = 'Completed'
+
+        UNION ALL
+
+        SELECT 'Session Declined' AS activity_type,
+            tutor.name AS actor_name,
+            CONCAT('Declined ', sub.subject_name, ' session request') AS detail,
+            s.session_id AS sort_key
+        FROM sessions s
+        JOIN users tutor  ON s.tutor_id   = tutor.user_id
+        JOIN subjects sub ON s.subject_id = sub.subject_id
+        WHERE s.session_status = 'Declined'
+
+        UNION ALL
+
+        SELECT 'Session Cancelled' AS activity_type,
+            tutee.name AS actor_name,
+            CONCAT('Cancelled ', sub.subject_name, ' session') AS detail,
+            s.session_id AS sort_key
+        FROM sessions s
+        JOIN users tutee  ON s.tutee_id   = tutee.user_id
+        JOIN subjects sub ON s.subject_id = sub.subject_id
+        WHERE s.session_status = 'Cancelled'
+
+        UNION ALL
+
+        SELECT 'Feedback Submitted' AS activity_type,
+            u.name AS actor_name,
+            CONCAT('Rated tutor ', tutor.name, ' - ', fr.rating, '/5 stars') AS detail,
+            fr.feedback_id AS sort_key
+        FROM feedback_ratings fr
+        JOIN sessions s  ON fr.session_id = s.session_id
+        JOIN users u     ON s.tutee_id    = u.user_id
+        JOIN users tutor ON fr.tutor_id   = tutor.user_id
+
+    ) AS activity
+    ORDER BY sort_key DESC
+    LIMIT 8
+");
+
+$activities = [];
+if ($activity_query) {
+    while ($row = $activity_query->fetch_assoc()) {
+        $activities[] = $row;
+    }
+}
+
+function get_activity_meta(string $type): array {
+    return match($type) {
+        'Session Requested'     => ['icon' => '📋', 'class' => 'act-requested'],
+        'Session Accepted'      => ['icon' => '✅', 'class' => 'act-accepted'],
+        'Session Completed'     => ['icon' => '🎓', 'class' => 'act-completed'],
+        'Session Declined'      => ['icon' => '❌', 'class' => 'act-declined'],
+        'Session Cancelled'     => ['icon' => '🚫', 'class' => 'act-cancelled'],
+        'Feedback Submitted'    => ['icon' => '⭐', 'class' => 'act-feedback'],
+        default                 => ['icon' => '🔔', 'class' => 'act-default'],
+    };
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // TUTOR PERSONAL DATA
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 if ($role === 'tutor') {
@@ -78,7 +178,6 @@ if ($role === 'tutor') {
         WHERE tutor_id = $tutor_id")->fetch_assoc();
     $my_rating = $my_rating_row ? round($my_rating_row['average_rating'], 1) : 0;
 
-    // My sessions per subject
     $my_subjects_query = $conn->query("
         SELECT sub.subject_name, COUNT(*) as count
         FROM sessions s
@@ -94,7 +193,6 @@ if ($role === 'tutor') {
         $my_subjects_data[] = $row['count'];
     }
 
-    // My session status breakdown
     $status_query = $conn->query("
         SELECT session_status, COUNT(*) as count
         FROM sessions WHERE tutor_id = $tutor_id
@@ -128,7 +226,6 @@ if ($role === 'tutee') {
     $my_tutors = $conn->query("SELECT COUNT(DISTINCT tutor_id) as count FROM sessions 
         WHERE tutee_id = $tutee_id")->fetch_assoc()['count'];
 
-    // My sessions per subject
     $my_subjects_query = $conn->query("
         SELECT sub.subject_name, COUNT(*) as count
         FROM sessions s
@@ -144,7 +241,6 @@ if ($role === 'tutee') {
         $my_subjects_data[] = $row['count'];
     }
 
-    // My session status breakdown
     $status_query = $conn->query("
         SELECT session_status, COUNT(*) as count
         FROM sessions WHERE tutee_id = $tutee_id
@@ -157,7 +253,6 @@ if ($role === 'tutee') {
         $status_data[] = $row['count'];
     }
 
-    // My tutors and their ratings
     $my_tutors_query = $conn->query("
         SELECT DISTINCT u.name, tp.average_rating
         FROM sessions s
@@ -175,7 +270,6 @@ if ($role === 'tutee') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -186,13 +280,20 @@ if ($role === 'tutee') {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
 <div class="container">
+
+    <!-- ━━━ SIDEBAR ━━━ -->
     <aside class="sidebar">
         <div class="logo">
             <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
-        <nav>
+
+        <!-- Mobile hamburger toggle -->
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">☰</button>
+
+        <nav id="sidebarNav">
             <?php if ($role === 'tutor'): ?>
                 <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
                 <a href="/tutorloop/tutor/tutor_profile.php">My Profile</a>
@@ -214,16 +315,19 @@ if ($role === 'tutee') {
         </nav>
     </aside>
 
+    <!-- ━━━ MAIN CONTENT ━━━ -->
     <main class="main">
+
         <header class="topbar">
             <h1>Analytics</h1>
             <a href="/tutorloop/logout.php" class="logout">Logout</a>
         </header>
 
         <!-- ━━━ PERSONAL STATS ━━━ -->
-        <h2 style="padding: 0 20px; margin-bottom: 10px; color: #0d2a4a;">
+        <h2 class="section-heading">
             <?php echo $role === 'tutor' ? 'My Performance' : 'My Learning Summary'; ?>
         </h2>
+
         <section class="stats-cards">
             <?php if ($role === 'tutor'): ?>
                 <div class="stat-card">
@@ -239,7 +343,7 @@ if ($role === 'tutee') {
                     <p>Pending Requests</p>
                 </div>
                 <div class="stat-card">
-                    <h2><?php echo $my_rating > 0 ? $my_rating . '/10' : 'N/A'; ?></h2>
+                    <h2><?php echo $my_rating > 0 ? $my_rating . '/5' : 'N/A'; ?></h2>
                     <p>My Average Rating</p>
                 </div>
             <?php else: ?>
@@ -267,34 +371,39 @@ if ($role === 'tutee') {
             <div class="chart-container">
                 <h3>My Sessions by Subject</h3>
                 <?php if (empty($my_subjects_data)): ?>
-                    <p>No sessions yet.</p>
+                    <p class="empty-msg">No sessions yet.</p>
                 <?php else: ?>
-                    <canvas id="mySubjectsChart"></canvas>
+                    <div class="chart-wrapper">
+                        <canvas id="mySubjectsChart"></canvas>
+                    </div>
                 <?php endif; ?>
             </div>
 
             <div class="chart-container">
                 <h3>My Session Status Breakdown</h3>
                 <?php if (empty($status_data)): ?>
-                    <p>No sessions yet.</p>
+                    <p class="empty-msg">No sessions yet.</p>
                 <?php else: ?>
-                    <canvas id="myStatusChart"></canvas>
+                    <div class="chart-wrapper">
+                        <canvas id="myStatusChart"></canvas>
+                    </div>
                 <?php endif; ?>
             </div>
 
             <?php if ($role === 'tutee' && !empty($my_tutors_labels)): ?>
             <div class="chart-container">
                 <h3>My Tutors' Ratings</h3>
-                <canvas id="myTutorsChart"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="myTutorsChart"></canvas>
+                </div>
             </div>
             <?php endif; ?>
         </section>
 
         <!-- ━━━ PLATFORM-WIDE STATS ━━━ -->
-        <h2 style="padding: 0 20px; margin: 20px 0 10px; color: #0d2a4a;">
-            Platform Overview
-        </h2>
-        <section class="stats-cards">
+        <h2 class="section-heading">Platform Overview</h2>
+
+        <section class="stats-cards stats-3col">
             <div class="stat-card">
                 <h2><?php echo $total_sessions; ?></h2>
                 <p>Total Sessions Completed</p>
@@ -313,25 +422,72 @@ if ($role === 'tutee') {
         <section class="charts">
             <div class="chart-container">
                 <h3>Most Requested Subjects</h3>
-                <canvas id="subjectsChart"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="subjectsChart"></canvas>
+                </div>
             </div>
+
             <div class="chart-container">
                 <h3>Top Rated Tutors</h3>
                 <?php if (empty($top_tutors_data)): ?>
-                    <p>No ratings submitted yet.</p>
+                    <p class="empty-msg">No ratings submitted yet.</p>
                 <?php else: ?>
-                    <canvas id="tutorsChart"></canvas>
+                    <div class="chart-wrapper">
+                        <canvas id="tutorsChart"></canvas>
+                    </div>
                 <?php endif; ?>
             </div>
+
             <div class="chart-container">
                 <h3>User Distribution</h3>
-                <canvas id="distributionChart"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- ━━━ RECENT PLATFORM ACTIVITY ━━━ -->
+            <div class="chart-container activity-feed">
+                <h3>Recent Platform Activity</h3>
+                <?php if (empty($activities)): ?>
+                    <p class="activity-empty">No recent activity to display.</p>
+                <?php else: ?>
+                    <div class="activity-list" id="activityList">
+                        <?php foreach ($activities as $item):
+                            $meta = get_activity_meta($item['activity_type']);
+                        ?>
+                        <div class="activity-item <?php echo $meta['class']; ?>">
+                            <div class="activity-icon">
+                                <?php echo $meta['icon']; ?>
+                            </div>
+                            <div class="activity-body">
+                                <p class="activity-actor">
+                                    <?php echo htmlspecialchars($item['actor_name']); ?>
+                                    <span class="activity-type-badge">
+                                        <?php echo htmlspecialchars($item['activity_type']); ?>
+                                    </span>
+                                </p>
+                                <p class="activity-detail">
+                                    <?php echo htmlspecialchars($item['detail']); ?>
+                                </p>
+                            </div>
+                            <div class="activity-time">
+                                #<?php echo $item['sort_key']; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </section>
+
     </main>
 </div>
 
 <script>
+// ━━━ CHART DEFAULTS ━━━
+Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+Chart.defaults.color = '#444';
+
 // ━━━ PERSONAL CHARTS ━━━
 <?php if (!empty($my_subjects_data)): ?>
 new Chart(document.getElementById('mySubjectsChart'), {
@@ -343,10 +499,16 @@ new Chart(document.getElementById('mySubjectsChart'), {
             data: <?php echo json_encode($my_subjects_data); ?>,
             backgroundColor: '#d4a017',
             borderColor: '#b88a14',
-            borderWidth: 1
+            borderWidth: 1,
+            borderRadius: 6
         }]
     },
-    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+        plugins: { legend: { display: false } }
+    }
 });
 <?php endif; ?>
 
@@ -358,10 +520,15 @@ new Chart(document.getElementById('myStatusChart'), {
         datasets: [{
             data: <?php echo json_encode($status_data); ?>,
             backgroundColor: ['#d4a017', '#0d2a4a', '#28a745', '#dc3545', '#6c757d'],
-            borderWidth: 1
+            borderWidth: 2,
+            borderColor: '#f1f1f1'
         }]
     },
-    options: { responsive: true }
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { padding: 12, font: { size: 12 } } } }
+    }
 });
 <?php endif; ?>
 
@@ -375,10 +542,16 @@ new Chart(document.getElementById('myTutorsChart'), {
             data: <?php echo json_encode($my_tutors_ratings); ?>,
             backgroundColor: '#0d2a4a',
             borderColor: '#0a1f35',
-            borderWidth: 1
+            borderWidth: 1,
+            borderRadius: 6
         }]
     },
-    options: { responsive: true, scales: { y: { beginAtZero: true, max: 10 } } }
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, max: 5 } },
+        plugins: { legend: { display: false } }
+    }
 });
 <?php endif; ?>
 
@@ -392,10 +565,16 @@ new Chart(document.getElementById('subjectsChart'), {
             data: <?php echo json_encode($subjects_data); ?>,
             backgroundColor: '#d4a017',
             borderColor: '#b88a14',
-            borderWidth: 1
+            borderWidth: 1,
+            borderRadius: 6
         }]
     },
-    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+        plugins: { legend: { display: false } }
+    }
 });
 
 <?php if (!empty($top_tutors_data)): ?>
@@ -408,10 +587,16 @@ new Chart(document.getElementById('tutorsChart'), {
             data: <?php echo json_encode($top_tutors_data); ?>,
             backgroundColor: '#0d2a4a',
             borderColor: '#0a1f35',
-            borderWidth: 1
+            borderWidth: 1,
+            borderRadius: 6
         }]
     },
-    options: { responsive: true, scales: { y: { beginAtZero: true, max: 10 } } }
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, max: 5 } },
+        plugins: { legend: { display: false } }
+    }
 });
 <?php endif; ?>
 
@@ -423,11 +608,42 @@ new Chart(document.getElementById('distributionChart'), {
             data: [<?php echo $tutors_count; ?>, <?php echo $tutees_count; ?>],
             backgroundColor: ['#d4a017', '#0d2a4a'],
             borderColor: ['#b88a14', '#0a1f35'],
-            borderWidth: 1
+            borderWidth: 2
         }]
     },
-    options: { responsive: true }
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { padding: 12, font: { size: 12 } } } }
+    }
 });
+
+// ━━━ SIDEBAR MOBILE TOGGLE ━━━
+const toggleBtn = document.getElementById('sidebarToggle');
+const nav = document.getElementById('sidebarNav');
+if (toggleBtn && nav) {
+    toggleBtn.addEventListener('click', () => {
+        nav.classList.toggle('nav-open');
+        toggleBtn.textContent = nav.classList.contains('nav-open') ? '✕' : '☰';
+    });
+}
+
+// ━━━ AUTO-REFRESH ACTIVITY FEED (every 60 seconds) ━━━
+function refreshActivity() {
+    fetch(window.location.href)
+        .then(r => r.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newList = doc.getElementById('activityList');
+            const currentList = document.getElementById('activityList');
+            if (newList && currentList) {
+                currentList.innerHTML = newList.innerHTML;
+            }
+        })
+        .catch(() => {});
+}
+setInterval(refreshActivity, 60000);
 </script>
 </body>
 </html>

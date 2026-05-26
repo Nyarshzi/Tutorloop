@@ -175,29 +175,35 @@ $result = $stmt->get_result();
             </section>
         <?php endif; ?>
 
-        <section class="cards" style="grid-template-columns: 1fr; gap: 0;">
+        <section class="bottom" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 10px;">
             <?php if ($result && $result->num_rows > 0): ?>
                 <?php while ($row = $result->fetch_assoc()): ?>
-                    <div class="tutor-card">
-                        <div class="tutor-info">
-                            <h3><?php echo htmlspecialchars($row['tutor_name']); ?></h3>
-                            <p><strong>Session:</strong> <?php echo date('F j, Y', strtotime($row['requested_schedule'])); ?> at <?php echo date('g:i A', strtotime($row['requested_schedule'])); ?></p>
-                            <p><strong>Status:</strong> <span class="status-pill"><?php echo htmlspecialchars($row['session_status']); ?></span></p>
+                    <div class="box" style="display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
+                        <div>
+                            <h3 style="margin-bottom: 10px; font-size: 1rem; color: #0d2a4a;">
+                                <?php echo htmlspecialchars($row['tutor_name']); ?>
+                            </h3>
+                            <p style="font-size: 13px; color: #4a5568; margin-bottom: 4px;">
+                                📅 <?php echo date('F j, Y - g:i A', strtotime($row['requested_schedule'])); ?>
+                            </p>
+                            <p style="font-size: 13px; color: #4a5568;">
+                                Status: <span class="status-pill"><?php echo htmlspecialchars($row['session_status']); ?></span>
+                            </p>
                         </div>
-                        <div class="actions">
+                        <div style="margin-top: 8px;">
                             <?php if ($row['rating'] !== null): ?>
-                                <span class="rating-label">Rated: <?php echo htmlspecialchars($row['rating']); ?>/10</span>
+                                <span class="rating-label">⭐ Rated: <?php echo htmlspecialchars($row['rating']); ?>/10</span>
                             <?php elseif ($row['session_status'] === 'Completed'): ?>
-                                <a href="?rate_session_id=<?php echo htmlspecialchars($row['session_id']); ?>" class="rate-btn">Rate</a>
+                                <a href="?rate_session_id=<?php echo htmlspecialchars($row['session_id']); ?>" class="rate-btn" style="width: 100%; text-align: center; display: block;">Rate Tutor</a>
                             <?php else: ?>
-                                <button class="rate-disabled" disabled>Rate disabled</button>
+                                <button class="rate-disabled" disabled style="width: 100%;">Not Yet Rateable</button>
                             <?php endif; ?>
                         </div>
                     </div>
                 <?php endwhile; ?>
             <?php else: ?>
-                <div class="rate-card">
-                    <p>No tutor sessions were found yet.</p>
+                <div class="box">
+                    <p style="color: #718096; font-size: 14px;">No tutor sessions found yet.</p>
                 </div>
             <?php endif; ?>
         </section>
