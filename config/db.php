@@ -6,7 +6,7 @@ $password = "";          // Default XAMPP password is empty
 $dbname = "tutorloop_db"; // Make sure this matches your database name in phpMyAdmin
 
 // Create connection
-$conn = new mysqli($servername, $username, $password, $dbname,3306);
+$conn = new mysqli($servername, $username, $password, $dbname,3307);
 
 // Check connection
 if ($conn->connect_error) {
