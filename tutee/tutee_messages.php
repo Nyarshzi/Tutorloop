@@ -23,6 +23,14 @@ $selected_tutor_id = isset($_GET['tutor_id']) ? (int)$_GET['tutor_id'] : 0;
 $selected_tutor_name = "Select a contact";
 
 if ($selected_tutor_id > 0) {
+    $conn->query("UPDATE messages 
+                  SET is_read = 1 
+                  WHERE sender_id = $selected_tutor_id 
+                  AND receiver_id = $current_user_id 
+                  AND is_read = 0");
+}
+
+if ($selected_tutor_id > 0) {
     $name_query = $conn->prepare("SELECT name FROM users WHERE user_id = ?");
     $name_query->bind_param("i", $selected_tutor_id);
     $name_query->execute();

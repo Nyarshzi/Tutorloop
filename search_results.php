@@ -73,6 +73,7 @@ function getTutorSubjects($conn, $tutor_id) {
             <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
             <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
             <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 

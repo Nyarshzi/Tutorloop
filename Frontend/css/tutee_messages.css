@@ -1,8 +1,8 @@
 /* Container adjustment to fit under your Topbar */
 .messages {
     display: flex;
-    height: calc(100vh - 100px); /* Adjust based on topbar height */
-    margin: 20px;
+    height: calc(100vh - 140px);
+    margin: 0;
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
@@ -16,6 +16,22 @@
     display: flex;
     flex-direction: column;
     background: #fcfcfc;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d4a017 #f5f0e8;
+}
+
+.contacts::-webkit-scrollbar {
+    width: 5px;
+}
+
+.contacts::-webkit-scrollbar-track {
+    background: #f5f0e8;
+}
+
+.contacts::-webkit-scrollbar-thumb {
+    background: #d4a017;
+    border-radius: 10px;
 }
 
 .contacts-title {

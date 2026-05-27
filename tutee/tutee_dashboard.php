@@ -55,7 +55,17 @@ $recent_messages = $conn->query("
     FROM messages m
     JOIN users u ON m.sender_id = u.user_id
     WHERE m.receiver_id = $tutee_id
-    ORDER BY m.date_sent DESC LIMIT 3
+    AND m.is_read = 0
+    AND m.date_sent = (
+        SELECT MAX(m2.date_sent)
+        FROM messages m2
+        WHERE m2.sender_id = m.sender_id
+        AND m2.receiver_id = $tutee_id
+        AND m2.is_read = 0
+    )
+    GROUP BY m.sender_id
+    ORDER BY m.date_sent DESC
+    LIMIT 3
 ");
 ?>
 
@@ -211,11 +221,11 @@ $recent_messages = $conn->query("
                 <?php endif; ?>
             </div>
 
-            <div class="box" onclick="location.href='/tutorloop/tutee/tutee_messages.php'" style="cursor:pointer;">
-                <h3>Recent Messages</h3>
+<div class="box">                <h3>Recent Messages</h3>
                 <?php if ($recent_messages && $recent_messages->num_rows > 0): ?>
                     <?php while($msg = $recent_messages->fetch_assoc()): ?>
-                        <div class="activity-item" onclick="location.href='tutee_messages.php?tutor_id=<?php echo $msg['sender_id']; ?>'" style="cursor:pointer;">
+                        <div class="activity-item" onclick="location.href='/tutorloop/tutee/tutee_messages.php?tutor_id=<?php echo $msg['sender_id']; ?>'" style="cursor:pointer;">
+
                             <p style="margin:0;">
                                 <strong>
                                     <?php echo htmlspecialchars($msg['sender_name']); ?>

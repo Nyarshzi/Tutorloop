@@ -23,8 +23,14 @@ $user_data = $stmt->get_result()->fetch_assoc();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $full_name = $_POST['full_name'];
     $email = $_POST['email'];
-    $phone = $_POST['phone'];
+    $phone = trim($_POST['phone']);
+    $phone = preg_replace('/\s+/', '', $phone);
     $bio = $_POST['bio'];
+
+    if (!preg_match('/^(09\d{9}|\+639\d{9})$/', $phone)) {
+    $error = "Contact number validation failed. Accepted formats are 09XXXXXXXXX and +639XXXXXXXXX.";
+    goto show_form;
+}
     
     // Update profile picture if uploaded
     $profile_pic = $user_data['profile_pic'];
@@ -66,6 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
+<?php show_form: ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="logout.php" class="logout-btn">Logout</a>
         </div>
 
-        <form method="POST" enctype="multipart/form-data" class="profile-grid">
+        <form id="profile_form" method="POST" enctype="multipart/form-data" class="profile-grid">
             <div class="identity-card-column">
                 <div class="identity-card">
                     <div class="card-header">
@@ -136,7 +143,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h3 class="section-title">Personal Information</h3>
                     <div class="form-row"><label>Full Name</label><input type="text" name="full_name" value="<?php echo htmlspecialchars($user_data['name']); ?>" required></div>
                     <div class="form-row"><label>Email Address</label><input type="email" name="email" value="<?php echo htmlspecialchars($user_data['email']); ?>" required></div>
-                    <div class="form-row"><label>Contact Number</label><input type="text" name="phone" value="<?php echo htmlspecialchars($user_data['phone_number'] ?? ''); ?>"></div>
+                    <div class="form-row">
+    <label>Contact Number</label>
+    <input 
+        type="text" 
+        id="phone_number"
+        name="phone" 
+        maxlength="13"
+        placeholder="09XXXXXXXXX or +639XXXXXXXXX"
+        value="<?php echo htmlspecialchars($_POST['phone'] ?? $user_data['phone_number'] ?? ''); ?>"
+    >
+    <small style="color:#999; font-size:12px;">Format: 09XXXXXXXXX or +639XXXXXXXXX</small>
+    <?php if (!empty($error)): ?>
+    <span style="color:#c62828 !important; font-size:13px; font-weight:600; display:block; margin-top:5px;"><?php echo $error; ?></span>
+
+<?php endif; ?>
+    <span class="phone-error-msg" id="phone_error"></span>
+</div>
                 </div>
 
                 <div class="section-card">
@@ -155,5 +178,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <script src="Frontend/js/create_tutor_profile.js"></script>
+<script src="Frontend/js/phone_validation.js"></script>
+<script>
+    attachPhoneValidation('phone_number', 'phone_error');
+    blockIfInvalid('profile_form', 'phone_number');
+</script>
 </body>
 </html>
