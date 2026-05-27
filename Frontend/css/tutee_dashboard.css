@@ -76,7 +76,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--nav
     flex: 1;
     padding: 40px;
     margin-left: 260px;
-    min-height: 100vh;
+    overflow-y: auto;
+    height: 100vh;
 }
 
 /* ─── Topbar ─── */
@@ -309,6 +310,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--nav
     .main {
         margin-left: 0;
         padding: 16px;
+        height: auto;
+        overflow-y: unset;
     }
 
     .menu-btn { display: block; }

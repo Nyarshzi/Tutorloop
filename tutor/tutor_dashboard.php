@@ -54,11 +54,23 @@ $upcoming_sessions = $conn->query("SELECT
     ORDER BY s.requested_schedule ASC LIMIT 3");
 
 // NEW SECTION: Fetch Recent Messages for the Tutor Dashboard 
-$recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name AS tutee_name, m.sender_id
+$recent_messages = $conn->query("
+    SELECT m.message_content, m.date_sent, u.name AS tutee_name, m.sender_id
     FROM messages m
-    JOIN users u ON (m.sender_id = u.user_id)
-    WHERE m.receiver_id = $tutor_id
-    ORDER BY m.date_sent DESC LIMIT 3");
+    JOIN users u ON m.sender_id = u.user_id
+    WHERE m.receiver_id = $tutor_id 
+    AND m.is_read = 0
+    AND m.date_sent = (
+        SELECT MAX(m2.date_sent)
+        FROM messages m2
+        WHERE m2.sender_id = m.sender_id
+        AND m2.receiver_id = $tutor_id
+        AND m2.is_read = 0
+    )
+    GROUP BY m.sender_id
+    ORDER BY m.date_sent DESC
+    LIMIT 3
+");
 ?>
 
 <!DOCTYPE html>
@@ -155,7 +167,7 @@ $recent_messages = $conn->query("SELECT m.message_content, m.date_sent, u.name A
                 <h3>Recent Messages</h3>
                 <?php if ($recent_messages && $recent_messages->num_rows > 0): ?>
                     <?php while($msg = $recent_messages->fetch_assoc()): ?>
-                        <div class="session-item" onclick="location.href='/tutorloop/tutor/tutor_messages.php?tutee_id=<?php echo $msg['sender_id']; ?>'" style="cursor:pointer;">
+<div class="session-item" onclick="location.href='/tutorloop/tutor/tutor_messages.php?tutee_id=<?php echo $msg['sender_id']; ?>'; event.stopPropagation();" style="cursor:pointer;">
                             <p><strong><?php echo htmlspecialchars($msg['tutee_name']); ?></strong></p>
                             <p class="session-details" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 <?php echo htmlspecialchars($msg['message_content']); ?>

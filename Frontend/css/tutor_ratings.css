@@ -21,9 +21,11 @@ body {
     background: #0d2a4a;
     color: white;
     padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
 }
 
 .logo {
@@ -61,6 +63,9 @@ body {
 .main {
     flex: 1;
     padding: 35px;
+    margin-left: 260px;
+    overflow-y: auto;
+    height: 100vh;
 }
 
 .topbar {
@@ -163,15 +168,22 @@ body {
     .topbar h1 {
         font-size: 18px;
     }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main {
+        margin-left: 0;
+        height: auto;
+        overflow-y: unset;
+    }
 }
 
 @media (max-width: 600px) {
     .container {
         flex-direction: column;
-    }
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
     }
 }

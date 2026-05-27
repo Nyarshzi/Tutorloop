@@ -13,13 +13,14 @@ $error = "";
 
 $preselected_session_id = isset($_GET['session_id']) ? intval($_GET['session_id']) : 0;
 
+// Get sessions that are Completed and haven't been rated yet
 $sessions_sql = "SELECT s.session_id, s.tutor_id, s.subject_id,
                         u.name as tutor_name, sub.subject_name
                  FROM sessions s
                  JOIN users u ON s.tutor_id = u.user_id
                  JOIN subjects sub ON s.subject_id = sub.subject_id
                  WHERE s.tutee_id = ?
-                 AND s.session_status IN ('Accepted', 'Completed')
+                 AND s.session_status = 'Completed'
                  ORDER BY s.requested_schedule DESC";
 $sessions_stmt = $conn->prepare($sessions_sql);
 $sessions_stmt->bind_param("i", $tutee_id);
@@ -27,67 +28,22 @@ $sessions_stmt->execute();
 $sessions_result = $sessions_stmt->get_result();
 $sessions_list = [];
 while ($row = $sessions_result->fetch_assoc()) {
-    $sessions_list[] = $row;
+    // Check if already rated
+    $check_rated = $conn->prepare("SELECT feedback_id FROM feedback_ratings WHERE session_id = ?");
+    $check_rated->bind_param("i", $row['session_id']);
+    $check_rated->execute();
+    if ($check_rated->get_result()->num_rows == 0) {
+        $sessions_list[] = $row;
+    }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $session_id = intval($_POST['session_id']);
-    $tutor_id = intval($_POST['tutor_id']);
-    $rating = intval($_POST['rating']);
-    $feedback_comment = trim($_POST['feedback_comment'] ?? '');
-
-    if ($rating < 1 || $rating > 5) {
-        $error = "Please select a star rating.";
-    } else {
-        $check_stmt = $conn->prepare(
-            "SELECT feedback_id FROM feedback_ratings WHERE session_id = ?"
-        );
-        $check_stmt->bind_param("i", $session_id);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
-
-        if ($check_result->num_rows > 0) {
-            $error = "You have already submitted feedback for this session.";
-        } else {
-            $insert_stmt = $conn->prepare(
-                "INSERT INTO feedback_ratings 
-                 (session_id, tutor_id, rating, feedback_comment)
-                 VALUES (?, ?, ?, ?)"
-            );
-            $insert_stmt->bind_param("iiis",
-                $session_id, $tutor_id, $rating, $feedback_comment
-            );
-
-            if ($insert_stmt->execute()) {
-                $avg_stmt = $conn->prepare(
-                    "SELECT AVG(rating) as avg_rating 
-                     FROM feedback_ratings WHERE tutor_id = ?"
-                );
-                $avg_stmt->bind_param("i", $tutor_id);
-                $avg_stmt->execute();
-                $avg_row = $avg_stmt->get_result()->fetch_assoc();
-                $average_rating = round($avg_row['avg_rating'], 1);
-
-                $update_stmt = $conn->prepare(
-                    "UPDATE tutor_profiles 
-                     SET average_rating = ? WHERE tutor_id = ?"
-                );
-                $update_stmt->bind_param("di", $average_rating, $tutor_id);
-                $update_stmt->execute();
-
-                $status_stmt = $conn->prepare(
-                    "UPDATE sessions SET session_status = 'Completed' 
-                     WHERE session_id = ?"
-                );
-                $status_stmt->bind_param("i", $session_id);
-                $status_stmt->execute();
-
-                $success = "Feedback submitted successfully!";
-            } else {
-                $error = "Something went wrong. Please try again.";
-            }
-        }
-    }
+// Rating label mapping function
+function getRatingLabel($rating) {
+    if ($rating >= 10) return 'Excellent';
+    if ($rating >= 8) return 'Very Good';
+    if ($rating >= 6) return 'Good';
+    if ($rating >= 4) return 'Fair';
+    return 'Poor';
 }
 ?>
 
@@ -96,9 +52,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Feedback | TutorLoop</title>
+    <title>Rate Your Session | TutorLoop</title>
     <link rel="stylesheet" href="Frontend/css/tutee_dashboard.css">
     <link rel="stylesheet" href="Frontend/css/tutee_session.css">
+    <link rel="stylesheet" href="Frontend/css/rating.css">
 </head>
 <body>
 <div class="container">
@@ -119,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <main class="main">
         <header class="topbar">
-            <h1>Submit Feedback</h1>
+            <h1>Rate Your Session</h1>
             <button class="logout" onclick="location.href='logout.php'">Logout</button>
         </header>
 
@@ -143,8 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
 
             <div class="session-card">
-                <form method="POST">
-
+                <form id="ratingForm">
                     <!-- Session Selector -->
                     <div style="margin-bottom:16px;">
                         <label style="font-weight:600; display:block; margin-bottom:6px;">
@@ -169,27 +125,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <input type="hidden" name="tutor_id" id="tutor_id">
 
-                    <!-- Star Rating -->
+                    <!-- 1-10 Rating Buttons -->
                     <div style="margin-bottom:16px;">
                         <label style="font-weight:600; display:block; margin-bottom:6px;">
-                            Rating: 
+                            Your Rating: 
                             <span style="color:#dc3545; font-size:13px;">* required</span>
                         </label>
-                        <div class="star-rating" 
-                             style="display:flex; gap:8px; font-size:36px; cursor:pointer;">
-                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <label style="cursor:pointer; margin:0;">
-                                    <input type="radio" name="rating" 
-                                           value="<?php echo $i; ?>"
-                                           required
-                                           style="display:none;">
-                                    <span class="star-label" 
-                                          data-value="<?php echo $i; ?>"
-                                          style="color:#ccc; transition:color 0.1s;">
-                                        ★
-                                    </span>
-                                </label>
+                        <div class="rating-container" id="ratingContainer">
+                            <?php for ($i = 1; $i <= 10; $i++): ?>
+                                <button type="button" class="rating-btn" 
+                                        data-value="<?php echo $i; ?>" 
+                                        onclick="selectRating(<?php echo $i; ?>)">
+                                    <?php echo $i; ?>
+                                </button>
                             <?php endfor; ?>
+                        </div>
+                        <div class="rating-label" id="ratingLabel">
+                            Click a number to rate
                         </div>
                     </div>
 
@@ -201,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 (optional)
                             </span>
                         </label>
-                        <textarea name="feedback_comment"
+                        <textarea name="feedback_comment" id="feedback_comment"
                                   placeholder="Share your experience with this tutor..."
                                   style="width:100%; padding:10px; border-radius:8px;
                                          border:1px solid #ddd; font-size:14px;
@@ -209,15 +161,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                          box-sizing:border-box;"></textarea>
                     </div>
 
-                    <!-- Done Button -->
-                    <button type="submit"
-                            style="width:100%; padding:14px; font-size:16px;
-                                   font-weight:600; background:#C89B3C; color:#fff;
-                                   border:none; border-radius:8px; cursor:pointer;
-                                   transition:background 0.2s;">
-                        Done
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="rating-submit-btn" disabled>
+                        Submit Rating
                     </button>
-
                 </form>
             </div>
         </section>
@@ -225,7 +172,105 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <script>
-// Auto fill tutor_id on page load if session is preselected
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RATING SELECTION LOGIC
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let selectedRating = null;
+
+function getRatingLabel(rating) {
+    if (rating >= 10) return 'Excellent';
+    if (rating >= 8) return 'Very Good';
+    if (rating >= 6) return 'Good';
+    if (rating >= 4) return 'Fair';
+    return 'Poor';
+}
+
+function selectRating(value) {
+    selectedRating = value;
+    
+    // Update button styles
+    document.querySelectorAll('.rating-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (parseInt(btn.dataset.value) === value) {
+            btn.classList.add('selected');
+        }
+    });
+    
+    // Update label
+    document.getElementById('ratingLabel').textContent = getRatingLabel(value);
+    
+    // Enable submit button
+    document.getElementById('submitBtn').disabled = false;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FORM SUBMISSION (AJAX)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+document.getElementById('ratingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (!selectedRating) {
+        alert('Please select a rating.');
+        return;
+    }
+    
+    const sessionId = document.getElementById('session_id').value;
+    const tutorId = document.getElementById('tutor_id').value;
+    const comment = document.getElementById('feedback_comment').value;
+    
+    if (!sessionId) {
+        alert('Please select a session.');
+        return;
+    }
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    const formData = new FormData();
+    formData.append('session_id', sessionId);
+    formData.append('rating', selectedRating);
+    formData.append('comment', comment);
+    
+    fetch('/tutorloop/tutee/api/submit_rating.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show thank you message
+            const formContainer = document.querySelector('.session-card');
+            formContainer.innerHTML = `
+                <div class="thank-you-message">
+                    <div class="thank-you-icon">🎉</div>
+                    <h3>Thank you for your rating!</h3>
+                    <p>Your feedback helps improve our tutoring community.</p>
+                    <a href="/tutorloop/tutee/tutee_session.php" 
+                       style="display:inline-block; margin-top:16px; padding:12px 24px;
+                              background:#d4a017; color:#fff; text-decoration:none;
+                              border-radius:8px; font-weight:600;">
+                        Back to My Sessions
+                    </a>
+                </div>
+            `;
+        } else {
+            alert('Error: ' + (data.error || 'Something went wrong.'));
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Rating';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Rating';
+    });
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AUTO FILL TUTOR ID
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 window.addEventListener('load', function() {
     const select = document.getElementById("session_id");
     if (select.value) {
@@ -241,32 +286,6 @@ function fillTutorId() {
                         .getAttribute("data-tutor");
     document.getElementById("tutor_id").value = tutor;
 }
-
-// Star rating interaction
-const starLabels = document.querySelectorAll('.star-label');
-const radios = document.querySelectorAll('input[name="rating"]');
-
-function updateStars(selectedIndex) {
-    starLabels.forEach((star, i) => {
-        star.style.color = i <= selectedIndex ? '#f5a623' : '#ccc';
-    });
-}
-
-starLabels.forEach((star, index) => {
-    star.addEventListener('mouseover', () => {
-        updateStars(index);
-    });
-    star.addEventListener('click', () => {
-        radios[index].checked = true;
-        updateStars(index);
-    });
-});
-
-document.querySelector('.star-rating').addEventListener('mouseleave', () => {
-    const checked = document.querySelector('input[name="rating"]:checked');
-    const checkedIndex = checked ? parseInt(checked.value) - 1 : -1;
-    updateStars(checkedIndex);
-});
 </script>
 </body>
 </html>

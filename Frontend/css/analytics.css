@@ -25,16 +25,14 @@ body {
    2. SIDEBAR
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .sidebar {
-    width: 240px;
+    width: 260px;
     background: #0d2a4a;
     color: white;
     padding: 28px 18px;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    position: sticky;
-    top: 0;
     height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
     overflow-y: auto;
 }
 
@@ -91,6 +89,9 @@ body {
 .main {
     flex: 1;
     padding: 28px;
+    margin-left: 260px;
+    overflow-y: auto;
+    height: 100vh;
     min-width: 0; /* prevents flex overflow */
     overflow-x: hidden;
 }
@@ -452,6 +453,9 @@ body {
     /* Main content full width */
     .main {
         padding: 16px;
+        margin-left: 0;
+        height: auto;
+        overflow-y: unset;
     }
 
     .topbar {

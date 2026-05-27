@@ -9,6 +9,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
 
 $tutor_id = $_SESSION['user_id'];
 
+// Rating label mapping function
+function getRatingLabel($rating) {
+    if ($rating >= 10) return 'Excellent';
+    if ($rating >= 8) return 'Very Good';
+    if ($rating >= 6) return 'Good';
+    if ($rating >= 4) return 'Fair';
+    return 'Poor';
+}
+
 // Get average rating
 $avg_stmt = $conn->prepare(
     "SELECT average_rating FROM tutor_profiles WHERE tutor_id = ?"
@@ -85,14 +94,17 @@ $feedback_result = $feedback_stmt->get_result();
                 <h2>
                     Overall Rating: 
                     <?php echo $avg_rating > 0 
-                        ? number_format($avg_rating, 1) . '/5.0' 
+                        ? number_format($avg_rating, 1) . '/10' 
                         : 'No ratings yet'; ?>
                 </h2>
                 <?php if ($avg_rating > 0): ?>
                 <div class="stars" style="font-size:28px;">
-                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <span style="color: <?php echo $i <= round($avg_rating) 
-                            ? '#f5a623' : '#ccc'; ?>;">★</span>
+                    <?php
+                    // Convert 1-10 scale to visual stars (out of 5)
+                    $visual_stars = round($avg_rating / 2);
+                    for ($i = 1; $i <= 5; $i++): ?>
+                        <span style="color: <?php echo $i <= $visual_stars 
+                            ? '#d4a017' : '#ccc'; ?>;">★</span>
                     <?php endfor; ?>
                 </div>
                 <p style="color:#666; margin-top:4px;">
@@ -111,12 +123,20 @@ $feedback_result = $feedback_stmt->get_result();
                 <?php while($row = $feedback_result->fetch_assoc()): ?>
                 <div class="feedback-card">
                     <div class="rating" style="font-size:20px; margin-bottom:6px;">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <span style="color: <?php echo $i <= $row['rating'] 
-                                ? '#f5a623' : '#ccc'; ?>;">★</span>
+                        <?php
+                        // Convert 1-10 rating to visual stars (out of 5)
+                        $visual_stars = round($row['rating'] / 2);
+                        for ($i = 1; $i <= 5; $i++): ?>
+                            <span style="color: <?php echo $i <= $visual_stars 
+                                ? '#d4a017' : '#ccc'; ?>;">★</span>
                         <?php endfor; ?>
                         <span style="font-size:14px; color:#666; margin-left:6px;">
-                            <?php echo $row['rating']; ?>/5
+                            <?php echo $row['rating']; ?>/10
+                        </span>
+                        <span class="rating-badge <?php 
+                            echo strtolower(str_replace(' ', '-', getRatingLabel($row['rating']))); 
+                        ?>">
+                            <?php echo getRatingLabel($row['rating']); ?>
                         </span>
                     </div>
 

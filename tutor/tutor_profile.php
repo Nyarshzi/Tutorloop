@@ -171,18 +171,76 @@ if ($result && $result->num_rows > 0) {
                     <h3>Personal Information</h3>
                     <p><strong>Full Name:</strong> <?php echo htmlspecialchars($row['name']); ?></p>
                     <p><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
-                    <p><strong>Phone:</strong> <?php echo !empty($row['phone_number']) ? htmlspecialchars($row['phone_number']) : 'Not set'; ?></p> 
+                    <p><strong>Phone:</strong> <?php echo !empty($row['phone_number']) ? htmlspecialchars($row['phone_number']) : 'Not set'; ?></p>
                 </div>
 
                 <div class="detail-box">
-                    <h3>Tutoring Details</h3>
-                    <p><strong>Subject:</strong> <?php echo htmlspecialchars($row['subject_name'] ?? 'Not set'); ?></p>
-                    <p><strong>Rate per Hour:</strong> ₱<?php echo number_format($row['tutoring_rate'], 2); ?></p>
-                </div>
+    <h3>Tutoring Details</h3>
+    <div class="subjects-scroll">
+    <?php
+    $subjects_sql = "SELECT ts.id, s.subject_name, ts.rate
+                     FROM tutor_subjects ts
+                     JOIN subjects s ON ts.subject_id = s.subject_id
+                     WHERE ts.tutor_id = ?
+                     ORDER BY ts.id ASC";
+    $subjects_stmt = $conn->prepare($subjects_sql);
+    $subjects_stmt->bind_param("i", $user_id);
+    $subjects_stmt->execute();
+    $subjects_result = $subjects_stmt->get_result();
+
+    if ($subjects_result->num_rows > 0):
+        while ($subj = $subjects_result->fetch_assoc()):
+            $avail_sql = "SELECT day_of_week, start_time, end_time
+                          FROM tutor_availability
+                          WHERE tutor_subject_id = ?
+                          ORDER BY FIELD(day_of_week,
+                          'Monday','Tuesday','Wednesday',
+                          'Thursday','Friday','Saturday','Sunday')";
+            $avail_stmt = $conn->prepare($avail_sql);
+            $avail_stmt->bind_param("i", $subj['id']);
+            $avail_stmt->execute();
+            $avail_result = $avail_stmt->get_result();
+    ?>
+        <div class="subject-detail-card">
+    <div class="subject-detail-header">
+        <p class="subject-detail-name"><?php echo htmlspecialchars($subj['subject_name']); ?></p>
+        <span class="subject-detail-rate">₱<?php echo number_format($subj['rate'], 2); ?>/hr</span>
+    </div>
+    <?php if ($avail_result->num_rows > 0): ?>
+        <table class="subject-schedule-table">
+            <tr>
+                <th>Day</th>
+                <th>Start</th>
+                <th>End</th>
+            </tr>
+            <?php while ($avail = $avail_result->fetch_assoc()): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($avail['day_of_week']); ?></td>
+                <td><?php echo date('g:i A', strtotime($avail['start_time'])); ?></td>
+                <td><?php echo date('g:i A', strtotime($avail['end_time'])); ?></td>
+            </tr>
+            <?php endwhile; ?>
+        </table>
+    <?php else: ?>
+        <p class="no-schedule-msg">No schedule set.</p>
+    <?php endif; ?>
+</div>
+    <?php
+        endwhile;
+    else:
+    ?>
+            <p class="no-subjects-msg">No subjects added yet. Go to <a href="/tutorloop/tutor/tutor_myschedule.php">My Schedule</a> to add subjects.</p>
+    <?php endif; ?>
+    </div>
+</div>
             </div>
         </section>
     </main>
 </div>
-
+<script src="../Frontend/js/phone_validation.js"></script>
+<script>
+    attachPhoneValidation('phone_number', 'phone_error');
+    blockIfInvalid('your_form_id', 'phone_number');
+</script>
 </body>
 </html>

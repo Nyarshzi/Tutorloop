@@ -34,7 +34,7 @@ while ($row = $subjects_query->fetch_assoc()) {
     $subjects_data[] = $row['count'];
 }
 
-// 3. Top rated tutors platform-wide
+// 3. Top rated tutors platform-wide (1-10 scale)
 $top_tutors_query = $conn->query("
     SELECT u.name, AVG(fr.rating) as avg_rating
     FROM feedback_ratings fr
@@ -64,81 +64,176 @@ while ($row = $role_distribution->fetch_assoc()) {
 // Uses only columns confirmed to exist in the live DB.
 // No timestamp columns — ordered by session_id instead.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-$activity_query = $conn->query("
-    SELECT activity_type, actor_name, detail, sort_key
-    FROM (
+if ($role === 'tutor') {
+    $activity_stmt = $conn->prepare("
+        SELECT activity_type, actor_name, detail, sort_key
+        FROM (
 
-        SELECT 'Session Requested' AS activity_type,
-            tutee.name AS actor_name,
-            CONCAT('Requested ', sub.subject_name, ' with ', tutor.name) AS detail,
-            s.session_id AS sort_key
-        FROM sessions s
-        JOIN users tutee  ON s.tutee_id   = tutee.user_id
-        JOIN users tutor  ON s.tutor_id   = tutor.user_id
-        JOIN subjects sub ON s.subject_id = sub.subject_id
-        WHERE s.session_status = 'Pending'
+            SELECT 'Session Requested' AS activity_type,
+                tutee.name AS actor_name,
+                CONCAT('Requested ', sub.subject_name) AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Pending'
+            AND s.tutor_id = ?
 
-        UNION ALL
+            UNION ALL
 
-        SELECT 'Session Accepted' AS activity_type,
-            tutor.name AS actor_name,
-            CONCAT('Accepted ', sub.subject_name, ' session with ', tutee.name) AS detail,
-            s.session_id AS sort_key
-        FROM sessions s
-        JOIN users tutor  ON s.tutor_id   = tutor.user_id
-        JOIN users tutee  ON s.tutee_id   = tutee.user_id
-        JOIN subjects sub ON s.subject_id = sub.subject_id
-        WHERE s.session_status = 'Accepted'
+            SELECT 'Session Accepted' AS activity_type,
+                tutor.name AS actor_name,
+                CONCAT('Accepted ', sub.subject_name, ' with ', tutee.name) AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Accepted'
+            AND s.tutor_id = ?
 
-        UNION ALL
+            UNION ALL
 
-        SELECT 'Session Completed' AS activity_type,
-            tutee.name AS actor_name,
-            CONCAT('Completed ', sub.subject_name, ' session with ', tutor.name) AS detail,
-            s.session_id AS sort_key
-        FROM sessions s
-        JOIN users tutee  ON s.tutee_id   = tutee.user_id
-        JOIN users tutor  ON s.tutor_id   = tutor.user_id
-        JOIN subjects sub ON s.subject_id = sub.subject_id
-        WHERE s.session_status = 'Completed'
+            SELECT 'Session Completed' AS activity_type,
+                tutor.name AS actor_name,
+                CONCAT('Completed ', sub.subject_name, ' with ', tutee.name) AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Completed'
+            AND s.tutor_id = ?
 
-        UNION ALL
+            UNION ALL
 
-        SELECT 'Session Declined' AS activity_type,
-            tutor.name AS actor_name,
-            CONCAT('Declined ', sub.subject_name, ' session request') AS detail,
-            s.session_id AS sort_key
-        FROM sessions s
-        JOIN users tutor  ON s.tutor_id   = tutor.user_id
-        JOIN subjects sub ON s.subject_id = sub.subject_id
-        WHERE s.session_status = 'Declined'
+            SELECT 'Session Declined' AS activity_type,
+                tutor.name AS actor_name,
+                CONCAT('Declined ', sub.subject_name, ' request') AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Declined'
+            AND s.tutor_id = ?
 
-        UNION ALL
+            UNION ALL
 
-        SELECT 'Session Cancelled' AS activity_type,
-            tutee.name AS actor_name,
-            CONCAT('Cancelled ', sub.subject_name, ' session') AS detail,
-            s.session_id AS sort_key
-        FROM sessions s
-        JOIN users tutee  ON s.tutee_id   = tutee.user_id
-        JOIN subjects sub ON s.subject_id = sub.subject_id
-        WHERE s.session_status = 'Cancelled'
+            SELECT 'Session Cancelled' AS activity_type,
+                tutee.name AS actor_name,
+                CONCAT('Cancelled ', sub.subject_name, ' session') AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Cancelled'
+            AND s.tutor_id = ?
 
-        UNION ALL
+            UNION ALL
 
-        SELECT 'Feedback Submitted' AS activity_type,
-            u.name AS actor_name,
-            CONCAT('Rated tutor ', tutor.name, ' - ', fr.rating, '/5 stars') AS detail,
-            fr.feedback_id AS sort_key
-        FROM feedback_ratings fr
-        JOIN sessions s  ON fr.session_id = s.session_id
-        JOIN users u     ON s.tutee_id    = u.user_id
-        JOIN users tutor ON fr.tutor_id   = tutor.user_id
+            SELECT 'Feedback Received' AS activity_type,
+                u.name AS actor_name,
+                CONCAT('Rated you ', fr.rating, '/10') AS detail,
+                fr.feedback_id AS sort_key
+            FROM feedback_ratings fr
+            JOIN sessions s  ON fr.session_id = s.session_id
+            JOIN users u     ON s.tutee_id    = u.user_id
+            WHERE fr.tutor_id = ?
 
-    ) AS activity
-    ORDER BY sort_key DESC
-    LIMIT 8
-");
+        ) AS activity
+        ORDER BY sort_key DESC
+        LIMIT 8
+    ");
+    $activity_stmt->bind_param("iiiiii", $user_id, $user_id, $user_id, $user_id, $user_id, $user_id);
+
+} else {
+    $activity_stmt = $conn->prepare("
+        SELECT activity_type, actor_name, detail, sort_key
+        FROM (
+
+            SELECT 'Session Requested' AS activity_type,
+                tutee.name AS actor_name,
+                CONCAT('Requested ', sub.subject_name, ' with ', tutor.name) AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Pending'
+            AND s.tutee_id = ?
+
+            UNION ALL
+
+            SELECT 'Session Accepted' AS activity_type,
+                tutor.name AS actor_name,
+                CONCAT('Accepted your ', sub.subject_name, ' request') AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Accepted'
+            AND s.tutee_id = ?
+
+            UNION ALL
+
+            SELECT 'Session Completed' AS activity_type,
+                tutee.name AS actor_name,
+                CONCAT('Completed ', sub.subject_name, ' with ', tutor.name) AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Completed'
+            AND s.tutee_id = ?
+
+            UNION ALL
+
+            SELECT 'Session Declined' AS activity_type,
+                tutor.name AS actor_name,
+                CONCAT('Declined your ', sub.subject_name, ' request') AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutor  ON s.tutor_id   = tutor.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Declined'
+            AND s.tutee_id = ?
+
+            UNION ALL
+
+            SELECT 'Session Cancelled' AS activity_type,
+                tutee.name AS actor_name,
+                CONCAT('Cancelled ', sub.subject_name, ' session') AS detail,
+                s.session_id AS sort_key
+            FROM sessions s
+            JOIN users tutee  ON s.tutee_id   = tutee.user_id
+            JOIN subjects sub ON s.subject_id = sub.subject_id
+            WHERE s.session_status = 'Cancelled'
+            AND s.tutee_id = ?
+
+            UNION ALL
+
+            SELECT 'Feedback Submitted' AS activity_type,
+                u.name AS actor_name,
+                CONCAT('You rated ', tutor.name, ' ', fr.rating, '/10') AS detail,
+                fr.feedback_id AS sort_key
+            FROM feedback_ratings fr
+            JOIN sessions s  ON fr.session_id = s.session_id
+            JOIN users u     ON s.tutee_id    = u.user_id
+            JOIN users tutor ON fr.tutor_id   = tutor.user_id
+            WHERE s.tutee_id = ?
+
+        ) AS activity
+        ORDER BY sort_key DESC
+        LIMIT 8
+    ");
+    $activity_stmt->bind_param("iiiiii", $user_id, $user_id, $user_id, $user_id, $user_id, $user_id);
+}
+
+$activity_stmt->execute();
+$activity_query = $activity_stmt->get_result();
 
 $activities = [];
 if ($activity_query) {
@@ -146,6 +241,7 @@ if ($activity_query) {
         $activities[] = $row;
     }
 }
+
 
 function get_activity_meta(string $type): array {
     return match($type) {
@@ -343,7 +439,7 @@ if ($role === 'tutee') {
                     <p>Pending Requests</p>
                 </div>
                 <div class="stat-card">
-                    <h2><?php echo $my_rating > 0 ? $my_rating . '/5' : 'N/A'; ?></h2>
+                    <h2><?php echo $my_rating > 0 ? $my_rating . '/10' : 'N/A'; ?></h2>
                     <p>My Average Rating</p>
                 </div>
             <?php else: ?>
@@ -549,7 +645,7 @@ new Chart(document.getElementById('myTutorsChart'), {
     options: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: { y: { beginAtZero: true, max: 5 } },
+        scales: { y: { beginAtZero: true, max: 10 } },
         plugins: { legend: { display: false } }
     }
 });
@@ -594,7 +690,7 @@ new Chart(document.getElementById('tutorsChart'), {
     options: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: { y: { beginAtZero: true, max: 5 } },
+        scales: { y: { beginAtZero: true, max: 10 } },
         plugins: { legend: { display: false } }
     }
 });

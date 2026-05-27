@@ -41,164 +41,7 @@ if (!$tutor) {
     <link rel="stylesheet" href="../Frontend/css/tutee_dashboard.css">
     <link rel="stylesheet" href="../Frontend/css/tutor_view_profile.css">
 
-    <style>
-        .profile-container {
-            display: flex;
-            justify-content: center;
-            padding: 30px;
-        }
-
-        .profile-card-view {
-            background: #fff;
-            width: 100%;
-            max-width: 950px;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        .profile-header {
-            display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 40px;
-            align-items: start;
-        }
-
-        .profile-img-container {
-            width: 200px;
-            height: 200px;
-            overflow: hidden;
-            border-radius: 20px;
-            border: 3px solid #d4a017;
-            flex-shrink: 0;
-        }
-
-        .profile-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .placeholder-avatar {
-            width: 100%;
-            height: 100%;
-            background: #0b2c59;
-            color: white;
-            font-size: 70px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .profile-main-info h2 {
-            font-size: 42px;
-            margin-bottom: 10px;
-            color: #0b2c59;
-        }
-
-        .rating {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-
-        .phone {
-            font-size: 17px;
-            color: #444;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #e5e5e5;
-            margin: 30px 0;
-        }
-
-        .profile-body h3 {
-            color: #0b2c59;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        .bio {
-            line-height: 1.8;
-            color: #555;
-            font-size: 16px;
-        }
-
-        .subject-card {
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .subject-card h4 {
-            margin-bottom: 15px;
-            color: #0b2c59;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th,
-        table td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        table th {
-            background: #f8f8f8;
-        }
-
-        table tr {
-            border-bottom: 1px solid #eee;
-        }
-
-        .profile-footer {
-            margin-top: 35px;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .book-btn {
-            background: #d4a017;
-            color: #0b2c59;
-            border: none;
-            padding: 15px 35px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .book-btn:hover {
-            background: #b88a14;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-
-            .profile-header {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .profile-img-container {
-                margin: 0 auto;
-            }
-
-            .profile-main-info h2 {
-                font-size: 32px;
-            }
-
-            .profile-footer {
-                justify-content: center;
-            }
-        }
-    </style>
+    
 </head>
 
 <body>
@@ -225,11 +68,6 @@ if (!$tutor) {
     <main class="main">
 
         <header class="topbar">
-            <!-- FIX: corrected path case from /TutorLoop/ to /tutorloop/ -->
-            <a href="/tutorloop/search_results.php" class="logout">
-                ← Back to Search
-            </a>
-
             <h1>Tutor Profile</h1>
         </header>
 
@@ -421,15 +259,14 @@ if (!$tutor) {
 
                 <!-- BUTTON -->
                 <div class="profile-footer">
-
-                    <button class="book-btn"
-                        onclick="location.href='/tutorloop/tutee/api/request_session.php?tutor_id=<?php echo $tutor_id; ?>'">
-
-                        Request a Session
-
-                    </button>
-
-                </div>
+    <a href="/TutorLoop/search_results.php" class="back-btn">
+        ← Back to Search
+    </a>
+    <button class="book-btn"
+        onclick="location.href='/tutorloop/tutee/api/request_session.php?tutor_id=<?php echo $tutor_id; ?>'">
+        Request a Session
+    </button>
+</div>
 
             </div>
 

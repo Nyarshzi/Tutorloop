@@ -9,13 +9,29 @@
 body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--navy); }
 
 .container { display: flex; min-height: 100vh; }
-.sidebar { width: 260px; background: var(--navy); color: white; padding: 35px 0; flex-shrink: 0; }
+.sidebar {
+    width: 260px;
+    background: var(--navy);
+    color: white;
+    padding: 35px 0;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+}
 .sidebar-header { padding: 0 25px; margin-bottom: 40px; display: flex; align-items: center; gap: 15px; }
 .sidebar-logo { width: 45px; }
 .sidebar nav a { padding: 16px 25px; color: #a0aec0; text-decoration: none; display: block; }
 .sidebar nav a.active { background: var(--gold); color: var(--navy); font-weight: 700; border-radius: 0 25px 25px 0; margin-right: 20px; }
 
-.main { flex: 1; padding: 40px; }
+.main {
+    flex: 1;
+    padding: 40px;
+    margin-left: 260px;
+    overflow-y: auto;
+    height: 100vh;
+}
 .top-banner { background: var(--navy); color: white; padding: 25px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .logout-btn { background: var(--white); color: var(--navy); padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
 
@@ -341,6 +357,9 @@ textarea { min-height: 100px; width: 100%; resize: vertical; }
 
     .main {
         padding: 20px;
+        margin-left: 0;
+        height: auto;
+        overflow-y: unset;
     }
 
     .top-banner {
@@ -395,6 +414,9 @@ textarea { min-height: 100px; width: 100%; resize: vertical; }
 @media (max-width: 480px) {
     .main {
         padding: 15px;
+        margin-left: 0;
+        height: auto;
+        overflow-y: unset;
     }
 
     .top-banner {

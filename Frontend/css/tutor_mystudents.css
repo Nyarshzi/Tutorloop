@@ -12,7 +12,7 @@ body {
 /* LAYOUT */
 .container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 /* SIDEBAR */
@@ -21,6 +21,11 @@ body {
     background: #0d2a4a;
     color: white;
     padding: 20px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
 }
 
 .logo {
@@ -58,6 +63,9 @@ body {
 .main {
     flex: 1;
     padding: 20px 25px;
+    margin-left: 260px;
+    overflow-y: auto;
+    height: 100vh;
 }
 
 /* TOPBAR */
@@ -156,5 +164,19 @@ body {
 
     .sidebar.active {
         left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        left: -260px;
+        position: fixed;
+        height: 100vh;
+    }
+
+    .main {
+        margin-left: 0;
+        height: auto;
+        overflow-y: unset;
     }
 }

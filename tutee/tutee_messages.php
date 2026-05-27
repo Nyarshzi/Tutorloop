@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("../config/db.php");
-$conn = new mysqli("localhost", "root", "", "tutorloop_db", 3307);
+$conn = new mysqli("localhost", "root", "", "tutorloop_db", 3306);
 
 if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
@@ -21,6 +21,14 @@ $contacts_result = $conn->query($contacts_sql);
 
 $selected_tutor_id = isset($_GET['tutor_id']) ? (int)$_GET['tutor_id'] : 0;
 $selected_tutor_name = "Select a contact";
+
+if ($selected_tutor_id > 0) {
+    $conn->query("UPDATE messages 
+                  SET is_read = 1 
+                  WHERE sender_id = $selected_tutor_id 
+                  AND receiver_id = $current_user_id 
+                  AND is_read = 0");
+}
 
 if ($selected_tutor_id > 0) {
     $name_query = $conn->prepare("SELECT name FROM users WHERE user_id = ?");
