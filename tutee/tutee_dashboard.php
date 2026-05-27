@@ -143,8 +143,10 @@ $recent_messages = $conn->query("
 
         <!-- My Requests + Upcoming Sessions -->
         <section class="bottom">
-            <div class="box">
+            <!-- ↓ Added "requests-box" class to enable scroll cap on this container only -->
+            <div class="box requests-box">
                 <h3>My Requests</h3>
+                <div class="requests-scroll">
                 <?php if ($my_requests && $my_requests->num_rows > 0): ?>
                     <?php while($row = $my_requests->fetch_assoc()):
                         $is_outdated = (strtotime($row['requested_schedule']) < time());
@@ -174,6 +176,7 @@ $recent_messages = $conn->query("
                            style="color:var(--gold);">Find a tutor!</a>
                     </p>
                 <?php endif; ?>
+                </div>
             </div>
 
             <div class="box">

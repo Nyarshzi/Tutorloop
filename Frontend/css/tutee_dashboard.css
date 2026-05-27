@@ -157,6 +157,13 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--nav
     color: var(--navy);
 }
 
+/* ─── My Requests: scroll after 3 items ─── */
+.requests-scroll {
+    max-height: 228px; /* ~3 items × 69px each (12px pad-top + 12px pad-bottom + ~45px content) */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 /* ─── Search Bar ─── */
 .search-bar {
     display: flex;

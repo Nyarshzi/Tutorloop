@@ -70,17 +70,28 @@ button {
     border-radius: 8px;
     color: white;
     cursor: pointer;
+    width: 100%;
 }
 
 button:hover {
     opacity: 0.9;
 }
 
+/* FIX: styled Back as a full-width yellow button with spacing from Submit */
 .back {
-    display: inline-block;
-    margin-top: 15px;
+    display: block;
+    margin-top: 12px;
+    padding: 12px;
+    background: #d4a63f;
+    border-radius: 8px;
     text-decoration: none;
-    color: #d4a63f;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    transition: opacity 0.2s;
+}
+.back:hover {
+    opacity: 0.9;
 }
 
 /* ════════════════════════════════════════
@@ -170,7 +181,7 @@ button:hover {
 
     input, textarea {
         padding: 12px;
-        font-size: 16px; /* Prevents iOS zoom on input focus */
+        font-size: 16px;
         border-radius: 6px;
     }
 
@@ -187,8 +198,6 @@ button:hover {
 
     .back {
         font-size: 14px;
-        margin-top: 16px;
-        display: block;
-        text-align: center;
+        margin-top: 12px;
     }
 }

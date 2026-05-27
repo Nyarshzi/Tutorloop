@@ -214,7 +214,8 @@ if (!$tutor) {
         <nav>
             <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
             <a href="/tutorloop/tutee/tutee_profile.php">My Profile</a>
-            <a href="../tutee/search_results.php" class="active">Find a Tutor</a>
+            <!-- FIX: corrected path from ../tutee/search_results.php to /tutorloop/search_results.php -->
+            <a href="/tutorloop/search_results.php" class="active">Find a Tutor</a>
             <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
             <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
             <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
@@ -224,7 +225,8 @@ if (!$tutor) {
     <main class="main">
 
         <header class="topbar">
-            <a href="/TutorLoop/search_results.php" class="logout">
+            <!-- FIX: corrected path case from /TutorLoop/ to /tutorloop/ -->
+            <a href="/tutorloop/search_results.php" class="logout">
                 ← Back to Search
             </a>
 
