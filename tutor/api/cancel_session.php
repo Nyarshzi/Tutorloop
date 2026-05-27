@@ -1,17 +1,27 @@
 <?php
 include("../../config/db.php");
 
-if (isset($_GET['id'])) {
-    $session_id = (int)$_GET['id'];
+if (isset($_GET['session_id'])) {
 
-    // Update the status to 'Cancelled'
-    $sql = "UPDATE sessions SET status = 'Cancelled' WHERE session_id = $session_id";
+    $session_id = (int)$_GET['session_id'];
+
+    // Update the status to Cancelled
+    $sql = "UPDATE sessions 
+            SET status = 'Cancelled' 
+            WHERE session_id = $session_id";
 
     if ($conn->query($sql) === TRUE) {
-        // Redirect back to the page they came from
+
         header("Location: " . $_SERVER['HTTP_REFERER']);
+        exit();
+
     } else {
+
         echo "Error updating record: " . $conn->error;
     }
+
+} else {
+
+    echo "No session ID provided.";
 }
 ?>

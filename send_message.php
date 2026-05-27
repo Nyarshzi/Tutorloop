@@ -17,10 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['user_id'])) {
     
     // Check role to redirect to the correct page
     if ($_SESSION['role'] === 'tutor') {
-        header("Location: tutor_messages.php?tutee_id=" . $receiver_id);
-    } else {
-        header("Location: tutee_messages.php?tutor_id=" . $receiver_id);
-    }
+    header("Location: /tutorloop/tutor/tutor_messages.php?tutee_id=" . $receiver_id);
+} else {
+    header("Location: /tutorloop/tutee/tutee_messages.php?tutor_id=" . $receiver_id);
+}
     exit();
 }
 ?>

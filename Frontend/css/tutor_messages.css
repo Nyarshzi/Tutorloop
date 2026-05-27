@@ -157,7 +157,14 @@
     border-radius: 10px;
 }
 
-
+.unread-dot{
+    display:inline-block;
+    width:10px;
+    height:10px;
+    background:red;
+    border-radius:50%;
+    margin-left:8px;
+}
 
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {

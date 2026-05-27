@@ -11,14 +11,48 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutor') {
 
 $current_user_id = $_SESSION['user_id']; 
 
-$contacts_sql = "SELECT DISTINCT u.user_id, u.name 
-                 FROM users u 
-                 JOIN messages m ON (u.user_id = m.sender_id OR u.user_id = m.receiver_id)
-                 WHERE (m.sender_id = $current_user_id OR m.receiver_id = $current_user_id)
-                 AND u.user_id != $current_user_id";
+$contacts_sql = "
+SELECT DISTINCT u.user_id, u.name
+FROM users u
+WHERE u.user_id IN (
+
+    -- Accepted/Ongoing students
+    SELECT s.tutee_id
+    FROM sessions s
+    WHERE s.tutor_id = $current_user_id
+    AND s.session_status IN ('Accepted', 'Ongoing')
+
+    UNION
+
+    -- Existing conversations
+    SELECT m.sender_id
+    FROM messages m
+    WHERE m.receiver_id = $current_user_id
+
+    UNION
+
+    SELECT m.receiver_id
+    FROM messages m
+    WHERE m.sender_id = $current_user_id
+)
+AND u.user_id != $current_user_id
+";
+
 $contacts_result = $conn->query($contacts_sql);
 
 $selected_tutee_id = isset($_GET['tutee_id']) ? (int)$_GET['tutee_id'] : 0;
+if ($selected_tutee_id > 0) {
+
+    $mark_read = "
+        UPDATE messages
+        SET is_read = 1
+        WHERE sender_id = $selected_tutee_id
+        AND receiver_id = $current_user_id
+        AND is_read = 0
+    ";
+
+    $conn->query($mark_read);
+}
 $selected_tutee_name = "Select a student";
 
 if ($selected_tutee_id > 0) {

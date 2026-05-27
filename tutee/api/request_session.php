@@ -142,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="tutor-info">
         <p><strong>Tutor:</strong> <?php echo htmlspecialchars($tutor['name']); ?></p>
         <p><strong>Subject:</strong> <?php echo htmlspecialchars($tutor['subject_name']); ?></p>
-        <p><strong>Rate:</strong> ₱<?php echo $tutor['tutoring_rate']; ?></p>
+        <p><strong>Rate:</strong> ₱<?php echo number_format($tutor['tutoring_rate'], 2); ?></p>
     </div>
 
     <script type="application/json" id="availability-data">
