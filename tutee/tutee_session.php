@@ -9,6 +9,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'tutee') {
 }
 
 $tutee_id = $_SESSION['user_id'];
+date_default_timezone_set('Asia/Manila');
+
+// Fetch all Accepted/Ongoing slots for this tutee's tutor(s) to detect conflicts
+$booked_slots = [];
+$check_booked = "SELECT s2.requested_schedule 
+                 FROM sessions s2 
+                 WHERE s2.tutee_id = $tutee_id 
+                   AND s2.session_status IN ('Accepted', 'Ongoing')";
+$res_booked = $conn->query($check_booked);
+if ($res_booked) {
+    while ($slot = $res_booked->fetch_assoc()) {
+        $booked_slots[] = $slot['requested_schedule'];
+    }
+}
 
 // Get all sessions including Completed and Declined
 $query = "SELECT s.*, u.name as tutor_name, sub.subject_name 
@@ -77,11 +91,18 @@ function hasFeedback($conn, $session_id) {
         <section class="sessions">
             <?php if ($result && $result->num_rows > 0): ?>
                 <?php while($row = $result->fetch_assoc()):
-                    $timestamp = strtotime($row['requested_schedule']);
+                   $timestamp = strtotime($row['requested_schedule']);
+                    $session_time = $row['requested_schedule'];
                     $status = $row['session_status'];
                     $already_rated = hasFeedback($conn, $row['session_id']);
+
+                    // State flags — mirrors tutor_session_request.php logic
+                    $is_booked    = in_array($session_time, $booked_slots);
+                    $is_outdated  = ($timestamp < time());
+                    $is_overdue   = ($is_outdated && !in_array($status, ['Completed', 'Declined']));
+                    $is_conflict  = ($status == 'Pending' && $is_booked);
                 ?>
-                <div class="session-card">
+                <div class="session-card <?php echo ($status == 'Completed' || $status == 'Declined' || $is_overdue) ? 'archived-card' : ''; ?>">
                     <div class="session-info">
                         <h3><?php echo htmlspecialchars($row['subject_name']); ?></h3>
                         <p><strong>Tutor:</strong> 
@@ -98,10 +119,34 @@ function hasFeedback($conn, $session_id) {
                                 <?php echo htmlspecialchars($row['request_note']); ?>
                             </p>
                         <?php endif; ?>
+
+                        <?php if ($is_overdue): ?>
+                            <p style="color:#d9534f; font-weight:bold; margin-top:6px;">
+                                ⚠️ Request overdue: this session time has already passed.
+                            </p>
+                        <?php elseif ($is_conflict): ?>
+                            <p style="color:#e67e22; font-weight:bold; margin-top:6px;">
+                                ⚠️ Slot occupied by a confirmed session.
+                            </p>
+                        <?php endif; ?>
                     </div>
 
                     <div class="session-actions">
-                        <?php if ($status == 'Pending'): ?>
+                        <?php if ($is_overdue && $status == 'Pending'): ?>
+                            <span class="badge-expired" style="background:#d9534f; color:#fff; padding:6px 14px; border-radius:6px; font-weight:600;">
+                                Request overdue
+                            </span>
+
+                        <?php elseif ($is_conflict): ?>
+                            <span style="background:#e67e22; color:#fff; padding:6px 14px; border-radius:6px; font-weight:600;">
+                                Conflict
+                            </span>
+                            <button class="cancel"
+                                onclick="confirmCancel(<?php echo $row['session_id']; ?>)">
+                                Cancel
+                            </button>
+
+                        <?php elseif ($status == 'Pending'): ?>
                             <span class="pending-btn">Pending</span>
                             <button class="cancel" 
                                 onclick="confirmCancel(<?php echo $row['session_id']; ?>)">
