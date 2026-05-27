@@ -36,7 +36,7 @@ $pending_requests = $conn->query("SELECT s.requested_schedule, u.name AS tutee_n
     JOIN users u ON s.tutee_id = u.user_id 
     JOIN subjects sub ON s.subject_id = sub.subject_id 
     WHERE s.tutor_id = $tutor_id AND s.session_status = 'Pending' 
-    ORDER BY s.requested_schedule ASC LIMIT 3");
+    ORDER BY s.requested_schedule ASC LIMIT 10");
 
 // Section 4: Upcoming Sessions
 $upcoming_sessions = $conn->query("SELECT 
@@ -127,8 +127,9 @@ $recent_messages = $conn->query("
 
         <section class="bottom">
             <div class="box">
-                <h3>Recent Requests</h3>
-                <?php if ($pending_requests && $pending_requests->num_rows > 0): ?>
+    <h3>Recent Requests</h3>
+    <div class="requests-scroll">
+    <?php if ($pending_requests && $pending_requests->num_rows > 0): ?>
                     <?php while($row = $pending_requests->fetch_assoc()): ?>
                         <div class="session-item">
                             <p><strong><?php echo htmlspecialchars($row['subject_name']); ?></strong> w/ <?php echo htmlspecialchars($row['tutee_name']); ?></p>
@@ -138,8 +139,8 @@ $recent_messages = $conn->query("
                 <?php else: ?>
                     <p>No requests yet</p>
                 <?php endif; ?>
-            </div>
-
+    </div>
+</div>
             <div class="box">
                 <h3>Upcoming Sessions</h3>
                 <?php if ($upcoming_sessions && $upcoming_sessions->num_rows > 0): ?>

@@ -115,6 +115,8 @@ body {
     gap: 25px;
 }
 
+.bottom .box:last-child { grid-column: 1 / -1; }
+
 .box {
     background: #f1f1f1;
     padding: 30px;
@@ -131,6 +133,31 @@ body {
     border-bottom: 2px solid #d4a017;
     display: inline-block;
     padding-bottom: 5px;
+}
+
+/* Scrollable Recent Requests — shows 3 items (~210px) then scrolls */
+.requests-scroll {
+    max-height: 210px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d4a017 #f1f1f1;
+}
+
+.requests-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.requests-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.requests-scroll::-webkit-scrollbar-thumb {
+    background: #d4a017;
+    border-radius: 10px;
+}
+
+.requests-scroll::-webkit-scrollbar-thumb:hover {
+    background: #b88a14;
 }
 
 .session-item {

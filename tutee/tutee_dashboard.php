@@ -46,7 +46,7 @@ $my_requests = $conn->query("
     JOIN users u ON s.tutor_id = u.user_id 
     JOIN subjects sub ON s.subject_id = sub.subject_id 
     WHERE s.tutee_id = $tutee_id 
-    ORDER BY s.session_id DESC LIMIT 3
+    ORDER BY s.session_id DESC LIMIT 10
 ");
 
 // Fetch Recent Messages for the Tutee Dashboard

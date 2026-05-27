@@ -543,7 +543,7 @@ if ($role === 'tutee') {
 
             <!-- ━━━ RECENT PLATFORM ACTIVITY ━━━ -->
             <div class="chart-container activity-feed">
-                <h3>Recent Platform Activity</h3>
+                <h3>Recent Activity</h3>
                 <?php if (empty($activities)): ?>
                     <p class="activity-empty">No recent activity to display.</p>
                 <?php else: ?>
