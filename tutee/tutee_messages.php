@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("../config/db.php");
-$conn = new mysqli("localhost", "root", "", "tutorloop_db", 3307);
+$conn = new mysqli("localhost", "root", "", "tutorloop_db", 3306);
 
 if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
@@ -49,6 +49,7 @@ if ($selected_tutor_id > 0) {
     <link rel="stylesheet" href="../Frontend/css/tutee_messages.css">
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
@@ -68,7 +69,11 @@ if ($selected_tutor_id > 0) {
 
     <main class="main">
         <header class="topbar">
-            <button class="menu-btn" id="menuBtn">☰</button>
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>Messages</h1>
             <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
@@ -117,6 +122,7 @@ if ($selected_tutor_id > 0) {
         </div>
     </main>
 </div>
+
 <script src="../Frontend/js/tutee_messages.js"></script>
 </body>
 </html>

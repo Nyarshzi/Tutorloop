@@ -105,3 +105,46 @@
         padding: 12px;
     }
 }
+
+/* --- MOBILE HAMBURGER & RESPONSIVE OVERHAUL --- */
+body { overflow-x: hidden; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; }
+.sidebar-overlay.active { display: block; }
+.menu-btn { display: none; flex-direction: column; justify-content: space-between; width: 26px; height: 20px; background: transparent; border: none; cursor: pointer; padding: 0; flex-shrink: 0; z-index: 1100; }
+.menu-btn span { display: block; width: 100%; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s ease, opacity 0.3s ease; }
+body.sidebar-open .menu-btn span:nth-child(1) { transform: translateY(8.75px) rotate(45deg); }
+body.sidebar-open .menu-btn span:nth-child(2) { opacity: 0; }
+body.sidebar-open .menu-btn span:nth-child(3) { transform: translateY(-8.75px) rotate(-45deg); }
+
+@media (min-width: 1025px) {
+    .sidebar { left: 0; position: fixed; }
+    .main { margin-left: 260px; }
+    .menu-btn { display: none !important; }
+}
+@media (max-width: 1024px) {
+    .main { padding: 20px 25px; }
+}
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100vh;
+        z-index: 1050;
+        transition: left 0.3s ease;
+    }
+    .sidebar.active { left: 0; }
+    .menu-btn { display: flex; }
+    .main { margin-left: 0; padding: 14px 16px; }
+    .session-card { flex-direction: column; }
+    .session-actions { width: 100%; justify-content: flex-start; }
+    .session-actions button { width: 100%; }
+}
+@media (max-width: 480px) {
+    .topbar { padding: 12px 14px; }
+    .topbar h1 { font-size: 16px; }
+    .logout { font-size: 11px; padding: 5px 10px; }
+    .session-card { padding: 12px; border-radius: 10px; }
+    .session-actions button { padding: 10px; font-size: 13px; }
+}

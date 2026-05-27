@@ -183,6 +183,8 @@
 }
 
 /* --- MOBILE RESPONSIVENESS --- */
+
+
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
@@ -191,8 +193,8 @@
     /* Sidebar is usually hidden or toggleable on mobile in your dashboard */
     .sidebar {
         position: fixed;
-        left: -100%;
-        z-index: 1000;
+        left: -260px;
+        z-index: 1050;
         transition: 0.3s;
     }
 
@@ -215,7 +217,7 @@
 
     .chat {
         width: 100%;
-        height: 60%; /* Ensure chat takes up remaining space */
+        height: 60vh; /* Ensure chat takes up remaining space */
     }
 
     .message {
@@ -234,6 +236,68 @@
     .chat-input button {
         padding: 0 15px;
     }
+}
+
+/* --- MOBILE HAMBURGER & ADDITIONAL RESPONSIVE RULES --- */
+body { overflow-x: hidden; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; }
+.sidebar-overlay.active { display: block; }
+.menu-btn { display: none; flex-direction: column; justify-content: space-between; width: 26px; height: 20px; background: transparent; border: none; cursor: pointer; padding: 0; flex-shrink: 0; z-index: 1100; }
+.menu-btn span { display: block; width: 100%; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s ease, opacity 0.3s ease; pointer-events: none; }
+body.sidebar-open .menu-btn span:nth-child(1) { transform: translateY(8.75px) rotate(45deg); }
+body.sidebar-open .menu-btn span:nth-child(2) { opacity: 0; }
+body.sidebar-open .menu-btn span:nth-child(3) { transform: translateY(-8.75px) rotate(-45deg); }
+.sidebar.active ~ .main .menu-btn span:nth-child(1), body.sidebar-open .menu-btn span:nth-child(1) { transform: translateY(8.75px) rotate(45deg); }
+body.sidebar-open .menu-btn span:nth-child(2) { opacity: 0; }
+body.sidebar-open .menu-btn span:nth-child(3) { transform: translateY(-8.75px) rotate(-45deg); }
+
+@media (min-width: 1025px) {
+    .sidebar { left: 0; position: fixed; }
+    .main { margin-left: 260px; }
+    .menu-btn { display: none !important; }
+}
+@media (max-width: 1024px) {
+    .main { padding: 20px 25px; }
+}
+@media (max-width: 768px) {
+    .main { margin-left: 0; padding: 14px 16px; height: auto; overflow-y: unset; }
+    .sidebar { left: -260px; }
+    .sidebar.active { left: 0; }
+    .menu-btn { display: flex; }
+    .topbar { padding: 14px 16px; border-radius: 12px; margin-bottom: 12px; gap: 12px; }
+    .topbar h1 { font-size: 18px; }
+    .logout { font-size: 12px; padding: 6px 14px; }
+    .table-wrapper { width: 100%; overflow-x: auto; }
+    table { font-size: 13px; }
+    td, th { padding: 8px; }
+    input, select, textarea { width: 100%; font-size: 14px; }
+    .form-row { flex-direction: column; gap: 10px; }
+    button[type="submit"] { width: 100%; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 17px; }
+    h3 { font-size: 15px; }
+    p { font-size: 13px; }
+    img { max-width: 100%; }
+    .messages {
+        flex-direction: column;
+        height: calc(100vh - 120px);
+        margin: 0;
+    }
+    .contacts {
+        width: 100%;
+        max-height: 180px;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+    }
+    .chat { flex: 1; height: auto; min-height: 0; }
+    .chat-body { padding: 14px; }
+    .message { max-width: 85%; font-size: 13px; }
+    .chat-input { padding: 10px; gap: 8px; }
+    .chat-input button { padding: 0 15px; }
+}
+@media (max-width: 480px) {
+    .contacts-title { padding: 10px; font-size: 1rem; }
+    .contact { padding: 10px; }
 }
 
 /* Extra small devices (Phones) */

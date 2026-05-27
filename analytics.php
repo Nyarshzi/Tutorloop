@@ -376,18 +376,16 @@ if ($role === 'tutee') {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="container">
 
     <!-- ━━━ SIDEBAR ━━━ -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="logo">
             <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
         </div>
-
-        <!-- Mobile hamburger toggle -->
-        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">☰</button>
 
         <nav id="sidebarNav">
             <?php if ($role === 'tutor'): ?>
@@ -415,6 +413,11 @@ if ($role === 'tutee') {
     <main class="main">
 
         <header class="topbar">
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>Analytics</h1>
             <a href="/tutorloop/logout.php" class="logout">Logout</a>
         </header>
@@ -439,7 +442,7 @@ if ($role === 'tutee') {
                     <p>Pending Requests</p>
                 </div>
                 <div class="stat-card">
-                    <h2><?php echo $my_rating > 0 ? $my_rating . '/10' : 'N/A'; ?></h2>
+                    <h2><?php echo $my_rating > 0 ? round(($my_rating / 10) * 100) . '%' : 'N/A'; ?></h2>
                     <p>My Average Rating</p>
                 </div>
             <?php else: ?>
@@ -714,14 +717,33 @@ new Chart(document.getElementById('distributionChart'), {
     }
 });
 
-// ━━━ SIDEBAR MOBILE TOGGLE ━━━
-const toggleBtn = document.getElementById('sidebarToggle');
-const nav = document.getElementById('sidebarNav');
-if (toggleBtn && nav) {
-    toggleBtn.addEventListener('click', () => {
-        nav.classList.toggle('nav-open');
-        toggleBtn.textContent = nav.classList.contains('nav-open') ? '✕' : '☰';
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+  });
+
+  // Close sidebar when a nav link is tapped on mobile
+  sidebar.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
     });
+  });
+} else {
+  console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
 }
 
 // ━━━ AUTO-REFRESH ACTIVITY FEED (every 60 seconds) ━━━

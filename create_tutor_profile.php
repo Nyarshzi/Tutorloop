@@ -90,8 +90,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="container">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <img src="Frontend/images/Tutorloop_logo.png" class="sidebar-logo">
             <span>TUTORLOOP</span>
@@ -110,6 +111,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <main class="main">
         <div class="top-banner">
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>Edit Profile and Services</h1>
             <a href="logout.php" class="logout-btn">Logout</a>
         </div>
@@ -182,6 +188,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script>
     attachPhoneValidation('phone_number', 'phone_error');
     blockIfInvalid('profile_form', 'phone_number');
+</script>
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+  });
+
+  sidebar.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
+    });
+  });
+} else {
+  console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
+}
 </script>
 </body>
 </html>

@@ -7,21 +7,32 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- 1. SIDEBAR TOGGLE (Mobile Menu) ---
     const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    
-    if (menuBtn && sidebar) {
-        menuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            sidebar.classList.toggle('active');
-        });
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
 
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(e) {
-            if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && e.target !== menuBtn) {
-                sidebar.classList.remove('active');
-            }
+if (menuBtn && sidebar) {
+    menuBtn.addEventListener('click', function(e) {
+        sidebar.classList.toggle('active');
+        if (overlay) overlay.classList.toggle('active');
+        document.body.classList.toggle('sidebar-open');
+    });
+
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
         });
     }
+
+    sidebar.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
+        });
+    });
+}
 
     // --- 2. AUTO-SCROLL TO LATEST MESSAGE ---
     const chatBody = document.querySelector('.chat-body');

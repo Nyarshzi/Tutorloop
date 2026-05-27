@@ -81,8 +81,11 @@ $recent_messages = $conn->query("
     <title>Tutor Dashboard | TutorLoop</title>
 <link rel="stylesheet" href="../Frontend/css/tutor_dashboard.css"></head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="container"> 
-    <aside class="sidebar"> 
+    <aside class="sidebar" id="sidebar">
+
+
         <div class="logo">
 <img src="../Frontend/images/Tutorloop_logo.png" alt="logo">            <span>TUTORLOOP</span>
         </div>
@@ -100,10 +103,27 @@ $recent_messages = $conn->query("
 
     <main class="main"> 
         <header class="topbar">
-           <h1 id="greetingText" data-name="<?php echo htmlspecialchars($tutor_name); ?>">
-    Loading...</h1>
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <!-- AFTER -->
+<h1 id="greetingText">
+    <?php
+    $currentHour = (int) date('H');
+    if ($currentHour >= 5 && $currentHour < 12) {
+        echo "Good Morning ☀️, " . htmlspecialchars($tutor_name);
+    } elseif ($currentHour >= 12 && $currentHour < 18) {
+        echo "Good Afternoon 🌤️, " . htmlspecialchars($tutor_name);
+    } else {
+        echo "Good Evening 🌙, " . htmlspecialchars($tutor_name);
+    }
+    ?>
+</h1>
             <a href="/tutorloop/logout.php" class="logout">Logout</a>
         </header>
+
 
         <section class="cards">
             <div class="card">
@@ -185,6 +205,39 @@ $recent_messages = $conn->query("
         </section>
     </main>
 </div>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+  });
+
+  // Close sidebar when a nav link is tapped on mobile
+  sidebar.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
+    });
+  });
+} else {
+  console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
+}
+</script>
+
  <script src="/TutorLoop/Frontend/js/tutor_dashboard.js"></script>
 </body>
 </html>

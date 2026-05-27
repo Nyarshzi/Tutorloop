@@ -32,7 +32,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--nav
     overflow-y: auto;
     height: 100vh;
 }
-.top-banner { background: var(--navy); color: white; padding: 25px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.top-banner { background: var(--navy); color: white; padding: 25px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 12px; }
 .logout-btn { background: var(--white); color: var(--navy); padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
 
 .profile-grid { display: grid; grid-template-columns: 320px 1fr; gap: 30px; align-items: start; }
@@ -324,180 +324,51 @@ textarea { min-height: 100px; width: 100%; resize: vertical; }
 }
 
 /* Mobile - collapses sidebar and stacks layout */
+/* --- MOBILE HAMBURGER --- */
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; }
+.sidebar-overlay.active { display: block; }
+.menu-btn { display: none; flex-direction: column; justify-content: space-between; width: 26px; height: 20px; background: transparent; border: none; cursor: pointer; padding: 0; flex-shrink: 0; z-index: 1100; }
+.menu-btn span { display: block; width: 100%; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s ease, opacity 0.3s ease; pointer-events: none; }
+body.sidebar-open .menu-btn span:nth-child(1) { transform: translateY(8.75px) rotate(45deg); }
+body.sidebar-open .menu-btn span:nth-child(2) { opacity: 0; }
+body.sidebar-open .menu-btn span:nth-child(3) { transform: translateY(-8.75px) rotate(-45deg); }
+
+@media (min-width: 1025px) {
+    .sidebar { left: 0; position: fixed; }
+    .main { margin-left: 260px; }
+    .menu-btn { display: none !important; }
+}
+
 @media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding: 20px 0;
-    }
-
-    .sidebar-header {
-        padding: 0 20px;
-        margin-bottom: 20px;
-    }
-
-    .sidebar nav {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 0 20px;
-    }
-
-    .sidebar nav a {
-        padding: 12px 16px;
-        margin-right: 8px;
-        margin-bottom: 8px;
-        border-radius: 8px;
-    }
-
-    .sidebar nav a.active {
-        margin-right: 0;
-        border-radius: 8px;
-    }
-
-    .main {
-        padding: 20px;
-        margin-left: 0;
-        height: auto;
-        overflow-y: unset;
-    }
-
-    .top-banner {
-        padding: 20px;
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-
-    .top-banner h1 {
-        font-size: 20px;
-    }
-
-    .profile-grid {
-        grid-template-columns: 1fr;
-        gap: 25px;
-    }
-
-    .identity-card {
-        max-width: 300px;
-        margin: 0 auto;
-    }
-
-    .section-card {
-        padding: 20px;
-    }
-
-    .form-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-    }
-
-    .form-row label {
-        flex: 0 0 auto;
-    }
-
-    .schedule-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-
-    .schedule-row .day-select,
-    .schedule-row input[type="time"] {
-        flex: 1;
-        width: 100%;
-    }
+    .menu-btn { display: flex; }
+    .sidebar { position: fixed; top: 0; left: -260px; width: 260px; height: 100vh; z-index: 1050; transition: left 0.3s ease; padding: 20px 0; }
+    .sidebar.active { left: 0; }
+    .main { padding: 20px; margin-left: 0; height: auto; overflow-y: unset; }
+    .top-banner { padding: 20px; flex-direction: row; gap: 12px; }
+    .top-banner h1 { font-size: 18px; }
+    .profile-grid { grid-template-columns: 1fr; gap: 25px; }
+    .identity-card { max-width: 100%; }
+    .section-card { padding: 20px; }
+    .form-row { flex-direction: column; align-items: stretch; gap: 8px; }
+    .form-row label { flex: 0 0 auto; }
+    .schedule-row { flex-direction: column; align-items: stretch; gap: 10px; }
+    .schedule-row .day-select, .schedule-row input[type="time"] { flex: 1; width: 100%; }
 }
 
-/* Small mobile phones */
 @media (max-width: 480px) {
-    .main {
-        padding: 15px;
-        margin-left: 0;
-        height: auto;
-        overflow-y: unset;
-    }
-
-    .top-banner {
-        padding: 16px;
-        border-radius: 12px;
-    }
-
-    .top-banner h1 {
-        font-size: 18px;
-    }
-
-    .logout-btn {
-        padding: 6px 14px;
-        font-size: 12px;
-    }
-
-    .identity-card {
-        border-radius: 15px;
-    }
-
-    .card-header {
-        height: 80px;
-    }
-
-    .avatar-wrapper {
-        width: 100px;
-        height: 100px;
-        top: 20px;
-    }
-
-    .avatar-circle {
-        width: 90px;
-        height: 90px;
-    }
-
-    .initials {
-        font-size: 32px;
-    }
-
-    .identity-info {
-        padding: 55px 15px 25px;
-    }
-
-    .identity-info h2 {
-        font-size: 18px;
-    }
-
-    .section-card {
-        padding: 16px;
-        border-radius: 14px;
-    }
-
-    .section-title {
-        font-size: 16px;
-    }
-
-    input, select, textarea {
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .save-btn {
-        padding: 12px;
-        font-size: 14px;
-    }
-
-    .subject-card {
-        padding: 14px;
-    }
-
-    .subject-card-header h4 {
-        font-size: 14px;
-    }
-
-    .add-schedule-btn,
-    .add-sub-btn {
-        padding: 10px;
-        font-size: 13px;
-    }
-
-    .btn-edit, .btn-remove {
-        font-size: 13px;
-    }
+    .main { padding: 15px; }
+    .top-banner { padding: 12px 14px; border-radius: 12px; }
+    .top-banner h1 { font-size: 16px; }
+    .logout-btn { padding: 6px 12px; font-size: 11px; }
+    .identity-card { border-radius: 15px; }
+    .card-header { height: 80px; }
+    .avatar-wrapper { width: 100px; height: 100px; top: 20px; }
+    .avatar-circle { width: 90px; height: 90px; }
+    .initials { font-size: 32px; }
+    .identity-info { padding: 55px 15px 25px; }
+    .identity-info h2 { font-size: 18px; }
+    .section-card { padding: 16px; border-radius: 14px; }
+    input, select, textarea { padding: 10px; font-size: 14px; }
+    .save-btn { padding: 12px; font-size: 14px; }
 }
+

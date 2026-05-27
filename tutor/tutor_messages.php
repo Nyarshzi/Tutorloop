@@ -74,6 +74,7 @@ if ($selected_tutee_id > 0) {
 <link rel="stylesheet" href="../Frontend/css/tutor_messages.css">
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
@@ -94,7 +95,11 @@ if ($selected_tutee_id > 0) {
 
     <main class="main">
         <header class="topbar">
-            <button class="menu-btn" id="menuBtn">☰</button>
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>Student Messages</h1>
             <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
@@ -143,6 +148,7 @@ if ($selected_tutee_id > 0) {
         </div>
     </main>
 </div>
+
 <script src="../Frontend/js/tutor_messages.js"></script>
 </body>
 </html>

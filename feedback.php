@@ -58,8 +58,9 @@ function getRatingLabel($rating) {
     <link rel="stylesheet" href="Frontend/css/rating.css">
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="container">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="logo">
             <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
@@ -76,6 +77,11 @@ function getRatingLabel($rating) {
 
     <main class="main">
         <header class="topbar">
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>Rate Your Session</h1>
             <button class="logout" onclick="location.href='logout.php'">Logout</button>
         </header>
@@ -285,6 +291,34 @@ function fillTutorId() {
     const tutor = select.options[select.selectedIndex]
                         .getAttribute("data-tutor");
     document.getElementById("tutor_id").value = tutor;
+}
+
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+  });
+
+  sidebar.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
+    });
+  });
+} else {
+  console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
 }
 </script>
 </body>

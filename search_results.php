@@ -6,7 +6,32 @@ $selected_subject_id = isset($_GET['subject_id']) ? intval($_GET['subject_id']) 
 $subjects_sql = "SELECT subject_id, subject_name FROM subjects ORDER BY subject_name ASC";
 $subjects_result = $conn->query($subjects_sql);
 
-if ($selected_subject_id > 0) {
+$tutor_query = isset($_GET['tutor_query']) ? trim($_GET['tutor_query']) : '';
+
+if ($selected_subject_id > 0 && $tutor_query !== '') {
+    // Filter by both subject AND name/subject keyword
+    $search = '%' . $tutor_query . '%';
+    $sql = "SELECT DISTINCT 
+                u.user_id as tutor_id,
+                u.name,
+                u.profile_pic,
+                tp.description,
+                tp.average_rating,
+                tp.tutoring_rate
+            FROM users u
+            JOIN tutor_profiles tp ON u.user_id = tp.tutor_id
+            JOIN tutor_subjects ts ON u.user_id = ts.tutor_id
+            JOIN subjects s ON ts.subject_id = s.subject_id
+            WHERE ts.subject_id = ?
+            AND u.role = 'tutor'
+            AND (u.name LIKE ? OR s.subject_name LIKE ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iss", $selected_subject_id, $search, $search);
+    $stmt->execute();
+    $results = $stmt->get_result();
+
+} elseif ($selected_subject_id > 0) {
+    // Filter by subject only
     $sql = "SELECT DISTINCT 
                 u.user_id as tutor_id,
                 u.name,
@@ -23,7 +48,30 @@ if ($selected_subject_id > 0) {
     $stmt->bind_param("i", $selected_subject_id);
     $stmt->execute();
     $results = $stmt->get_result();
+
+} elseif ($tutor_query !== '') {
+    // Filter by tutor name OR subject name
+    $search = '%' . $tutor_query . '%';
+    $sql = "SELECT DISTINCT 
+                u.user_id as tutor_id,
+                u.name,
+                u.profile_pic,
+                tp.description,
+                tp.average_rating,
+                tp.tutoring_rate
+            FROM users u
+            JOIN tutor_profiles tp ON u.user_id = tp.tutor_id
+            LEFT JOIN tutor_subjects ts ON u.user_id = ts.tutor_id
+            LEFT JOIN subjects s ON ts.subject_id = s.subject_id
+            WHERE u.role = 'tutor'
+            AND (u.name LIKE ? OR s.subject_name LIKE ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $search, $search);
+    $stmt->execute();
+    $results = $stmt->get_result();
+
 } else {
+    // No filter — show all tutors
     $sql = "SELECT DISTINCT 
                 u.user_id as tutor_id,
                 u.name,
@@ -293,8 +341,9 @@ function getTutorSubjects($conn, $tutor_id) {
     </style>
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="container">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="logo">
             <img src="Frontend/images/Tutorloop_logo.png" alt="logo">
             <span>TUTORLOOP</span>
@@ -312,6 +361,11 @@ function getTutorSubjects($conn, $tutor_id) {
 
     <main class="main">
         <header class="topbar">
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>Find a Tutor</h1>
             <a href="/tutorloop/tutee/tutee_dashboard.php" class="logout">Back</a>
         </header>
@@ -405,5 +459,35 @@ function getTutorSubjects($conn, $tutor_id) {
         </section>
     </main>
 </div>
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+  });
+
+  // Close sidebar when a nav link is tapped on mobile
+  sidebar.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
+    });
+  });
+} else {
+  console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
+}
+</script>
 </body>
 </html>

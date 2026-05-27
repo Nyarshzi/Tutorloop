@@ -35,6 +35,8 @@ $profile_img = !empty($user['profile_pic']) ? $user['profile_pic'] : null;
 </head>
 <body>
 
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <div class="container">
     <aside class="sidebar" id="sidebar">
         <div class="logo">
@@ -55,7 +57,11 @@ $profile_img = !empty($user['profile_pic']) ? $user['profile_pic'] : null;
 
     <main class="main">
         <header class="topbar">
-            <button class="menu-btn" id="menuBtn">☰</button>
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu" style="display: none;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>My Profile</h1>
             <button class="logout" onclick="location.href='/tutorloop/logout.php'">Logout</button>
         </header>
@@ -95,6 +101,36 @@ $profile_img = !empty($user['profile_pic']) ? $user['profile_pic'] : null;
     </main>
 </div>
 
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+  });
+
+  // Close sidebar when a nav link is tapped on mobile
+  sidebar.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
+    });
+  });
+} else {
+  console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
+}
+</script>
 <script src="../Frontend/js/tutee_dashboard.js"></script>
 
 </body>

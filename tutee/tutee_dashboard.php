@@ -110,9 +110,23 @@ $recent_messages = $conn->query("
 
     <main class="main">
         <header class="topbar">
-            <button class="menu-btn" id="menuBtn">☰</button>
-             <h1 id="greetingText" data-name="<?php echo htmlspecialchars($tutee_name); ?>">
-                Loading...</h1>
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+             <h1 id="greetingText" class="greeting-full">
+    <?php
+    $currentHour = (int) date('H');
+    if ($currentHour >= 5 && $currentHour < 12) {
+    echo "Good Morning ☀️, " . htmlspecialchars($tutee_name);
+} elseif ($currentHour >= 12 && $currentHour < 18) {
+    echo "Good Afternoon 🌤️, " . htmlspecialchars($tutee_name);
+} else {
+    echo "Good Evening 🌙, " . htmlspecialchars($tutee_name);
+}
+    ?>
+</h1>
             <h1 class="greeting-short">
                 Hi, <?php echo htmlspecialchars($tutee_name); ?>! 👋
             </h1>
@@ -258,17 +272,30 @@ const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
 
-if (menuBtn) {
-    menuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-        overlay.classList.toggle('active');
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+  });
+
+  // Close sidebar when a nav link is tapped on mobile
+  sidebar.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
     });
-}
-if (overlay) {
-    overlay.addEventListener('click', () => {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-    });
+  });
+
+} else {
+  console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
 }
 </script>
 <script src="/TutorLoop/Frontend/js/tutee_dashboard.js"></script>

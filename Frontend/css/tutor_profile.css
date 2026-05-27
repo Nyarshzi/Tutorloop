@@ -259,12 +259,48 @@ body {
     font-size: 15px; 
     margin-bottom: 15px; }
 
-.detail-box p strong { 
-    display: inline-block; 
-    width: 140px; 
-    color: #0d2a4a; }
+/* --- MOBILE HAMBURGER & RESPONSIVE OVERHAUL --- */
+body { overflow-x: hidden; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; }
+.sidebar-overlay.active { display: block; }
+.menu-btn { display: none; flex-direction: column; justify-content: space-between; width: 26px; height: 20px; background: transparent; border: none; cursor: pointer; padding: 0; flex-shrink: 0; z-index: 1100; }
+.menu-btn span { display: block; width: 100%; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s ease, opacity 0.3s ease; pointer-events: none; }
+.sidebar.active ~ .main .menu-btn span:nth-child(1), body.sidebar-open .menu-btn span:nth-child(1) { transform: translateY(8.75px) rotate(45deg); }
+body.sidebar-open .menu-btn span:nth-child(2) { opacity: 0; }
+body.sidebar-open .menu-btn span:nth-child(3) { transform: translateY(-8.75px) rotate(-45deg); }
 
-
+@media (min-width: 1025px) {
+    .sidebar { left: 0; position: fixed; }
+    .main { margin-left: 260px; }
+    .menu-btn { display: none !important; }
+}
+@media (max-width: 1024px) {
+    .main { padding: 20px 25px; }
+    .profile { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+    .main { margin-left: 0; padding: 14px 16px; height: auto; overflow-y: unset; }
+    .sidebar { left: -260px; }
+    .sidebar.active { left: 0; }
+    .profile { grid-template-columns: 1fr; }
+    .profile-card { max-width: 100%; border-radius: 12px; }
+    .topbar h1 { font-size: 18px; }
+    .logout { font-size: 12px; padding: 6px 14px; }
+    .table-wrapper { width: 100%; overflow-x: auto; }
+    table { font-size: 13px; }
+    td, th { padding: 8px; }
+    input, select, textarea { width: 100%; font-size: 14px; }
+    .form-row { flex-direction: column; gap: 10px; }
+    button[type="submit"] { width: 100%; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 17px; }
+    h3 { font-size: 15px; }
+    p { font-size: 13px; }
+    img { max-width: 100%; }
+}
+@media (max-width: 480px) {
+    .profile-content { padding: 0 20px 24px 20px; }
+}
 /* ════════════════════════════════════════
    PHONE VALIDATION
    ════════════════════════════════════════ */
@@ -399,132 +435,22 @@ body {
 
 /* Mobile */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
     .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100vh;
+        z-index: 1050;
+        transition: left 0.3s ease;
+        padding: 35px 0;
+        display: block;
     }
-
-    .sidebar .logo {
-        margin-bottom: 0;
-        margin-right: 20px;
-    }
-
-    .sidebar nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        flex: 1;
-    }
-
-    .sidebar nav a {
-        padding: 8px 14px;
-        margin-bottom: 0;
-        font-size: 13px;
-        display: inline-block;
-    }
-
-    .sidebar nav a.active {
-        border-radius: 8px;
-    }
+    .sidebar.active { left: 0; }
+    .menu-btn { display: flex; }
 
     .main {
-        padding: 16px;
-        margin-left: 0;
-        height: auto;
-        overflow-y: unset;
-    }
-
-    .topbar {
-        padding: 16px 20px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-    }
-
-    .topbar h1 {
-        font-size: 20px;
-    }
-
-    .logout {
-        padding: 6px 14px;
-        font-size: 12px;
-    }
-
-    .profile {
-        grid-template-columns: 1fr;
-        gap: 25px;
-    }
-
-    .profile-card {
-        max-width: 400px;
-        margin: 0 auto;
-    }
-
-    .profile-header-accent {
-        height: 80px;
-    }
-
-    .avatar-container {
-        width: 100px;
-        height: 100px;
-    }
-
-    .avatar-text {
-        font-size: 40px;
-    }
-
-    .profile-name {
-        font-size: 20px;
-    }
-
-    .detail-box {
-        padding: 20px;
-    }
-
-    .detail-box p strong {
-        width: 120px;
-        font-size: 14px;
-    }
-
-    .detail-box p {
-        font-size: 14px;
-    }
-}
-
-/* Small phones */
-@media (max-width: 480px) {
-    .sidebar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .sidebar .logo {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .sidebar nav {
-        width: 100%;
-    }
-
-    .sidebar nav a {
-        padding: 10px 14px;
-        font-size: 13px;
-        flex: 1;
-        text-align: center;
-    }
-
-    .main {
-        padding: 12px;
+        padding: 14px 16px;
         margin-left: 0;
         height: auto;
         overflow-y: unset;
@@ -532,84 +458,41 @@ body {
 
     .topbar {
         padding: 14px 16px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        gap: 12px;
     }
+    .topbar h1 { font-size: 18px; }
+    .logout { padding: 6px 14px; font-size: 12px; }
 
-    .topbar h1 {
-        font-size: 18px;
-    }
+    .profile { grid-template-columns: 1fr; gap: 25px; }
+    .profile-card { max-width: 100%; }
+    .profile-header-accent { height: 80px; }
+    .avatar-container { width: 100px; height: 100px; }
+    .avatar-text { font-size: 40px; }
+    .profile-name { font-size: 20px; }
+    .detail-box { padding: 20px; }
+    .detail-box p strong { width: 120px; font-size: 14px; }
+    .detail-box p { font-size: 14px; }
+}
 
-    .logout {
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-
-    .profile-card {
-        border-radius: 18px;
-    }
-
-    .profile-header-accent {
-        height: 70px;
-    }
-
-    .profile-content {
-        padding: 0 20px 25px 20px;
-        margin-top: -55px;
-    }
-
-    .avatar-container {
-        width: 90px;
-        height: 90px;
-    }
-
-    .avatar-text {
-        font-size: 34px;
-    }
-
-    .profile-name {
-        font-size: 18px;
-    }
-
-    .profile-tagline {
-        font-size: 13px;
-        margin-bottom: 20px;
-    }
-
-    .primary-btn {
-        padding: 10px 25px;
-        font-size: 14px;
-    }
-
-    .profile-stats-grid {
-        padding: 15px 0;
-    }
-
-    .stat-value {
-        font-size: 18px;
-    }
-
-    .stat-label {
-        font-size: 10px;
-    }
-
-    .detail-box {
-        padding: 16px;
-        border-radius: 14px;
-    }
-
-    .detail-box h3 {
-        font-size: 16px;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-    }
-
-    .detail-box p strong {
-        width: 100%;
-        display: block;
-        margin-bottom: 2px;
-    }
-
-    .detail-box p {
-        font-size: 14px;
-        margin-bottom: 12px;
-    }
+/* Small phones */
+@media (max-width: 480px) {
+    .main { padding: 12px; }
+    .topbar { padding: 12px 14px; }
+    .topbar h1 { font-size: 16px; }
+    .logout { font-size: 11px; padding: 5px 10px; }
+    .profile-content { padding: 0 20px 25px 20px; margin-top: -55px; }
+    .avatar-container { width: 90px; height: 90px; }
+    .avatar-text { font-size: 34px; }
+    .profile-name { font-size: 18px; }
+    .profile-tagline { font-size: 13px; margin-bottom: 20px; }
+    .primary-btn { padding: 10px 25px; font-size: 14px; }
+    .profile-stats-grid { padding: 15px 0; }
+    .stat-value { font-size: 18px; }
+    .stat-label { font-size: 10px; }
+    .detail-box { padding: 16px; border-radius: 14px; }
+    .detail-box h3 { font-size: 16px; margin-bottom: 15px; padding-bottom: 10px; }
+    .detail-box p strong { width: 100%; display: block; margin-bottom: 2px; }
+    .detail-box p { font-size: 14px; margin-bottom: 12px; }
 }
