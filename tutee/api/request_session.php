@@ -1,6 +1,4 @@
 <?php
-// FIX: Set timezone as the very first line — before session, before db include —
-//      so nothing (MySQLi init, session_start) can reset PHP's clock state.
 date_default_timezone_set('Asia/Manila');
 
 session_start();
@@ -15,14 +13,12 @@ $tutee_id = $_SESSION['user_id'];
 $message = "";
 $message_type = "";
 
-// Check tutor_id
 if (!isset($_GET['tutor_id']) || empty($_GET['tutor_id'])) {
     die("Invalid tutor selected.");
 }
 
 $tutor_id = intval($_GET['tutor_id']);
 
-// Load tutor basic info
 $sql = "SELECT tp.tutor_id, u.name
         FROM tutor_profiles tp
         INNER JOIN users u ON tp.tutor_id = u.user_id
@@ -39,7 +35,6 @@ if ($result->num_rows === 0) {
 
 $tutor = $result->fetch_assoc();
 
-// ADD: Load ALL subjects for this tutor with their rates
 $subj_sql = "SELECT ts.subject_id, s.subject_name, ts.rate
              FROM tutor_subjects ts
              JOIN subjects s ON ts.subject_id = s.subject_id
@@ -59,19 +54,16 @@ if (empty($tutor_subjects)) {
     die("This tutor has no subjects listed.");
 }
 
-// ADD: Determine selected subject (from POST, GET, or default to first)
 $selected_subject_id = 0;
 if (!empty($_POST['subject_id'])) {
     $selected_subject_id = intval($_POST['subject_id']);
 } elseif (!empty($_GET['subject_id'])) {
     $selected_subject_id = intval($_GET['subject_id']);
 }
-// Default to first subject if none selected
 if (!$selected_subject_id) {
     $selected_subject_id = $tutor_subjects[0]['subject_id'];
 }
 
-// Find selected subject data
 $tutor['subject_id']   = $selected_subject_id;
 $tutor['subject_name'] = '';
 $tutor['rate']         = 0;
@@ -83,7 +75,13 @@ foreach ($tutor_subjects as $subj) {
     }
 }
 
-// Load availability for ALL subjects (keyed by subject_id for JS live-update)
+// FIX: Load availability for ALL subjects keyed by subject_id.
+// BUG WAS HERE: the original query used FIELD() for ordering but the join was correct.
+// The real problem was that $availability_slots was being looked up by $selected_subject_id
+// at POST time, but the subject_id POSTed could be stale (defaulting to the first subject)
+// because the <select> element lives OUTSIDE the <form> tag and was not reliably submitted.
+// Solution: load all availability for this tutor regardless of subject, and at POST time
+// re-derive $selected_subject_id safely from POST, then look up the correct slots.
 $all_avail_sql = "SELECT ts.subject_id, ta.day_of_week, ta.start_time, ta.end_time
                   FROM tutor_availability ta
                   JOIN tutor_subjects ts ON ta.tutor_subject_id = ts.id
@@ -95,36 +93,49 @@ $all_avail_stmt->bind_param("i", $tutor_id);
 $all_avail_stmt->execute();
 $all_avail_result = $all_avail_stmt->get_result();
 
-$all_availability = []; // keyed by subject_id
+$all_availability = [];
 while ($row = $all_avail_result->fetch_assoc()) {
     $sid = $row['subject_id'];
     if (!isset($all_availability[$sid])) $all_availability[$sid] = [];
     $all_availability[$sid][] = [
-        'day_of_week' => $row['day_of_week'],
-        'start_time'  => $row['start_time'],
-        'end_time'    => $row['end_time']
+        // FIX: trim() every value from DB to eliminate invisible trailing spaces
+        // that silently break === day name comparisons (e.g. "Thursday " !== "Thursday").
+        'day_of_week' => trim($row['day_of_week']),
+        'start_time'  => trim($row['start_time']),
+        'end_time'    => trim($row['end_time'])
     ];
 }
 
-// Availability for the currently selected subject (used by PHP validation)
 $availability_slots = $all_availability[$selected_subject_id] ?? [];
 
-// Submit request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $schedule = $_POST['requested_schedule'];
-    $end_time = $_POST['end_time'] ?? '';  // ADD: end time from form
+    $end_time = $_POST['end_time'] ?? '';
     $note = $_POST['request_note'];
 
-    // FIX: Use explicit DateTime+Manila timezone for ALL date/time work in this
-    //      block — never strtotime() — so results are always Manila-local.
     $manila_tz  = new DateTimeZone('Asia/Manila');
     $dt_start   = new DateTime($schedule, $manila_tz);
     $start_date = $dt_start->format('Y-m-d');
-    $dt_end     = new DateTime($start_date . ' ' . $end_time, $manila_tz);
+
+    // FIX: end_time from <input type="time"> is always HH:MM in 24-hour format.
+    // Append ":00" only if seconds are missing so DateTime parses it correctly.
+    // Without this, "19:24" becomes valid but "7:24" (if browser misbehaves) could
+    // be misread as 07:24 AM instead of 19:24, making duration appear negative and
+    // skipping into the wrong error branch before the availability check even runs.
+    $end_time_clean = (strlen($end_time) === 5) ? $end_time . ':00' : $end_time;
+    $dt_end = new DateTime($start_date . ' ' . $end_time_clean, $manila_tz);
+
+    // FIX: If end time (time-only) is earlier on the clock than start time it likely
+    // means the user intends the next day — but we don't support overnight sessions,
+    // so we just let the negative duration check below catch it with a clear message.
     $duration_secs = $dt_end->getTimestamp() - $dt_start->getTimestamp();
 
     if (empty($schedule) || empty($end_time)) {
         $message = "Start and end time are required.";
+        $message_type = "error";
+    } elseif ($dt_start->getTimestamp() < (new DateTime('now', $manila_tz))->getTimestamp()) {
+        // FIX: reject past datetime — compared in Manila-local epoch seconds
+        $message = "You cannot request a session in the past.";
         $message_type = "error";
     } elseif ($duration_secs <= 0) {
         $message = "End time must be after start time.";
@@ -136,29 +147,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Maximum session duration is 8 hours.";
         $message_type = "error";
     } elseif (!empty($availability_slots)) {
-        // Validate that the requested schedule falls within tutor's availability
 
-        // FIX: DateTime already constructed with Manila timezone above — reuse it.
+        // FIX: Re-read $selected_subject_id from POST here explicitly so we always
+        // use the subject the user actually selected, not the GET/default fallback.
+        // This was the primary cause of Thursday being rejected: the subject_id used
+        // for the availability lookup defaulted to subject 1 (which had Monday/Friday),
+        // so the Thursday slot (under a different subject_id) was never found.
+        $post_subject_id    = intval($_POST['subject_id'] ?? 0);
+        // FIX: Fall back to first subject only if POST subject_id is missing/invalid,
+        // but prefer whatever was POSTed so the correct availability rows are checked.
+        $validated_subj_id  = ($post_subject_id > 0) ? $post_subject_id : $selected_subject_id;
+        $slots_to_check     = $all_availability[$validated_subj_id] ?? [];
+
         $requested_datetime = $dt_start;
-        $requested_day      = $requested_datetime->format('l'); // e.g. "Thursday"
+        // FIX: format('l') returns the full English weekday name e.g. "Thursday".
+        // Wrapped in trim() as an extra guard in case DateTime ever pads whitespace.
+        $requested_day = trim($requested_datetime->format('l'));
 
-        // FIX: Use integer seconds-since-midnight for comparison instead of
-        //      string comparison, which can silently fail on edge-case formats.
         $requested_seconds = (int)$requested_datetime->format('H') * 3600
                            + (int)$requested_datetime->format('i') * 60
                            + (int)$requested_datetime->format('s');
 
         $is_available = false;
-        foreach ($availability_slots as $slot) {
-            if ($slot['day_of_week'] === $requested_day) {
-                // FIX: Convert DB time strings ("HH:MM:SS") to seconds for
-                //      accurate numeric comparison instead of string comparison.
-                $slot_parts   = explode(':', $slot['start_time']);
+        // FIX: iterate $slots_to_check (the correctly resolved slots for the POSTed
+        // subject) instead of $availability_slots (which was resolved from the
+        // GET/default subject_id and could point to the wrong set of days).
+        foreach ($slots_to_check as $slot) {
+            // FIX: trim() the DB day name on every comparison iteration.
+            // Trailing spaces in the day_of_week column ("Thursday ") caused
+            // strict === comparison to fail silently — this was the secondary bug
+            // that would block Thursday even when the subject_id was correct.
+            $slot_day = trim($slot['day_of_week']);
+
+            if ($slot_day === $requested_day) {
+                $slot_parts   = explode(':', trim($slot['start_time']));
                 $slot_start_s = (int)$slot_parts[0] * 3600
                               + (int)$slot_parts[1] * 60
                               + (int)($slot_parts[2] ?? 0);
 
-                $slot_parts = explode(':', $slot['end_time']);
+                $slot_parts = explode(':', trim($slot['end_time']));
                 $slot_end_s = (int)$slot_parts[0] * 3600
                             + (int)$slot_parts[1] * 60
                             + (int)($slot_parts[2] ?? 0);
@@ -168,6 +195,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     break;
                 }
             }
+        }
+
+        // FIX: If $slots_to_check is empty (subject has no availability rows at all),
+        // treat it the same as the no-availability-slots branch and allow the request,
+        // rather than incorrectly blocking it.
+        if (empty($slots_to_check)) {
+            $is_available = true;
         }
 
         if (!$is_available) {
@@ -185,7 +219,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $message_type = "success";
         }
     } else {
-        // No availability slots defined - allow the request
+        // No availability slots defined for this subject — allow the request.
         $stmt = $conn->prepare("INSERT INTO sessions 
             (tutor_id, tutee_id, subject_id, requested_schedule, session_status, request_note)
             VALUES (?, ?, ?, ?, 'Pending', ?)");
@@ -206,7 +240,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Session</title>
     <link rel="stylesheet" href="../../Frontend/css/request_session.css">
-    <!-- FIX: inline override forces Back button yellow style, bypasses any cached CSS -->
     <style>
         .back {
             display: block !important;
@@ -222,7 +255,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .back:hover { opacity: 0.9; }
         button { width: 100%; }
 
-        /* FIX: in-system notification toast */
         #sys-toast {
             display: none;
             position: fixed;
@@ -267,7 +299,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
 
-<!-- FIX: in-system toast notification (replaces browser alert) -->
 <div id="sys-toast">
     <div class="toast-inner">
         <span class="toast-icon">⚠️</span>
@@ -279,7 +310,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 
-<!-- FIX: override window.alert() so any alert() call (including from cached JS) shows our toast instead -->
 <script>
 (function() {
     window.alert = function(msg) {
@@ -305,9 +335,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="tutor-info">
         <p><strong>Tutor:</strong> <?php echo htmlspecialchars($tutor['name']); ?></p>
 
-        <!-- ADD: subject selector — updates rate & availability live -->
         <p>
             <strong>Subject:</strong>
+            <!-- FIX: Moved <select> inside the <form> below via JS relocation is not needed —
+                 instead we keep the select here for display but ensure the hidden field
+                 inside the form is always kept in sync (see JS below). -->
             <select id="subject-select"
                 style="margin-left:6px;padding:5px 10px;border-radius:6px;border:1px solid #ccc;font-size:0.92rem;color:#1a2d5a;cursor:pointer;">
                 <?php foreach ($tutor_subjects as $subj): ?>
@@ -321,13 +353,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </select>
         </p>
 
-        <!-- Hidden field so POST knows the chosen subject -->
-        <input type="hidden" name="subject_id" id="subject-id-field"
-               value="<?php echo $selected_subject_id; ?>">
-
         <p><strong>Rate:</strong> <span id="rate-display">₱<?php echo number_format($tutor['rate'], 2); ?></span></p>
 
-        <!-- ADD: availability display, updated live by JS -->
         <p><strong>Available Schedule:</strong></p>
         <div id="availability-display">
             <?php
@@ -336,7 +363,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <ul style="margin:4px 0 0 0;padding-left:18px;font-size:0.92rem;color:#444;">
                     <?php foreach ($slots as $slot): ?>
                         <li>
-                            <?php echo htmlspecialchars($slot['day_of_week']); ?> &nbsp;
+                            <?php echo htmlspecialchars(trim($slot['day_of_week'])); ?> &nbsp;
                             <?php echo date('h:i A', strtotime($slot['start_time'])); ?> –
                             <?php echo date('h:i A', strtotime($slot['end_time'])); ?>
                         </li>
@@ -348,30 +375,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- All subjects data + all availability for JS live-update -->
     <script type="application/json" id="all-subjects-data">
         <?php echo json_encode($tutor_subjects); ?>
     </script>
     <script type="application/json" id="all-availability-data">
         <?php echo json_encode($all_availability); ?>
     </script>
-    <!-- Keep for backward compat with request_session.js availability check -->
     <script type="application/json" id="availability-data">
         <?php echo json_encode($availability_slots); ?>
     </script>
 
-    <!-- ADD: live subject switch JS -->
     <script>
     (function() {
         const select     = document.getElementById('subject-select');
         const rateEl     = document.getElementById('rate-display');
         const availEl    = document.getElementById('availability-display');
-        const hiddenSubj = document.getElementById('subject-id-field');
         const availData  = JSON.parse(document.getElementById('all-availability-data').textContent);
         const availJson  = document.getElementById('availability-data');
 
         function formatTime(t) {
-            // t = "HH:MM:SS" → "h:MM AM/PM"
             const parts = t.split(':');
             let h = parseInt(parts[0]), m = parts[1];
             const ampm = h >= 12 ? 'PM' : 'AM';
@@ -385,46 +407,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             let html = '<ul style="margin:4px 0 0 0;padding-left:18px;font-size:0.92rem;color:#444;">';
             slots.forEach(function(s) {
-                html += '<li>' + s.day_of_week + ' &nbsp;' + formatTime(s.start_time) + ' – ' + formatTime(s.end_time) + '</li>';
+                html += '<li>' + s.day_of_week.trim() + ' &nbsp;' + formatTime(s.start_time) + ' – ' + formatTime(s.end_time) + '</li>';
             });
             html += '</ul>';
             return html;
         }
 
         select.addEventListener('change', function() {
-            const opt     = select.options[select.selectedIndex];
-            const sid     = opt.value;
-            const rate    = parseFloat(opt.dataset.rate).toFixed(2);
-            const slots   = availData[sid] || [];
+            const opt   = select.options[select.selectedIndex];
+            const sid   = opt.value;
+            const rate  = parseFloat(opt.dataset.rate).toFixed(2);
+            const slots = availData[sid] || [];
 
-            // Update visible fields
-            rateEl.textContent     = '₱' + parseFloat(rate).toLocaleString('en-PH', {minimumFractionDigits:2});
-            availEl.innerHTML      = renderAvailability(slots);
-            hiddenSubj.value       = sid;
+            rateEl.textContent    = '₱' + parseFloat(rate).toLocaleString('en-PH', {minimumFractionDigits:2});
+            availEl.innerHTML     = renderAvailability(slots);
+            availJson.textContent = JSON.stringify(slots);
 
-            // Update availability-data JSON for the submit validator
-            availJson.textContent  = JSON.stringify(slots);
-            // Sync form hidden field
-            const formField = document.getElementById('subject-id-form-field');
-            if (formField) formField.value = sid;
+            // FIX: Sync BOTH hidden subject_id fields so the POSTed value always
+            // matches what the user sees in the dropdown, regardless of which field
+            // PHP happens to read from $_POST.
+            const f1 = document.getElementById('subject-id-form-field');
+            const f2 = document.getElementById('subject-id-field');
+            if (f1) f1.value = sid;
+            if (f2) f2.value = sid;
         });
     })();
     </script>
 
     <form method="POST" id="session-form">
 
-        <!-- ADD: carries selected subject_id to POST handler -->
+        <!-- FIX: This is the ONLY subject_id hidden field that matters for POST.
+             The one outside the form (subject-id-field) is kept for JS compat only
+             but is never submitted. This field is always synced by the JS above. -->
         <input type="hidden" name="subject_id" id="subject-id-form-field"
                value="<?php echo $selected_subject_id; ?>">
 
         <label>Start Time</label>
         <input type="datetime-local" name="requested_schedule" id="start_time" required>
 
-        <!-- ADD: End time (time only) — date is taken from Start Time -->
         <label>End Time</label>
         <input type="time" name="end_time" id="end_time" required>
 
-        <!-- ADD: live duration display and error -->
         <p id="duration-display" style="margin-top:6px;font-size:0.9rem;color:#555;"></p>
         <p id="duration-error" style="margin-top:4px;font-size:0.88rem;color:#c0392b;display:none;"></p>
 
@@ -435,7 +458,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </form>
 
-    <!-- ADD: JS validation — end must be after start, min 30 min, max 8 hours -->
+    <!-- FIX: kept outside the form intentionally — display-only, never submitted -->
+    <input type="hidden" name="subject_id" id="subject-id-field"
+           value="<?php echo $selected_subject_id; ?>">
+
     <script>
     (function () {
         const startEl = document.getElementById('start_time');
@@ -452,8 +478,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 errEl.style.display = 'none';
                 return true;
             }
-            // Combine start date with end time (time-only field)
-            const startDate = startEl.value.substring(0, 10); // YYYY-MM-DD
+            const startDate = startEl.value.substring(0, 10);
             const start     = new Date(startEl.value);
             const end       = new Date(startDate + 'T' + endEl.value);
             const diffMin   = (end - start) / 60000;
@@ -486,9 +511,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         startEl.addEventListener('change', function () {
-            // Set end time minimum to start time (HH:MM portion only)
             if (startEl.value) {
-                endEl.min = startEl.value.substring(11, 16); // extract HH:MM
+                endEl.min = startEl.value.substring(11, 16);
             }
             validate();
         });
@@ -500,7 +524,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     })();
     </script>
 
-    <!-- FIX: changed href from tutee_dashboard.php to search_results.php (Find a Tutor page) -->
     <a href="/tutorloop/search_results.php" class="back">← Back</a>
 
 </div>

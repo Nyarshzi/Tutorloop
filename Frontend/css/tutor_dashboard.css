@@ -143,20 +143,32 @@ body {
     scrollbar-color: #d4a017 #f1f1f1;
 }
 
-.requests-scroll::-webkit-scrollbar {
+/* Scrollable Upcoming Sessions — taller items (subject + schedule + student + buttons) */
+.upcoming-scroll {
+    max-height: 260px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d4a017 #f1f1f1;
+}
+
+.requests-scroll::-webkit-scrollbar,
+.upcoming-scroll::-webkit-scrollbar {
     width: 5px;
 }
 
-.requests-scroll::-webkit-scrollbar-track {
+.requests-scroll::-webkit-scrollbar-track,
+.upcoming-scroll::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
-.requests-scroll::-webkit-scrollbar-thumb {
+.requests-scroll::-webkit-scrollbar-thumb,
+.upcoming-scroll::-webkit-scrollbar-thumb {
     background: #d4a017;
     border-radius: 10px;
 }
 
-.requests-scroll::-webkit-scrollbar-thumb:hover {
+.requests-scroll::-webkit-scrollbar-thumb:hover,
+.upcoming-scroll::-webkit-scrollbar-thumb:hover {
     background: #b88a14;
 }
 

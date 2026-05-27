@@ -51,7 +51,7 @@ $upcoming_sessions = $conn->query("SELECT
     JOIN tutor_profiles tp ON s.tutor_id = tp.tutor_id
     WHERE s.tutor_id = $tutor_id AND s.session_status IN ('Accepted', 'Ongoing') 
     AND s.requested_schedule >= '$current_time'
-    ORDER BY s.requested_schedule ASC LIMIT 3");
+    ORDER BY s.requested_schedule ASC LIMIT 10");
 
 // NEW SECTION: Fetch Recent Messages for the Tutor Dashboard 
 $recent_messages = $conn->query("
@@ -163,6 +163,7 @@ $recent_messages = $conn->query("
 </div>
             <div class="box">
                 <h3>Upcoming Sessions</h3>
+                <div class="upcoming-scroll">
                 <?php if ($upcoming_sessions && $upcoming_sessions->num_rows > 0): ?>
                     <?php while($row = $upcoming_sessions->fetch_assoc()): ?>
                         <div class="session-item">
@@ -182,6 +183,7 @@ $recent_messages = $conn->query("
                 <?php else: ?>
                     <p>No sessions scheduled</p>
                 <?php endif; ?>
+                </div>
             </div>
 
             <div class="box">

@@ -18,26 +18,35 @@ $user = $query->get_result()->fetch_assoc();
 
 // Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     $new_name = $_POST['name'];
     $new_email = $_POST['email'];
     $new_password = $_POST['password'];
 
     if (!empty($new_password)) {
-        // Update with new password (hashed)
+
+        // Update with new password
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+
         $update = $conn->prepare("UPDATE users SET name = ?, email = ?, password = ? WHERE user_id = ?");
         $update->bind_param("sssi", $new_name, $new_email, $hashed_password, $user_id);
+
     } else {
-        // Update without changing password
+
+        // Update without password
         $update = $conn->prepare("UPDATE users SET name = ?, email = ? WHERE user_id = ?");
         $update->bind_param("ssi", $new_name, $new_email, $user_id);
     }
 
     if ($update->execute()) {
-        $_SESSION['user_name'] = $new_name; // Update session name
-        header("Location: tutee_profile.php?success=1");
+
+        $_SESSION['user_name'] = $new_name;
+
+        header("Location: /tutorloop/tutee/tutee_profile.php?success=1");
         exit();
+
     } else {
+
         $message = "Error updating profile.";
     }
 }
@@ -61,14 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <span>TUTORLOOP</span>
         </div>
         <nav>
-            <a href="/tutorloop/tutor/tutor_dashboard.php">Dashboard</a>
-            <a href="/tutorloop/tutor/tutor_profile.php" class="active">My Profile</a>
-            <a href="/tutorloop/tutor/tutor_myschedule.php">My Schedule</a>
-            <a href="/tutorloop/tutor/tutor_session_request.php">Session Requests</a>
-            <a href="/tutorloop/tutor/tutor_mystudents.php">My Students</a>
-            <a href="/tutorloop/tutor/tutor_messages.php">Messages</a>
-            <a href="/tutorloop/tutor/tutor_ratings.php">My Ratings</a>
-            <a href="analytics.php">Analytics</a>
+            <a href="/tutorloop/tutee/tutee_dashboard.php">Dashboard</a>
+            <a href="/tutorloop/tutee/tutee_profile.php" class="active">My Profile</a>
+            <a href="/tutorloop/search_results.php">Find a Tutor</a>
+            <a href="/tutorloop/tutee/tutee_session.php">My Sessions</a>
+            <a href="/tutorloop/tutee/tutee_mytutor.php">My Tutors</a>
+            <a href="/tutorloop/tutee/tutee_messages.php">Messages</a>
+            <a href="/tutorloop/analytics.php">Analytics</a>
         </nav>
     </aside>
 
