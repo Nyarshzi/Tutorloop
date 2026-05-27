@@ -174,6 +174,7 @@ if (!$tutor) {
 
                 $subjects_result = $subjects_stmt->get_result();
 
+
                 if ($subjects_result->num_rows > 0):
 
                     while($subject = $subjects_result->fetch_assoc()):
@@ -251,21 +252,44 @@ if (!$tutor) {
                 else:
                 ?>
 
-                    <p style="color:#666;">
-                        No subjects added yet.
-                    </p>
+                   <div style="
+                        background: #fff8e6;
+                        border: 1px solid #f0d080;
+                        border-radius: 10px;
+                        padding: 16px 20px;
+                        color: #856404;
+                        font-size: 14px;
+                        font-weight: 500;
+                        text-align: center;
+                    ">
+                        ⚠️ This tutor has no listed subjects yet.
+                    </div>
 
                 <?php endif; ?>
-
+<?php
+$subjects_stmt->execute();
+$subjects_result = $subjects_stmt->get_result();
+?>
                 <!-- BUTTON -->
-                <div class="profile-footer">
+<div class="profile-footer">
     <a href="/TutorLoop/search_results.php" class="back-btn">
         ← Back to Search
     </a>
-    <button class="book-btn"
-        onclick="location.href='/tutorloop/tutee/api/request_session.php?tutor_id=<?php echo $tutor_id; ?>'">
-        Request a Session
-    </button>
+    <?php if ($subjects_result->num_rows > 0): ?>
+        <button class="book-btn"
+            onclick="location.href='/tutorloop/tutee/api/request_session.php?tutor_id=<?php echo $tutor_id; ?>'">
+            Request a Session
+        </button>
+    <?php else: ?>
+        <button class="book-btn" disabled style="
+            background: #ccc;
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.6;
+        " title="This tutor has no listed subjects yet.">
+            Request a Session
+        </button>
+    <?php endif; ?>
 </div>
 
             </div>
