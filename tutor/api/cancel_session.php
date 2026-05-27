@@ -7,7 +7,7 @@ if (isset($_GET['session_id'])) {
 
     // Update the status to Cancelled
     $sql = "UPDATE sessions 
-            SET status = 'Cancelled' 
+            SET session_status = 'Cancelled' 
             WHERE session_id = $session_id";
 
     if ($conn->query($sql) === TRUE) {
