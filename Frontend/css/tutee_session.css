@@ -111,8 +111,8 @@ body { overflow-x: hidden; }
 .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; }
 .sidebar-overlay.active { display: block; }
 .menu-btn { display: none; flex-direction: column; justify-content: space-between; width: 26px; height: 20px; background: transparent; border: none; cursor: pointer; padding: 0; flex-shrink: 0; z-index: 1100; }
-.menu-btn span { display: block; width: 100%; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s ease, opacity 0.3s ease; }
-body.sidebar-open .menu-btn span:nth-child(1) { transform: translateY(8.75px) rotate(45deg); }
+
+body.sidebar-open .menu-btn span:nth-child(1) { transform: translateY(8.75px) rotate(45deg); }.menu-btn span { display: block; width: 100%; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s ease, opacity 0.3s ease; pointer-events: none; }
 body.sidebar-open .menu-btn span:nth-child(2) { opacity: 0; }
 body.sidebar-open .menu-btn span:nth-child(3) { transform: translateY(-8.75px) rotate(-45deg); }
 

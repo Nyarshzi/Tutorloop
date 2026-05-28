@@ -125,6 +125,15 @@ $result = $stmt->get_result();
         .rate-form input[type="number"] { width: 96px; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px; margin-right: 12px; }
         .rate-form button { margin-top: 10px; }
         .note { color: #4a5568; font-size: 0.95rem; margin-top: 10px; }
+.filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.filter-btn { padding: 8px 18px; border-radius: 20px; border: 2px solid #0d2a4a; background: white; color: #0d2a4a; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; }
+.filter-btn.active { background: #0d2a4a; color: white; }
+.filter-btn:hover { background: #0d2a4a; color: white; }
+.tutor-box { display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
+#tutorGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 768px) { #tutorGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { #tutorGrid { grid-template-columns: 1fr; } }
+.bottom .box { height: 100%; max-width: 100%; }
     </style>
 </head>
 <body>
@@ -181,38 +190,70 @@ $result = $stmt->get_result();
             </section>
         <?php endif; ?>
 
-        <section class="bottom" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 10px;">
-            <?php if ($result && $result->num_rows > 0): ?>
-                <?php while ($row = $result->fetch_assoc()): ?>
-                    <div class="box" style="display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
-                        <div>
-                            <h3 style="margin-bottom: 10px; font-size: 1rem; color: #0d2a4a;">
-                                <?php echo htmlspecialchars($row['tutor_name']); ?>
-                            </h3>
-                            <p style="font-size: 13px; color: #4a5568; margin-bottom: 4px;">
-                                📅 <?php echo date('F j, Y - g:i A', strtotime($row['requested_schedule'])); ?>
-                            </p>
-                            <p style="font-size: 13px; color: #4a5568;">
-                                Status: <span class="status-pill"><?php echo htmlspecialchars($row['session_status']); ?></span>
-                            </p>
-                        </div>
-                        <div style="margin-top: 8px;">
-                            <?php if ($row['rating'] !== null): ?>
-                                <span class="rating-label">⭐ Rated: <?php echo htmlspecialchars($row['rating']); ?>/10</span>
-                            <?php elseif ($row['session_status'] === 'Completed'): ?>
-                                <a href="?rate_session_id=<?php echo htmlspecialchars($row['session_id']); ?>" class="rate-btn" style="width: 100%; text-align: center; display: block;">Rate Tutor</a>
-                            <?php else: ?>
-                                <button class="rate-disabled" disabled style="width: 100%;">Not Yet Rateable</button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <div class="box">
-                    <p style="color: #718096; font-size: 14px;">No tutor sessions found yet.</p>
-                </div>
-            <?php endif; ?>
-        </section>
+        <?php
+$all_sessions = [];
+while ($row = $result->fetch_assoc()) {
+    $all_sessions[] = $row;
+}
+$rateable   = array_filter($all_sessions, fn($r) => $r['session_status'] === 'Completed' && $r['rating'] === null);
+$rated      = array_filter($all_sessions, fn($r) => $r['rating'] !== null);
+$not_ready  = array_filter($all_sessions, fn($r) => $r['session_status'] !== 'Completed' && $r['rating'] === null);
+?>
+
+<div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCards('all')">All</button>
+    <button class="filter-btn" onclick="filterCards('rateable')">⭐ Ready to Rate</button>
+    <button class="filter-btn" onclick="filterCards('rated')">✅ Already Rated</button>
+    <button class="filter-btn" onclick="filterCards('not_ready')">🕐 Not Yet Rateable</button>
+</div>
+
+<?php if (!empty($all_sessions)): ?>
+<section id="tutorGrid" style="display: grid; gap: 20px; margin-bottom: 30px; align-items: stretch;">
+
+    <?php foreach ($rateable as $row): ?>
+        <div class="box tutor-box" data-type="rateable" style="border-top: 4px solid #d4a017;">
+    <div>
+        <h3 style="margin: 0 0 6px; font-size: 1rem; color: #0d2a4a;"><?php echo htmlspecialchars($row['tutor_name']); ?></h3>
+                <p style="font-size: 13px; color: #4a5568; margin-bottom: 4px;">📅 <?php echo date('F j, Y - g:i A', strtotime($row['requested_schedule'])); ?></p>
+                <p style="font-size: 13px; color: #4a5568;">Status: <span class="status-pill"><?php echo htmlspecialchars($row['session_status']); ?></span></p>
+            </div>
+            <div style="margin-top: 8px;">
+                <a href="?rate_session_id=<?php echo htmlspecialchars($row['session_id']); ?>" class="rate-btn" style="width: 100%; text-align: center; display: block;">Rate Tutor</a>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+    <?php foreach ($rated as $row): ?>
+        <div class="box tutor-box" data-type="rated" style="border-top: 4px solid #28a745;">
+    <div>
+        <h3 style="margin: 0 0 6px; font-size: 1rem; color: #0d2a4a;"><?php echo htmlspecialchars($row['tutor_name']); ?></h3>
+                <p style="font-size: 13px; color: #4a5568; margin-bottom: 4px;">📅 <?php echo date('F j, Y - g:i A', strtotime($row['requested_schedule'])); ?></p>
+                <p style="font-size: 13px; color: #4a5568;">Status: <span class="status-pill"><?php echo htmlspecialchars($row['session_status']); ?></span></p>
+            </div>
+            <div style="margin-top: 8px;">
+                <span class="rating-label">⭐ Rated: <?php echo htmlspecialchars($row['rating']); ?>/10</span>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+    <?php foreach ($not_ready as $row): ?>
+        <div class="box tutor-box" data-type="not_ready" style="border-top: 4px solid #ccc;">
+    <div>
+        <h3 style="margin: 0 0 6px; font-size: 1rem; color: #0d2a4a;"><?php echo htmlspecialchars($row['tutor_name']); ?></h3>
+                <p style="font-size: 13px; color: #4a5568; margin-bottom: 4px;">📅 <?php echo date('F j, Y - g:i A', strtotime($row['requested_schedule'])); ?></p>
+                <p style="font-size: 13px; color: #4a5568;">Status: <span class="status-pill"><?php echo htmlspecialchars($row['session_status']); ?></span></p>
+            </div>
+            <div style="margin-top: 8px;">
+                <button class="rate-disabled" disabled style="width: 100%;">Not Yet Rateable</button>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+</section>
+<?php else: ?>
+<div class="box"><p style="color: #718096; font-size: 14px;">No tutor sessions found yet.</p></div>
+<?php endif; ?>
+                    
     </main>
 </div>
 <script>
@@ -244,6 +285,20 @@ if (menuBtn && sidebar && overlay) {
 } else {
   console.warn('Hamburger menu: missing element(s). Check IDs: menuBtn, sidebar, sidebarOverlay');
 }
+
+function filterCards(type) {
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    document.querySelectorAll('.box.tutor-box').forEach(card => {
+        if (type === 'all' || card.dataset.type === type) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
 </script>
 </body>
 </html>
