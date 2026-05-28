@@ -130,6 +130,10 @@ $result = $conn->query($sql);
                             
                             <p><strong>Subject:</strong> <?php echo htmlspecialchars($row['subject_name']); ?></p>
                             <p><strong>Schedule:</strong> <?php echo date("F j, Y - g:i A", strtotime($session_time)); ?></p>
+
+                            <?php if (!empty($row['request_note'])): ?>
+                                <p><strong>Note:</strong> <?php echo htmlspecialchars($row['request_note']); ?></p>
+                            <?php endif; ?>
                             
                             <?php if($is_overdue): ?>
                                 <p class="conflict-text" style="color: #d9534f; font-weight: bold;">⚠️ Request overdue: this session time has already passed.</p>
